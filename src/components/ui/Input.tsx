@@ -19,7 +19,7 @@ export default function Input({
       <input
         {...props}
         className={cn(
-          "h-11 w-full rounded-[14px] border border-border bg-white px-4 text-[14px]  outline-none transition",
+          "h-12 w-full rounded-[14px] border border-border bg-white px-4 text-[14px]  outline-none transition",
           "placeholder:text-muted2",
           "focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]",
           props.disabled && "bg-surface2 text-muted",

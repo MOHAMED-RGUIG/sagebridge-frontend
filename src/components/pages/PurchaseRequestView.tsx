@@ -194,7 +194,7 @@ const matriculeDisabled = matType === "NORMAL";
       </div>
 
       {toast ? (
-        <div className="rounded-3xl border border-border/70 bg-white/70 px-4 py-3 text-lg shadow-sm backdrop-blur">
+        <div className="rounded-3xl border border-border/70 bg-white/70 px-4 py-3 text-xl shadow-sm backdrop-blur">
           {toast}
         </div>
       ) : null}
@@ -406,7 +406,7 @@ const matriculeDisabled = matType === "NORMAL";
                   <tr key={it.id} className="hover:bg-surface2">
 <td className="px-3 py-2">
   <div className="relative">
-    <input
+    <Input
       value={it.ITMREF}
       onChange={(e) =>
         dispatch(
@@ -446,14 +446,22 @@ const matriculeDisabled = matType === "NORMAL";
   </div>
 </td>
 <td className="px-3 py-2"> 
-<input value={it.ITMDES} onChange={(e) => dispatch( purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } className="h-10 w-full rounded-[14px] border border-border  bg-gray-100
+<Input value={it.ITMDES} onChange={(e) => dispatch( purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } 
+className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             text-gray-500
             cursor-not-allowed
-            border-gray-300 px-4 text-[14px] outline-none transition placeholder:text-muted2 focus:border-brand focus:ring-4 " placeholder="Désignation"          disabled
+            border-gray-300 px-4 text-[14px] outline-none transition 
+            placeholder:text-muted2 focus:border-brand focus:ring-4 
+            disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed"
+             placeholder="Désignation"          
+             disabled
          /> </td>
 
                     <td className="px-3 py-2">
-                      <input
+                      <Input
                         value={it.PSHFCY}
                         onChange={(e) =>
                           dispatch(
@@ -464,17 +472,23 @@ const matriculeDisabled = matType === "NORMAL";
                             })
                           )
                         }
- className="h-10 w-full rounded-[14px] border border-border  bg-gray-100
+ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             text-gray-500
             cursor-not-allowed
-            border-gray-300 px-4 text-[14px] outline-none transition placeholder:text-muted2 focus:border-brand focus:ring-4 "           disabled
+            border-gray-300 px-4 text-[14px] outline-none transition 
+            placeholder:text-muted2 focus:border-brand focus:ring-4
+            disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed "           
+            disabled
    
                         placeholder="Site"
                            
                       />
                     </td>
                     <td className="px-3 py-2">
-                      <select
+                      <Select
                         value={it.PUU}
                         onChange={(e) =>
                           dispatch(
@@ -491,10 +505,10 @@ const matriculeDisabled = matType === "NORMAL";
                         <option value="PCS">PCS</option>
                         <option value="KG">KG</option>
                         <option value="L">L</option>
-                      </select>
+                      </Select>
                     </td>
                     <td className="px-2 py-2">
-                      <input
+                      <Input
                         type="number"
                         min={1}
                         value={it.QTYPUU}
@@ -507,7 +521,7 @@ const matriculeDisabled = matType === "NORMAL";
                             })
                           )
                         }
-                        className="h-10 w-16 rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+                        className="h-12 rounded-[14px] !w-24 border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
                       />
                     </td>
 
@@ -529,6 +543,8 @@ const matriculeDisabled = matType === "NORMAL";
                         type="button"
                         onClick={() => dispatch(purchaseRequestActions.removeItem(it.id))}
                         title="Supprimer"
+                        className="h-10 w-11 text-3xl rounded-xl"
+                        
                       >
                         🗑
                       </Button>
@@ -547,7 +563,7 @@ const matriculeDisabled = matType === "NORMAL";
             >
               Réinitialiser
             </Button>
-            <Button type="button" onClick={onSubmit} disabled={isLoading}>
+            <Button type="button"  onClick={onSubmit} disabled={isLoading}>
               {isLoading ? "Envoi..." : "Envoyer"}
             </Button>
           </div>
@@ -568,27 +584,29 @@ const matriculeDisabled = matType === "NORMAL";
           <div className="absolute left-1/2 top-1/2 w-[min(920px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
               <div>
-                <div className="text-[16px] font-semibold">Sélectionner un article</div>
+                <div className="text-4xl md:text-3xl font-extrabold tracking-tight
+          bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+          bg-clip-text text-transparent">Sélectionner un article</div>
                 <div className="text-[12px] text-muted2">
                   Recherche par code ou désignation
                 </div>
               </div>
 
-              <button
+              <Button
                 type="button"
                 onClick={() => setArticleModalOpen(false)}
-                className="grid h-9 w-9 place-items-center rounded-xl border border-border text-muted2 hover:bg-gray-50"
+                className="grid h-9 w-9 place-items-center rounded-3xl border border-border text-muted2 bg-gray-50 text-black"
                 title="Fermer"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-              </button>
+              </Button>
             </div>
 
             <div className="p-5">
               {/* search */}
-              <input
+              <Input
                 autoFocus
                 value={articleQuery}
                 onChange={(e) => setArticleQuery(e.target.value)}
@@ -623,13 +641,14 @@ const matriculeDisabled = matType === "NORMAL";
                           <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
                           <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
                           <td className="px-4 py-2">
-                            <button
+                            <Button
+                            
                               type="button"
                               onClick={() => pickArticle(a)}
-                              className="h-9 rounded-xl border border-border bg-white px-3 text-[13px] hover:bg-gray-50"
+                              className="h-11 rounded-xl border border-border px-3 text-[13px] hover:bg-gray-50 hover:text-black transition"
                             >
                               Choisir
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       ))
@@ -639,13 +658,13 @@ const matriculeDisabled = matType === "NORMAL";
               </div>
 
               <div className="mt-4 flex justify-end">
-                <button
+                <Button
                   type="button"
                   onClick={() => setArticleModalOpen(false)}
-                  className="h-10 rounded-2xl border border-border bg-white px-4 text-[14px] hover:bg-gray-50"
+                  className="h-10 rounded-2xl border border-border px-4 text-[14px] bg-gray-50 text-black"
                 >
                   Annuler
-                </button>
+                </Button>
               </div>
             </div>
           </div>

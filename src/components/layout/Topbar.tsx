@@ -26,7 +26,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </button>
           <div>
           <div className="mt-5 p-2">
-  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight
+  <h1 className="text-5xl md:text-5xl font-extrabold tracking-tight
                  bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
                  bg-clip-text text-transparent">
     {title}
@@ -65,6 +65,8 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
               </div>
               <div className="hidden text-[14px] font-semibold md:block">Mohamed Rguig</div>
             </div>
+           
+
           </div> 
         
         </div>

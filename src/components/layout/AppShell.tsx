@@ -59,7 +59,7 @@ export default function AppShell({
           onClose={() => setMobileOpen(false)}
         />
 <div className="flex-1 min-w-0 overflow-hidden">
-  <div className="origin-top-left scale-[0.79] w-[calc(100%/0.79)]">
+  <div className="origin-top-left scale-[0.75] w-[calc(100%/0.75)]">
     <Topbar
       onOpenSidebar={() => setMobileOpen(true)}
       title={ROUTE_TITLES[active] ?? "Dashboard"}

@@ -181,10 +181,17 @@ export default function Sidebar({
             onClick={() => alert("Help (placeholder)")}
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/5">❓</span>
-              <span className="text-[14px] font-semibold">Help</span>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/5"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg></span>
+              <span className="text-[14px] font-semibold">Déconnexion</span>
             </div>
+
           </button>
+
+
+ 
+
+
+
         </div>
       </div>
     </aside>
