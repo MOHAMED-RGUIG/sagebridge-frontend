@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  /* Horizon/NextAdmin-like tokens (very close to screenshots) */
+  --bg: 222 100% 98%;       /* #F4F7FE */
+  --surface: 0 0% 100%;     /* white cards */
+  --surface-2: 225 100% 99%;
+
+  --text: 224 30% 12%;      /* deep navy */
+  --muted: 222 22% 62%;     /* #A3AED0-ish */
+  --muted-2: 222 24% 72%;
+  --border: 222 22% 90%;
+
+  --brand: 252 100% 55%;    /* #4318FF */
+  --brand-2: 255 95% 62%;
+  --success: 142 71% 45%;
+  --danger: 0 84% 60%;
+  --warn: 35 92% 55%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100%;
+  font-size: 12px; 
+}
+
+body {
+  background: hsl(var(--bg));
+  color: hsl(var(--text));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px; 
+  /* match dashboard typography */
+}
+
+.input{
+  font-size: 10px;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  ::selection {
+    background: rgba(67, 24, 255, 0.18);
+  }
+}
+
