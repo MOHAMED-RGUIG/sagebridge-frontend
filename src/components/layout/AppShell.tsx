@@ -9,7 +9,7 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   claims: "Dossiers sinistre",
   claimsView: "Nouveau sinistre",
   purchase: "Demandes d’achat",
-  purchaseRequestView: "Nouvelle demande d’achat",
+  purchaseRequestView: "Formulaire demandes d’achats",
   stock: "Stock",
   option: "Paramètres",
 };
@@ -45,7 +45,7 @@ export default function AppShell({
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen  ">
       {overlay}
       <div className="flex">
         <Sidebar
@@ -54,20 +54,22 @@ export default function AppShell({
             onNavigate(k);
             setMobileOpen(false);
           }}
+       
           mobileOpen={mobileOpen}
           onClose={() => setMobileOpen(false)}
         />
+<div className="flex-1 min-w-0 overflow-hidden">
+  <div className="origin-top-left scale-[0.85] w-[calc(100%/0.85)]">
+    <Topbar
+      onOpenSidebar={() => setMobileOpen(true)}
+      title={ROUTE_TITLES[active] ?? "Dashboard"}
+    />
 
-      <div className="min-h-screen w-full origin-top-left scale-[0.99]">
-
-          <Topbar onOpenSidebar={() => setMobileOpen(true)} 
-            title={ROUTE_TITLES[active] ?? "Dashboard"}/>
-            
-          <main className="w-full px-4 py-5 md:px-5">
-
-            {children}
-          </main>
-        </div>
+    <main className="w-full px-4">
+      {children}
+    </main>
+  </div>
+</div>
       </div>
     </div>
   );

@@ -113,14 +113,15 @@ export default function Sidebar({
         "border-r border-white/5",
         "md:sticky md:top-0 md:h-screen",
         "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full ",
         "max-md:transition-transform"
+        
       )}
     >
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col scale-[0.92]">
         {/* HEADER (logos/titre) */}
         <div className="flex items-center justify-between px-6 py-6">
-          <div className="flex items-center gap-3 mt-6">
+          <div className="flex items-center gap-3">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
               <span className="text-[12px] font-black">SB</span>
             </div>

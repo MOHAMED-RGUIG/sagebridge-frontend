@@ -177,29 +177,33 @@ useEffect(() => {
 
 const matriculeDisabled = matType === "NORMAL";
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <div>
+       
+       {/*<div>
           <h1 className="text-lg font-semibold">Formulaire de demande d’achat</h1>
           <p className="text-sm text-muted">Insertion • UI moderne • prête backend</p>
-        </div>
+        </div> 
+        
         <div className="flex items-center gap-2">
           <Badge tone={isValid ? "green" : "amber"}>{isValid ? "Prêt" : "Incomplet"}</Badge>
-          <Badge tone="blue">{totalLines} ligne(s)</Badge>
+         
         </div>
+        */}
+        
       </div>
 
       {toast ? (
-        <div className="rounded-3xl border border-border/70 bg-white/70 px-4 py-3 text-sm shadow-sm backdrop-blur">
+        <div className="rounded-3xl border border-border/70 bg-white/70 px-4 py-3 text-lg shadow-sm backdrop-blur">
           {toast}
         </div>
       ) : null}
 
       <Card>
-        <CardHeader
+        {/*<CardHeader
           title=""
           subtitle=""
-        />
+        /> */}
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
           
         <Input
@@ -211,11 +215,12 @@ const matriculeDisabled = matType === "NORMAL";
             
             disabled
             className="
-                    w-full rounded-md border px-3 py-2
+                    w-full rounded-lg border px-3 py-2
                     disabled:bg-gray-100
                     disabled:text-gray-500
                     disabled:border-gray-300
                     disabled:cursor-not-allowed
+                    
                   "
           />
           
@@ -227,7 +232,7 @@ const matriculeDisabled = matType === "NORMAL";
             }
             disabled
          className="
-                      w-full rounded-md border px-3 py-2
+                      w-full rounded-lg border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
                       disabled:border-gray-300
@@ -318,11 +323,12 @@ const matriculeDisabled = matType === "NORMAL";
          </Select>
 
 
-         <div className="w-full space-y-3 mt-3">
+         <div className="w-full space-y-3">
   {/* SELECT TYPE */}
   <div className="w-full">
-    <label className="mb-1 block text-sm font-medium">Type matricule</label>
+
     <Select
+      label="Type matricule"
       className="h-10 w-full rounded-md border border-border bg-white px-3"
       value={matType}
       onChange={(e) => setMatType(e.target.value as MatriculeType)}
@@ -369,6 +375,8 @@ const matriculeDisabled = matType === "NORMAL";
           title="Articles"
           subtitle="Ajoute une ou plusieurs lignes d’articles"
           right={
+            <div className="flex items-center gap-2">
+            <Badge tone="green">{totalLines} ligne(s)</Badge>
             <Button
               variant="secondary"
               onClick={() => dispatch(purchaseRequestActions.addItem())}
@@ -376,14 +384,15 @@ const matriculeDisabled = matType === "NORMAL";
             >
               + Ajouter une ligne
             </Button>
+            </div>
           }
         />
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-surface2 text-xs uppercase tracking-wide text-muted">
-                <tr>
-                  <th className="px-3 py-2">Code article*</th>
+                <tr className="mb-2 text-lg font-semibold text-slate-700">
+                  <th className="px-3 py-2 ">Code article*</th>
                   <th className="px-3 py-2">Désignation</th>
                   <th className="px-3 py-2">Site de réception</th>
                   <th className="px-3 py-2">Unité d'achat</th>

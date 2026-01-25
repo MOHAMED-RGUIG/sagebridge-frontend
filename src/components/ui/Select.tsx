@@ -12,9 +12,9 @@ export default function Select({
   return (
     <label className="block">
       {label ? (
-        <span className="mb-2 block text-[13px] font-medium text-text">
-          {label}
-        </span>
+       <span className="mb-2 block text-xl font-bold text-slate-700">
+       {label}
+     </span>
       ) : null}
       <select
         {...props}

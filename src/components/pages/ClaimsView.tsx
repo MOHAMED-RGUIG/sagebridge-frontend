@@ -293,6 +293,7 @@ export default function ClaimsView() {
                   type="number"
                   min={0}
                   value={form.amountBilled}
+               
                   onChange={(e) =>
                     dispatch(
                       claimsActions.setField({ key: "amountBilled", value: Number(e.target.value) })
