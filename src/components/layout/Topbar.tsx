@@ -26,7 +26,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </button>
           <div>
           <div className="mt-5 p-2">
-  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight
+  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight
                  bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
                  bg-clip-text text-transparent">
     {title}
@@ -42,31 +42,31 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 rounded-full border border-border bg-white px-5 py-3 text-[14px] shadow-cardSm md:flex">
+        <div className="flex items-center gap-3 px-4">
+          {/*<div className="hidden md:flex md:w-[300px] lg:w-[380px] items-center gap-2 rounded-full border border-border bg-white px-5 py-3 text-[14px] shadow-cardSm">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="rgba(100,116,139,0.9)" strokeWidth="2" />
               <path d="M21 21l-4.35-4.35" stroke="rgba(100,116,139,0.9)" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <span className="text-muted2">Search...</span>
-          </div>
-
-          <div className="flex items-center gap-2 rounded-full border border-border bg-white px-2 py-2 shadow-cardSm">
-            <button
+          </div>*/}
+     <div className="flex items-center gap-2 rounded-full border border-border bg-white px-2 py-3 shadow-cardSm mt-5">
+       {/*  <button
               type="button"
               className="grid h-10 w-10 place-items-center rounded-full hover:bg-surface2"
               aria-label="Notifications"
             >
               🔔
-            </button>
+            </button>*/}
         
-            <div className="ml-1 flex items-center gap-2 pr-2">
+            <div className="ml-1 flex items-center gap-2 pr-2 ">
               <div className="grid h-9 w-9 place-items-center rounded-full bg-brand text-[12px] font-black text-white">
                 MR
               </div>
               <div className="hidden text-[14px] font-semibold md:block">Mohamed Rguig</div>
             </div>
-          </div>
+          </div> 
+        
         </div>
       </div>
     </header>

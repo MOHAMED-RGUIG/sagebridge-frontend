@@ -200,10 +200,10 @@ const matriculeDisabled = matType === "NORMAL";
       ) : null}
 
       <Card>
-        {/*<CardHeader
-          title=""
-          subtitle=""
-        /> */}
+        <CardHeader
+          title="Voiture"
+          subtitle="Informations concernant la voiture"
+        /> 
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
           
         <Input
@@ -215,7 +215,7 @@ const matriculeDisabled = matType === "NORMAL";
             
             disabled
             className="
-                    w-full rounded-lg border px-3 py-2
+                    w-full rounded-4xl border px-3 py-2
                     disabled:bg-gray-100
                     disabled:text-gray-500
                     disabled:border-gray-300
@@ -232,7 +232,7 @@ const matriculeDisabled = matType === "NORMAL";
             }
             disabled
          className="
-                      w-full rounded-lg border px-3 py-2
+                      w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
                       disabled:border-gray-300
@@ -252,7 +252,7 @@ const matriculeDisabled = matType === "NORMAL";
             disabled
             placeholder="Nom & prénom"
            className="
-                      w-full rounded-md border px-3 py-2
+                      w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
                       disabled:border-gray-300
@@ -265,7 +265,7 @@ const matriculeDisabled = matType === "NORMAL";
               value={form.PRQDAT}
               disabled
               className="
-                      w-full rounded-md border px-3 py-2
+                      w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
                       disabled:border-gray-300
@@ -329,7 +329,7 @@ const matriculeDisabled = matType === "NORMAL";
 
     <Select
       label="Type matricule"
-      className="h-10 w-full rounded-md border border-border bg-white px-3"
+      className="h-10 w-full rounded-4xl border border-border bg-white px-3"
       value={matType}
       onChange={(e) => setMatType(e.target.value as MatriculeType)}
     >
@@ -374,6 +374,7 @@ const matriculeDisabled = matType === "NORMAL";
         <CardHeader
           title="Articles"
           subtitle="Ajoute une ou plusieurs lignes d’articles"
+         
           right={
             <div className="flex items-center gap-2">
             <Badge tone="green">{totalLines} ligne(s)</Badge>
