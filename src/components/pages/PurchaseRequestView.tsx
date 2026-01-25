@@ -595,7 +595,7 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
               <Button
                 type="button"
                 onClick={() => setArticleModalOpen(false)}
-                className="grid h-9 w-9 place-items-center rounded-3xl border border-border text-muted2 bg-gray-50 text-black"
+                className="grid h-9 w-9 place-items-center rounded-3xl border border-border text-muted2 bg-gray-50 !text-black"
                 title="Fermer"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -661,7 +661,7 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                 <Button
                   type="button"
                   onClick={() => setArticleModalOpen(false)}
-                  className="h-10 rounded-2xl border border-border px-4 text-[14px] bg-gray-50 text-black"
+                  className="h-10 rounded-2xl border border-border px-4 text-[14px] bg-gray-50 !text-black"
                 >
                   Annuler
                 </Button>
