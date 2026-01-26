@@ -10,6 +10,8 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   claimsView: "Nouveau sinistre",
   purchase: "Demandes d’achat",
   purchaseRequestView: "Formulaire demandes d’achats",
+  devis :"Devis",
+  devisView :"Devis",
   stock: "Stock",
   option: "Paramètres",
 };

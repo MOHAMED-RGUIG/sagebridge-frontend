@@ -8,12 +8,15 @@ export type NavKey =
   | "purchaseRequestView"
   | "claims"
   | "claimsView"
+  | "devis"
+  | "devisView"
   | "stock"
   | "option";
 
 const NAV: Array<{ key: NavKey; label: string }> = [
   { key: "claims", label: "Dossier sinistre" },
   { key: "purchase", label: "Demande d'achat" },
+  { key: "devis", label: "Devis" },
   { key: "stock", label: "Stock disponible" },
 
 ];
@@ -37,8 +40,20 @@ const ICONS: Record<NavKey, React.ReactNode> = {
       <path d="M9 13l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   ),
+  devis: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path d="M9 13l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  ),
   purchaseRequestView: <span />,
   claimsView: <span />,
+  devisView: <span />,
   stock: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" />
@@ -109,7 +124,7 @@ export default function Sidebar({
       className={cn(
         // ✅ Dark sidebar like image 1
         "z-40 w-[270px] shrink-0 text-white",
-        "bg-gradient-to-b from-[#0B0F1C] via-[#0B1022] to-[#070A14]",
+        "rounded-[24px] bg-gradient-to-b from-[#0B0F1C] via-[#0B1022] to-[#070A14]",
         "border-r border-white/5",
         "md:sticky md:top-0 md:h-screen",
         "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl",
