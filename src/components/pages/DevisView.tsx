@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useEffect ,useState } from "react";
-import { useCreatePurchaseRequestMutation } from "@/lib/api/baseApi";
+import { useCreateDevisRequestMutation } from "@/lib/api/baseApi";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { purchaseRequestActions } from "@/features/purchaseRequest/purchaseRequestSlice";
+import { devisRequestActions } from "@/features/devis/devisSlice";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { useDispatch } from "react-redux";
 import Input from "@/components/ui/Input";
@@ -13,8 +13,9 @@ import Badge from "@/components/ui/Badge";
 type MatriculeType = "NORMAL" | "AUTRE";
 export default function DevisView() {
   const dispatch = useAppDispatch();
-  const form = useAppSelector((s) => s.purchaseRequest.form);
-  const [createPurchaseRequest, { isLoading }] = useCreatePurchaseRequestMutation();
+ const form = useAppSelector((s) => s.devis.form);
+
+  const [createDevisRequest, { isLoading }] = useCreateDevisRequestMutation();
   const [toast, setToast] = useState<string | null>(null);
   const [matType, setMatType] = useState<MatriculeType>("NORMAL");
 
@@ -61,14 +62,14 @@ const openArticleModal = (lineId: string) => {
     if (activeLineId == null) return;
 
     dispatch(
-      purchaseRequestActions.updateItem({
+      devisRequestActions.updateItem({
         id: activeLineId,
         key: "ITMREF",
         value: a.ITMREF,
       })
     );
     dispatch(
-      purchaseRequestActions.updateItem({
+      devisRequestActions.updateItem({
         id: activeLineId,
         key: "ITMDES",
         value: a.ITMDES,
@@ -97,14 +98,14 @@ const openArticleModal = (lineId: string) => {
 
     const datePlusOne = todayPlusOne.toISOString().split("T")[0];
     dispatch(
-      purchaseRequestActions.setField({
+      devisRequestActions.setField({
         key: "PRQDAT",
         value: today,
        
       })
     );
     dispatch(
-      purchaseRequestActions.setField({
+      devisRequestActions.setField({
         key : "neededDate",
         value : datePlusOne,
       })
@@ -127,18 +128,22 @@ const openArticleModal = (lineId: string) => {
         CPY: form.CPY,
         PRQDAT: form.PRQDAT || null,
         YMATRICULE: form.YMATRICULE,
-        items: form.items.map((it) => ({
-          ITMREF: it.ITMREF,
-          ITMDES: it.ITMDES,
-          QTYPUU: Number(it.QTYPUU),
-          neededDate: form.neededDate || null,
-          PUU: it.PUU,
-        })),
+     items: form.items.map((it) => ({
+  ITMREF: it.ITMREF,
+  ITMDES: it.ITMDES,
+  QTYPUU: Number(it.QTYPUU),
+  neededDate: form.neededDate || null,
+  PUU: it.PUU,
+
+  PBRUT: Number(it.PBRUT || 0),
+  REMISE: Number(it.REMISE || 0),
+  PNET: Number(it.PNET || 0),
+})),
       };
 
       // Appelle l’API (placeholder)
-      await createPurchaseRequest(payload).unwrap();
-      dispatch(purchaseRequestActions.reset());
+      await createDevisRequest(payload).unwrap();
+      dispatch(devisRequestActions.reset());
       setToast("Demande envoyée (API placeholder). Tu pourras brancher le backend ensuite.");
     } catch {
       setToast(
@@ -157,7 +162,7 @@ const openArticleModal = (lineId: string) => {
   const hasAny = part1 || part2 || part3;
   const value = hasAny ? `${part1}-${part2}-${part3}` : "";
 
-  dispatch(purchaseRequestActions.setField({ key: "YMATRICULE", value }));
+  dispatch(devisRequestActions.setField({ key: "YMATRICULE", value }));
 }, [matType, mat1, mat2, mat3, dispatch]);
 
 // Quand on change de type:
@@ -171,11 +176,33 @@ useEffect(() => {
     // On ne touche pas YMATRICULE ici: l'utilisateur va le saisir lui-même
   } else {
     // NORMAL: optionnel => reset matricule avant génération
-    dispatch(purchaseRequestActions.setField({ key: "YMATRICULE", value: "" }));
+    dispatch(devisRequestActions.setField({ key: "YMATRICULE", value: "" }));
   }
 }, [matType, dispatch]);
 
 const matriculeDisabled = matType === "NORMAL";
+// --- Valorisation (comme image 3) ---
+const money = (n: number) =>
+  new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+    Number.isFinite(n) ? n : 0
+  );
+
+// TVA (modifiable)
+const TVA_RATE = 0.2; // 20%
+
+const totals = useMemo(() => {
+  const ht = (form.items ?? []).reduce((sum, it) => {
+    const qty = Number(it.QTYPUU || 0);
+    const netUnit = Number(it.PNET || 0);
+    return sum + qty * netUnit;
+  }, 0);
+
+  const tva = ht * TVA_RATE;
+  const ttc = ht + tva;
+
+  return { ht, tva, ttc };
+}, [form.items]);
+  
   return (
     <div className="space-y-4 w-full">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -210,7 +237,7 @@ const matriculeDisabled = matType === "NORMAL";
             label= "Site *"
             value={form.PSHFCY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "PSHFCY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "PSHFCY", value: e.target.value }))
             }
             disabled
          className="
@@ -229,7 +256,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Type devis *"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -241,7 +268,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="No devis"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -253,7 +280,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Référence"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -279,7 +306,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Client *"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -291,7 +318,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Nom client"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -303,7 +330,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Devise"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -321,7 +348,7 @@ const matriculeDisabled = matType === "NORMAL";
           
             type="number"
             /** onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             */
             
@@ -342,7 +369,7 @@ const matriculeDisabled = matType === "NORMAL";
             label="Référence Sinistre"
             value={form.CPY}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
@@ -383,7 +410,7 @@ const matriculeDisabled = matType === "NORMAL";
       placeholder={matriculeDisabled ? "Généré automatiquement" : "Saisir matricule"}
       onChange={(e) =>
         dispatch(
-          purchaseRequestActions.setField({
+          devisRequestActions.setField({
             key: "YMATRICULE",
             value: e.target.value,
           })
@@ -406,7 +433,7 @@ const matriculeDisabled = matType === "NORMAL";
             <Badge tone="green">{totalLines} ligne(s)</Badge>
             <Button
               variant="secondary"
-              onClick={() => dispatch(purchaseRequestActions.addItem())}
+              onClick={() => dispatch(devisRequestActions.addItem())}
               type="button"
             >
               + Ajouter une ligne
@@ -415,180 +442,230 @@ const matriculeDisabled = matType === "NORMAL";
           }
         />
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-surface2 text-xs uppercase tracking-wide text-muted">
-                <tr className="mb-2 text-lg font-semibold text-slate-700">
-                  <th className="px-3 py-2 ">Code article*</th>
-                  <th className="px-3 py-2">Désignation</th>
-                  <th className="px-3 py-2">Site de réception</th>
-                  <th className="px-3 py-2">Unité d'achat</th>
-                  <th className="px-5 py-2">Qté *</th>
-                  <th className="px-3 py-2">Date souhaitée</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/70">
-                {form.items.map((it) => (
-                  <tr key={it.id} className="hover:bg-surface2">
-<td className="px-3 py-2">
-  <div className="relative">
-    <Input
-      value={it.ITMREF}
-      onChange={(e) =>
-        dispatch(
-          purchaseRequestActions.updateItem({
-            id: it.id,
-            key: "ITMREF",
-            value: e.target.value,
-          })
-        )
-      }
-      className="h-10 w-full rounded-[14px] border border-border bg-white px-4 pr-11 text-[14px] outline-none transition placeholder:text-muted2 focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
-      placeholder="Ex: ART-001"
-    />
+      <div className="overflow-x-auto">
+  <table className="w-full min-w-[1200px] text-left text-sm">
+    <thead className="bg-surface2 text-xs uppercase tracking-wide text-muted">
+      <tr className="text-[12px] font-semibold text-slate-700">
+        <th className="px-3 py-2">Article</th>
+        <th className="px-3 py-2">Désignation</th>
+        <th className="px-3 py-2">UV</th>
+        <th className="px-3 py-2 text-right">Quantité</th>
+        <th className="px-3 py-2 text-right">Prix brut</th>
+        <th className="px-3 py-2 text-right">Remise %</th>
+        <th className="px-3 py-2 text-right">Prix net</th>
+        <th className="px-3 py-2 text-right">Montant</th>
 
-   
-    <button
-      type="button"
-      onClick={() => openArticleModal(it.id)}
-      className="absolute right-2 top-1/2 -translate-y-1/2 grid h-8 w-8 place-items-center rounded-xl border border-border bg-white text-muted2 hover:bg-gray-50"
-      title="Choisir un article"
-    >
-      {/* loupe */}
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M16.5 16.5 21 21"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    </button>
-  </div>
+        <th className="px-3 py-2 text-right"></th>
+      </tr>
+    </thead>
+
+    <tbody className="divide-y divide-border/70">
+      {form.items.map((it) => (
+        <tr key={it.id} className="hover:bg-surface2">
+          {/* Article */}
+          <td className="px-3 py-2 w-[220px]">
+            <div className="relative">
+              <Input
+                value={it.ITMREF}
+                onChange={(e) =>
+                  dispatch(
+                    devisRequestActions.updateItem({
+                      id: it.id,
+                      key: "ITMREF",
+                      value: e.target.value,
+                    })
+                  )
+                }
+                className="h-10 w-full rounded-[14px] border border-border bg-white px-4 pr-11 text-[14px] outline-none transition placeholder:text-muted2 focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+                placeholder="Ex: ART-001"
+              />
+
+              <button
+                type="button"
+                onClick={() => openArticleModal(it.id)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 grid h-8 w-8 place-items-center rounded-xl border border-border bg-white text-muted2 hover:bg-gray-50"
+                title="Choisir un article"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M16.5 16.5 21 21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </td>
+
+          {/* Désignation */}
+          <td className="px-3 py-2 w-[320px]">
+            <Input
+              value={it.ITMDES}
+              disabled
+              className="h-10 w-full rounded-[14px] border border-gray-300 bg-gray-100 px-4 text-[14px] text-gray-500 outline-none"
+              placeholder="Désignation"
+            />
+          </td>
+
+          {/* UV */}
+          <td className="px-3 py-2 w-[120px]">
+            <Select
+              value={it.PUU}
+              onChange={(e) =>
+                dispatch(
+                  devisRequestActions.updateItem({
+                    id: it.id,
+                    key: "PUU",
+                    value: e.target.value,
+                  })
+                )
+              }
+              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+            >
+              <option value="UN">UN</option>
+              <option value="PCS">PCS</option>
+              <option value="KG">KG</option>
+              <option value="L">L</option>
+            </Select>
+          </td>
+
+          {/* Quantité */}
+          <td className="px-3 py-2 w-[140px] text-right">
+            <Input
+              type="number"
+              min={1}
+              value={it.QTYPUU}
+              onChange={(e) =>
+                dispatch(
+                  devisRequestActions.updateItem({
+                    id: it.id,
+                    key: "QTYPUU",
+                    value: Number(e.target.value),
+                  })
+                )
+              }
+              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] text-right tabular-nums outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+            />
+          </td>
+
+          {/* Prix brut */}
+          <td className="px-3 py-2 w-[160px] text-right">
+            <Input
+              type="number"
+              min={0}
+              step="0.01"
+              value={it.PBRUT}
+              onChange={(e) =>
+                dispatch(
+                  devisRequestActions.updateItem({
+                    id: it.id,
+                    key: "PBRUT",
+                    value: Number(e.target.value),
+                  })
+                )
+              }
+              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] text-right tabular-nums outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+            />
+          </td>
+
+          {/* Remise */}
+          <td className="px-3 py-2 w-[140px] text-right">
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              step="0.01"
+              value={it.REMISE}
+              onChange={(e) =>
+                dispatch(
+                  devisRequestActions.updateItem({
+                    id: it.id,
+                    key: "REMISE",
+                    value: Number(e.target.value),
+                  })
+                )
+              }
+              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] text-right tabular-nums outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+            />
+          </td>
+
+          {/* Prix net */}
+          <td className="px-3 py-2 w-[170px] text-right">
+            <Input
+              value={Number(it.PNET || 0).toFixed(2)}
+              disabled
+              className="h-10 w-full rounded-[14px] border border-gray-300 bg-gray-100 px-4 text-[14px] text-right tabular-nums text-gray-700 outline-none"
+            />
+          </td>
+             {/* Montant */}
+<td className="px-3 py-2 w-[170px] text-right">
+  <Input
+    value={Number((it.QTYPUU || 0) * (it.PNET || 0)).toFixed(2)}
+    disabled
+    className="h-10 w-full rounded-[14px] border border-gray-300 bg-gray-100 px-4 text-[14px] text-right tabular-nums text-gray-700 outline-none"
+  />
 </td>
-<td className="px-3 py-2"> 
-<Input value={it.ITMDES} onChange={(e) => dispatch( purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } 
-className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
-            text-gray-500
-            cursor-not-allowed
-            border-gray-300 px-4 text-[14px] outline-none transition 
-            placeholder:text-muted2 focus:border-brand focus:ring-4 
-            disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed"
-             placeholder="Désignation"          
-             disabled
-         /> </td>
 
-                    <td className="px-3 py-2">
-                      <Input
-                        value={it.PSHFCY}
-                        onChange={(e) =>
-                          dispatch(
-                            purchaseRequestActions.updateItem({
-                              id: it.id,
-                              key: "PSHFCY",
-                              value: e.target.value,
-                            })
-                          )
-                        }
- className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
-            text-gray-500
-            cursor-not-allowed
-            border-gray-300 px-4 text-[14px] outline-none transition 
-            placeholder:text-muted2 focus:border-brand focus:ring-4
-            disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed "           
-            disabled
-   
-                        placeholder="Site"
-                           
-                      />
-                    </td>
-                    <td className="px-3 py-2">
-                      <Select
-                        value={it.PUU}
-                        onChange={(e) =>
-                          dispatch(
-                            purchaseRequestActions.updateItem({
-                              id: it.id,
-                              key: "PUU",
-                              value: e.target.value,
-                            })
-                          )
-                        }
-                        className="h-10 rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
-                      >
-                        <option value="UN">UN</option>
-                        <option value="PCS">PCS</option>
-                        <option value="KG">KG</option>
-                        <option value="L">L</option>
-                      </Select>
-                    </td>
-                    <td className="px-2 py-2">
-                      <Input
-                        type="number"
-                        min={1}
-                        value={it.QTYPUU}
-                        onChange={(e) =>
-                          dispatch(
-                            purchaseRequestActions.updateItem({
-                              id: it.id,
-                              key: "QTYPUU",
-                              value: Number(e.target.value),
-                            })
-                          )
-                        }
-                        className="h-12 rounded-[14px] !w-24 border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
-                      />
-                    </td>
+          {/* Delete */}
+          <td className="px-3 py-2 text-right w-[64px]">
+            <Button
+              variant="ghost"
+              type="button"
+              onClick={() => dispatch(devisRequestActions.removeItem(it.id))}
+              title="Supprimer"
+              className="h-10 w-11 text-3xl rounded-xl"
+            >
+              🗑
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{/* VALORISATION (comme image 3) */}
+<div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-12">
+  {/* (optionnel) espace à gauche pour ressembler à l'image 3 */}
+  <div className="md:col-span-7" />
 
-                    <td className="px-1 py-2">
-                    <Input
-            
-            type="date"
-            value={form.neededDate}
-            onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "neededDate", value: e.target.value }))
-            }
-          />    
-                    </td>
+  <div className="md:col-span-5">
+    <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+      <div className="text-center text-[17px] font-bold text-brand">Valorisation</div>
 
+      <div className="mt-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="text-[13px] text-muted2">Hors taxe</div>
+          <div className="tabular-nums text-[12px] font-semibold">{money(totals.ht)}</div>
+        </div>
 
-                    <td className="px-3 py-2 text-right">
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        onClick={() => dispatch(purchaseRequestActions.removeItem(it.id))}
-                        title="Supprimer"
-                        className="h-10 w-11 text-3xl rounded-xl"
-                        
-                      >
-                        🗑
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="flex items-center justify-between">
+          <div className="text-[13px] text-muted2">TVA ({Math.round(TVA_RATE * 100)}%)</div>
+          <div className="tabular-nums text-[12px] font-semibold">{money(totals.tva)}</div>
+        </div>
+
+        <div className="h-px bg-border/70" />
+
+        <div className="flex items-center justify-between">
+          <div className="text-[14px] font-semibold">TTC</div>
+          <div className="tabular-nums text-[16px] font-extrabold">{money(totals.ttc)}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
           <div className="mt-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-end">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => dispatch(purchaseRequestActions.reset())}
-            >
-              Réinitialiser
-            </Button>
+   <Button variant="secondary" type="button" onClick={() => dispatch(devisRequestActions.reset())}>
+  Réinitialiser
+</Button>
+
             <Button type="button"  onClick={onSubmit} disabled={isLoading}>
               {isLoading ? "Envoi..." : "Envoyer"}
             </Button>
