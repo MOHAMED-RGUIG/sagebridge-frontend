@@ -18,8 +18,8 @@ const NAV: Array<{ key: NavKey; label: string }> = [
   { key: "purchase", label: "Demande d'achat" },
   { key: "devis", label: "Devis" },
   { key: "stock", label: "Stock disponible" },
-
 ];
+
  {/**{ key: "option", label: "Paramétres" }, */} 
 // garde ton ICONS tel quel (je ne touche pas)
 const ICONS: Record<NavKey, React.ReactNode> = {
@@ -90,7 +90,7 @@ function NavItem({
         "focus:outline-none focus:ring-2 focus:ring-violet-500/30",
         active
           ? "bg-gradient-to-r from-[#4318FF] to-[#6D28D9] text-white shadow-lg shadow-violet-500/25"
-          : "text-white/80 hover:bg-white/5 hover:text-white"
+          : "text-white hover:bg-white/5 hover:text-white"
       )}
     >
       <span
@@ -101,7 +101,7 @@ function NavItem({
       >
         {icon}
       </span>
-      <span className={cn("text-[14px] font-semibold", active ? "text-white" : "text-white/85")}>
+      <span className={cn("text-[14px] font-semibold", active ? "text-white" : "text-white")}>
         {label}
       </span>
     </button>
@@ -129,20 +129,18 @@ export default function Sidebar({
         "md:sticky md:top-0 md:h-screen",
         "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl",
         mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full ",
-        "max-md:transition-transform"
-        
-      )}
-    >
+        "max-md:transition-transform" )}>
+          
       <div className="flex h-full flex-col scale-[0.92]">
         {/* HEADER (logos/titre) */}
         <div className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-3">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
-              <span className="text-[12px] font-black">SB</span>
+              <span className="text-[16px] font-black border rounded-[7px] p-1 bg-white !text-black">SB</span>
             </div>
             <div>
-              <div className="text-[18px] font-extrabold tracking-tight">SageBridge</div>
-              <div className="text-[12px] text-white/55">Achats • Sinistres • Stock</div>
+              <div className="text-[20px] font-extrabold tracking-tight ">SageBridge</div>
+              {/*<div className="text-[12px] text-white/55">Achats • Sinistres • Stock</div>*/}
             </div>
           </div>
 
@@ -157,8 +155,8 @@ export default function Sidebar({
         </div>
 
         {/* NAV */}
-        <div className="px-4 mt-6">
-          <div className="px-2 mt-6 text-[12px] font-semibold tracking-wide text-white/40">
+        <div className="px-4 pt-6 mt-6">
+          <div className="px-2 pt-6 mt-6 text-[12px] font-semibold tracking-wide text-white/50">
             MAIN MENU
           </div>
 
@@ -181,11 +179,11 @@ export default function Sidebar({
 
           <button
             type="button"
-            className="w-full rounded-2xl px-4 py-3 text-left text-white/70 hover:bg-white/5 hover:text-white transition"
+            className="w-full rounded-2xl px-4 py-3 text-left text-white hover:bg-white/5 hover:text-white transition"
             onClick={() => onNavigate("option")}
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/5">⚙️</span>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white">⚙️</span>
               <span className="text-[14px] font-semibold">Settings</span>
             </div>
           </button>
@@ -196,8 +194,8 @@ export default function Sidebar({
             onClick={() => alert("Help (placeholder)")}
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/5"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg></span>
-              <span className="text-[14px] font-semibold">Déconnexion</span>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/1"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg></span>
+              <span className="text-[14px] font-semibold text-white">Déconnexion</span>
             </div>
 
           </button>

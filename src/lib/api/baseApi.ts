@@ -1,5 +1,7 @@
+// baseApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ENDPOINTS } from "./endpoints";
+import type { DevisCreatePayload } from "@/features/devis/types";
 
 export type ApiError = {
   status?: number;
@@ -11,13 +13,10 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000",
     prepareHeaders: (headers) => {
-      // Placeholder Auth: à compléter plus tard (JWT / cookie session)
-      // const token = ...
-      // if (token) headers.set("authorization", `Bearer ${token}`);
       return headers;
     },
   }),
-  tagTypes: ["PurchaseRequests", "Claims", "Stock"],
+  tagTypes: ["PurchaseRequests", "Claims", "Stock", "Devis"], // ✅
   endpoints: (builder) => ({
     createPurchaseRequest: builder.mutation<{ id: string }, any>({
       query: (body) => ({
@@ -26,6 +25,16 @@ export const baseApi = createApi({
         body,
       }),
       invalidatesTags: ["PurchaseRequests"],
+    }),
+
+    // ✅ DEVIS
+    createDevisRequest: builder.mutation<{ id: string }, DevisCreatePayload>({
+      query: (body) => ({
+        url: ENDPOINTS.devis.create, // ⚠️ assure-toi d’avoir ENDPOINTS.devis.create
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Devis"],
     }),
 
     createClaim: builder.mutation<{ id: string }, any>({
@@ -50,6 +59,7 @@ export const baseApi = createApi({
 
 export const {
   useCreatePurchaseRequestMutation,
+  useCreateDevisRequestMutation, // ✅
   useCreateClaimMutation,
   useGetStockQuery,
 } = baseApi;

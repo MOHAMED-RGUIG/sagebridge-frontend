@@ -6,13 +6,13 @@ import Topbar from "./Topbar";
 
 export type RouteKey = NavKey;
 const ROUTE_TITLES: Record<RouteKey, string> = {
-  claims: "Dossiers sinistre",
-  claimsView: "Nouveau sinistre",
-  purchase: "Demandes d’achat",
-  purchaseRequestView: "Formulaire demandes d’achats",
+  claims: "Dossier sinistre",
+  claimsView: "Nouveau dossier sinistre",
+  purchase: "Demande d'achat",
+  purchaseRequestView: "Nouvelle Demande d’achat",
   devis :"Devis",
   devisView :"Devis",
-  stock: "Stock Disponible",
+  stock: "Stock",
   option: "Paramètres",
 };
 export default function AppShell({
@@ -47,32 +47,30 @@ export default function AppShell({
   );
 
   return (
-    <div className="min-h-screen  ">
-      {overlay}
-      <div className="flex">
+  <div className="min-h-screen  ">   
+    {overlay}
+    <div className="flex">
         <Sidebar
           active={active}
           onNavigate={(k) => {
             onNavigate(k);
             setMobileOpen(false);
           }}
-       
           mobileOpen={mobileOpen}
           onClose={() => setMobileOpen(false)}
         />
-<div className="flex-1 min-w-0 overflow-hidden">
-  <div className="origin-top-left scale-[0.75] w-[calc(100%/0.75)]">
-    <Topbar
-      onOpenSidebar={() => setMobileOpen(true)}
-      title={ROUTE_TITLES[active] ?? "Dashboard"}
-    />
-
-    <main className="w-full px-4">
-      {children}
-    </main>
-  </div>
-</div>
+      <div className="flex-1 min-w-0 overflow-hidden">
+      <div className="origin-top-left scale-[0.75] w-[calc(100%/0.75)]">
+          <Topbar
+            onOpenSidebar={() => setMobileOpen(true)}
+            title={ROUTE_TITLES[active] ?? "Dashboard"}
+          />
+          <main className="w-full px-4">
+            {children}
+          </main>
+      </div>
       </div>
     </div>
+  </div>
   );
 }
