@@ -12,7 +12,7 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   purchaseRequestView: "Formulaire demandes d’achats",
   devis :"Devis",
   devisView :"Devis",
-  stock: "Stock",
+  stock: "Stock Disponible",
   option: "Paramètres",
 };
 export default function AppShell({
