@@ -13,7 +13,7 @@ import Badge from "@/components/ui/Badge";
 type MatriculeType = "NORMAL" | "AUTRE";
 export default function DevisView() {
   const dispatch = useAppDispatch();
- const form = useAppSelector((s) => s.devis.form);
+  const form = useAppSelector((s) => s.devis.form);
 
   const [createDevisRequest, { isLoading }] = useCreateDevisRequestMutation();
   const [toast, setToast] = useState<string | null>(null);
@@ -232,7 +232,21 @@ const totals = useMemo(() => {
           subtitle="Informations concernant le devis"
         /> 
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-8">
-       
+        <Input
+            label="Indicateur *"
+            value='E'
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+            }  
+            disabled
+         className="
+                      w-full rounded-4xl border px-3 py-2
+                      disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed
+                    "
+          />
         <Select
             label= "Site *"
             value={form.PSHFCY}
@@ -254,15 +268,20 @@ const totals = useMemo(() => {
           </Select>
         <Input
             label="Type devis *"
-            value={form.CPY}
+            value='SQN'
             onChange={(e) =>
               dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
             }
             
             
+            disabled
             className="
-                    w-full rounded-4xl border px-3 py-2  
-                  "
+                         w-full rounded-4xl border px-3 py-2
+                         disabled:bg-gray-100
+                         disabled:text-gray-500
+                         disabled:border-gray-300
+                         disabled:cursor-not-allowed
+                       "
           />
         <Input
             label="No devis"
@@ -276,33 +295,7 @@ const totals = useMemo(() => {
                     w-full rounded-4xl border px-3 py-2 
                   "
           />
-        <Input
-            label="Référence"
-            value={form.CPY}
-            onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
-            }
-            
-            
-            className="
-                    w-full rounded-4xl border px-3 py-2 
-                  "
-          />
-   
           <Input
-              label="Date *"
-              type="date"
-              value={form.PRQDAT}
-              disabled
-              className="
-                      w-full rounded-4xl border px-3 py-2
-                      disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed
-                    "/>
-
-<Input
             label="Client *"
             value={form.CPY}
             onChange={(e) =>
@@ -326,8 +319,20 @@ const totals = useMemo(() => {
                     w-full rounded-4xl border px-3 py-2 
                   "
           />
-                  <Input
-            label="Devise"
+              <Input
+              label="Date *"
+              type="date"
+              value={form.PRQDAT}
+              disabled
+              className="
+                      w-full rounded-4xl border px-3 py-2
+                      disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed
+                    "/>
+        <Input
+            label="Référence"
             value={form.CPY}
             onChange={(e) =>
               dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
@@ -337,6 +342,43 @@ const totals = useMemo(() => {
             className="
                     w-full rounded-4xl border px-3 py-2 
                   "
+          />
+           <Select
+            label= "Site d'expedition*"
+            value={form.PSHFCY}
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "PSHFCY", value: e.target.value }))
+            }
+            disabled
+         className="
+                      w-full rounded-4xl border px-3 py-2
+                      disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed
+                    "
+          >
+            <option value="SIG">SIG</option>
+            <option value="CAS">CAS</option>
+            <option value="RAB">RAB</option>
+          </Select>
+      
+                  <Input
+            label="Devise"
+            value='MAD'
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+            }
+            
+            
+            disabled
+            className="
+                         w-full rounded-4xl border px-3 py-2
+                         disabled:bg-gray-100
+                         disabled:text-gray-500
+                         disabled:border-gray-300
+                         disabled:cursor-not-allowed
+                       "
           />
 
 
@@ -356,28 +398,8 @@ const totals = useMemo(() => {
                     w-full rounded-4xl border px-3 py-2 
                   "
           />
-               <Input
-              label="Date prevu du Repara*"
-              type="date"
-              value={form.PRQDAT}
-          
-              className="
-                      w-full rounded-4xl border px-3 py-2
-                      
-                    "/>
-        <Input
-            label="Référence Sinistre"
-            value={form.CPY}
-            onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
-            }
-            
-            
-            className="
-                    w-full rounded-4xl border px-3 py-2 
-                  "
-          />
-            <div className="w-full space-y-3">
+
+<div className="w-full space-y-3">
   {/* SELECT TYPE */}
   <div className="w-full">
 
@@ -419,6 +441,28 @@ const totals = useMemo(() => {
     />
   </div>
 </div>
+               <Input
+              label="Date prevu du Repara*"
+              type="date"
+              value={form.PRQDAT}
+          
+              className="
+                      w-full rounded-4xl border px-3 py-2
+                      
+                    "/>
+        <Input
+            label="Référence Sinistre"
+            value={form.CPY}
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+            }
+            
+            
+            className="
+                    w-full rounded-4xl border px-3 py-2 
+                  "
+          />
+ 
         </CardContent>
         
       </Card>
@@ -446,6 +490,7 @@ const totals = useMemo(() => {
   <table className="w-full min-w-[1200px] text-left text-sm">
     <thead className="bg-surface2 text-xs uppercase tracking-wide text-muted">
       <tr className="text-[12px] font-semibold text-slate-700">
+      <th className="px-3 py-2">Indicateur</th>
         <th className="px-3 py-2">Article</th>
         <th className="px-3 py-2">Désignation</th>
         <th className="px-3 py-2">UV</th>
@@ -463,6 +508,26 @@ const totals = useMemo(() => {
       {form.items.map((it) => (
         <tr key={it.id} className="hover:bg-surface2">
           {/* Article */}
+          <td className="px-3 py-2 w-[220px]">
+            <div className="relative">
+          <Input
+            
+            value='L'
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+            }  
+            disabled
+         className="
+                      w-full rounded-4xl border px-3 py-2
+                      disabled:bg-gray-100
+                      disabled:text-gray-500
+                      disabled:border-gray-300
+                      disabled:cursor-not-allowed
+                    "
+          />
+    </div>
+          </td>
+
           <td className="px-3 py-2 w-[220px]">
             <div className="relative">
               <Input
@@ -526,7 +591,13 @@ const totals = useMemo(() => {
                   })
                 )
               }
-              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+              disabled
+              
+              className="h-10 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]  w-full rounded-4xl border px-3 py-2
+              disabled:bg-gray-100
+              disabled:text-gray-500
+              disabled:border-gray-300
+              disabled:cursor-not-allowed"
             >
               <option value="UN">UN</option>
               <option value="PCS">PCS</option>
