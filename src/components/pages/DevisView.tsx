@@ -5,7 +5,7 @@ import { useCreateDevisRequestMutation } from "@/lib/api/baseApi";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { devisRequestActions } from "@/features/devis/devisSlice";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { useDispatch } from "react-redux";
+
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
@@ -83,10 +83,17 @@ const openArticleModal = (lineId: string) => {
 
   const totalLines = form.items.length;
   const isValid = useMemo(() => {
-    if (!form.REQUSR.trim()) return false;
+    
+    if (!form.INDT.trim()) return false;
     if (!form.PSHFCY.trim()) return false;
-    if (!form.YTYPE.trim()) return false;
-    if (!form.YCMP.trim()) return false;
+    if (!form.TYPDV.trim()) return false;
+    if (!form.NDV.trim()) return false;
+    if (!form.NCLT.trim()) return false;
+    if (!form.CLT.trim()) return false;
+    if (!form.REF.trim()) return false;
+    if (!form.DEV.trim()) return false;
+    if (!form.REFS.trim()) return false;
+
     if (form.items.some((it) => !it.ITMREF.trim() || it.QTYPUU <= 0)) return false;
     return true;
   }, [form]);
@@ -120,19 +127,29 @@ const openArticleModal = (lineId: string) => {
 
     try {
       // Payload prêt backend
-      const payload = {
-        REQUSR: form.REQUSR,
+      const payload = {        
+        INDT:form.INDT,
         PSHFCY: form.PSHFCY,
-        YTYPE: form.YTYPE,
-        YCMP: form.YCMP,
-        CPY: form.CPY,
+        NDV: form.NDV,
+        NCLT: form.NCLT,
+        CLT: form.CLT,
         PRQDAT: form.PRQDAT || null,
+        REF: form.REF,
+        DEV: form.DEV,
+        KM: form.KM,
         YMATRICULE: form.YMATRICULE,
+        neededDate: form.neededDate || null,
+        REFS: form.REFS,
+        TYPDV: form.TYPDV,
+
+        
+        
      items: form.items.map((it) => ({
+  INDTL: it.INDTL,
   ITMREF: it.ITMREF,
   ITMDES: it.ITMDES,
   QTYPUU: Number(it.QTYPUU),
-  neededDate: form.neededDate || null,
+  
   PUU: it.PUU,
 
   PBRUT: Number(it.PBRUT || 0),
@@ -234,12 +251,12 @@ const totals = useMemo(() => {
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-8">
         <Input
             label="Indicateur *"
-            value='E'
+            value={form.INDT}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "INDT", value: e.target.value }))
             }  
             disabled
-         className="
+            className="
                       w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
@@ -254,7 +271,7 @@ const totals = useMemo(() => {
               dispatch(devisRequestActions.setField({ key: "PSHFCY", value: e.target.value }))
             }
             disabled
-         className="
+            className="
                       w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
@@ -268,9 +285,9 @@ const totals = useMemo(() => {
           </Select>
         <Input
             label="Type devis *"
-            value='SQN'
+            value={form.TYPDV}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "TYPDV", value: e.target.value }))
             }
             
             
@@ -285,9 +302,9 @@ const totals = useMemo(() => {
           />
         <Input
             label="No devis"
-            value={form.CPY}
+            value={form.NDV}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "NDV", value: e.target.value }))
             }
             
             
@@ -297,9 +314,9 @@ const totals = useMemo(() => {
           />
           <Input
             label="Client *"
-            value={form.CPY}
+            value={form.NCLT}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "NCLT", value: e.target.value }))
             }
             
             
@@ -309,9 +326,9 @@ const totals = useMemo(() => {
           />
                   <Input
             label="Nom client"
-            value={form.CPY}
+            value={form.CLT}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "CLT", value: e.target.value }))
             }
             
             
@@ -333,9 +350,9 @@ const totals = useMemo(() => {
                     "/>
         <Input
             label="Référence"
-            value={form.CPY}
+            value={form.REF}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "REF", value: e.target.value }))
             }
             
             
@@ -365,9 +382,9 @@ const totals = useMemo(() => {
       
                   <Input
             label="Devise"
-            value='MAD'
+            value={form.DEV}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "DEV", value: e.target.value }))
             }
             
             
@@ -381,13 +398,14 @@ const totals = useMemo(() => {
                        "
           />
 
-
-  
-
-
 <Input
             label="Kilométrage"
-          
+            
+            
+            value={form.KM}
+            onChange={(e) =>
+              dispatch(devisRequestActions.setField({ key: "KM", value: e.target.value }))
+            }
             type="number"
             /** onChange={(e) =>
               dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
@@ -444,7 +462,7 @@ const totals = useMemo(() => {
                <Input
               label="Date prevu du Repara*"
               type="date"
-              value={form.PRQDAT}
+              value={form.neededDate}
           
               className="
                       w-full rounded-4xl border px-3 py-2
@@ -452,9 +470,9 @@ const totals = useMemo(() => {
                     "/>
         <Input
             label="Référence Sinistre"
-            value={form.CPY}
+            value={form.REFS}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(devisRequestActions.setField({ key: "REFS", value: e.target.value }))
             }
             
             
@@ -512,9 +530,15 @@ const totals = useMemo(() => {
             <div className="relative">
           <Input
             
-            value='L'
+            value={it.INDTL}
             onChange={(e) =>
-              dispatch(devisRequestActions.setField({ key: "CPY", value: e.target.value }))
+              dispatch(
+                devisRequestActions.updateItem({
+                  id: it.id,
+                  key: "INDTL",
+                  value: e.target.value,
+                })
+              )
             }  
             disabled
          className="

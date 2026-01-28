@@ -11,7 +11,7 @@ const computeNet = (brut: number, remise: number) => {
 
 const newLine = (): DevisLine => ({
   id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-
+  INDTL: "L",
   ITMREF: "",
   ITMDES: "",
   PSHFCY: "",
@@ -26,16 +26,25 @@ const newLine = (): DevisLine => ({
 
 const initialState: { form: DevisForm } = {
   form: {
-    REQUSR: "",
+    
+    INDT : 'E',
     PSHFCY: "SIG",
-    YTYPE: "",
-    YCMP: "",
-
-    CPY: "",
-    PRQDAT: "",
-    neededDate: "",
-
+    TYPDV:'SQN',
+    NDV:"",
+    NCLT:"",
+    CLT:"",
+    PRQDAT: '' ,
+    REF: '' ,
+    DEV: 'MAD',
+    KM:'',
     YMATRICULE: "",
+    neededDate: "",
+    REFS: "",
+
+
+    
+
+    
 
     items: [newLine()],
   },

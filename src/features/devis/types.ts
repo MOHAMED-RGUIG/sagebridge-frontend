@@ -3,8 +3,9 @@
 export type MatriculeType = "NORMAL" | "AUTRE";
 
 export type DevisLine = {
+  // Details 
   id: string;
-
+  INDTL:string;
   ITMREF: string;
   ITMDES: string;
 
@@ -24,35 +25,53 @@ export type DevisLine = {
 
 export type DevisForm = {
   // En-tête (repris de ton code)
-  REQUSR: string;
+  INDT : string;
   PSHFCY: string;
-  YTYPE: string;
-  YCMP: string;
-
-  CPY: string;
+  TYPDV:string;
+  NDV:string;
+  NCLT:string;
+  CLT:string;
   PRQDAT: string;
-  neededDate: string;
-
+  REF: string;
+  DEV: string;
+  KM: string;
   YMATRICULE: string;
+  neededDate: string;
+  REFS: string;
+
+  
+ 
+
+  
 
   items: DevisLine[];
 };
 
 export type DevisCreatePayload = {
-  REQUSR: string;
+  
+  INDT : string;
   PSHFCY: string;
-  YTYPE: string;
-  YCMP: string;
-
-  CPY: string;
+  TYPDV:string;
+  NDV:string;
+  NCLT:string;
+  CLT:string;
   PRQDAT: string | null;
+  REF: string;
+  DEV: string;
+  KM: string;
   YMATRICULE: string;
+  neededDate: string | null;
+  REFS: string;
+
+  
+  
 
   items: Array<{
+    INDTL : string;
     ITMREF: string;
     ITMDES: string;
     QTYPUU: number;
-    neededDate: string | null;
+    
     PUU: string;
 
     PBRUT: number;
