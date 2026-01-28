@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Badge from "@/components/ui/Badge";
-
+import Button from "../ui/Button";
 
 export default function PurchaseList() {
   const dispatch = useAppDispatch();
@@ -63,230 +63,290 @@ export default function PurchaseList() {
   
   return (
     <div className="space-y-4">
-      <Card>
-       {/* */} <CardHeader
-          title=""
-          subtitle=""
-          right={
-            <div className="flex items-center gap-2">
-          <a
-  href="#purchaseRequestView"
-  onClick={(e) => {
-    e.preventDefault();
-    window.location.hash = "purchaseRequestView";
-    // au cas où (selon navigateur/Next), on force l’event:
-    window.dispatchEvent(new Event("hashchange"));
-  }}
-  className="
-    inline-flex items-center gap-2
-    rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600
-    px-5 py-2.5
-    text-sm font-semibold text-white
-    shadow-md shadow-indigo-500/30
-    transition-all duration-200
-    hover:scale-[1.03] hover:shadow-lg
-    active:scale-[0.97]
-  "
->
-  + Ajouter
-</a>
+    <Card>
+     {/* <CardHeader
+        title=""
+        subtitle=""
+        right={
+          <div className="flex items-center gap-2">
+          </div>
+        }
+      /> */}       
+      <CardContent>
+        {/*start search and filter section  */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 
-              <Badge tone={isError ? "red" : isFetching ? "amber" : "green"}>
-                {isError ? "Erreur" : isFetching ? "Chargement" : "OK"}
-              </Badge>
-              <Badge tone="slate">{rows.length} ligne(s)</Badge>
+{/* ====== LEFT SIDE (filtres) ====== */}
+<div className="grid flex-1 gap-3 md:grid-cols-4">
+
+  <Input
+    label="Recherche"
+    placeholder="Code, désignation…"
+    value={query.q}
+    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
+  />
+
+  <Select
+    label="Site"
+    value={query.site}
+    onChange={(e) => dispatch(stockActions.setQuery({ site: e.target.value }))}
+  >
+    <option value="SIG">SIG</option>
+    <option value="CAS">CAS</option>
+    <option value="RAB">RAB</option>
+  </Select>
+
+  <Select
+    label="Lignes"
+    value={pageSize}
+    onChange={(e) => setPageSize(Number(e.target.value))}
+  >
+    <option value={5}>Show 5</option>
+    <option value={10}>Show 10</option>
+    <option value={20}>Show 20</option>
+    <option value={50}>Show 50</option>
+  </Select>
+
+  <div className="flex items-end pb-2 text-lg text-muted">
+    {total} record(s)
+  </div>
+
+</div>
+
+{/* ====== RIGHT SIDE (BOUTON) ====== */}
+<div className="flex justify-end">
+  <a
+    href="#purchaseRequestView"
+    onClick={(e) => {
+      e.preventDefault();
+      window.location.hash = "purchaseRequestView";
+      window.dispatchEvent(new Event("hashchange"));
+    }}
+    className="
+      inline-flex items-center gap-2
+      rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600
+      px-6 py-3 mb-2 w-full md:w-[100px]
+      text-xl font-bold text-white
+      shadow-md shadow-indigo-500/30
+      transition-all duration-200
+      hover:scale-[1.03] hover:shadow-lg
+      active:scale-[0.97]
+    "
+  >
+    + Ajouter
+  </a>
+</div>
+
+</div>
+
+        {/*end search and filter section  */}
+          {/* CARD (style Loopple/Riva) */}
+          <div className="flex flex-wrap -mx-3 mb-5 mt-4">
+            <div className="w-full max-w-full px-3 mb-6 mx-auto">
+              <div className="relative flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-white">
+                <div className="relative flex flex-col min-w-0 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-slate-50/30">
+    
+                  {/* HEADER like Riva */}
+                  <div className="px-9 pt-3 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
+                    <h3 className="flex flex-col items-start justify-center m-2 ml-0">
+                      <span className="mr-3 !font-bold text-slate-900 !text-3xl">
+                        Stock Items
+                      </span>
+                      <span className="mt-1 font-medium text-slate-500 !text-lg">
+                        Articles disponibles (filtrés par site / recherche)
+                      </span>
+                    </h3>
+    
+            
+                        <div className="flex items-center gap-2">
+                                <Badge tone={isError ? "red" : isFetching ? "amber" : "green"}>
+                                {isError ? "Erreur" : isFetching ? "Chargement" : "OK"}
+                                </Badge>
+                                <Badge tone="slate">{rows.length} ligne(s)</Badge>   
+                          </div>
+                  
+                  </div>
+    
+                  {/* BODY */}
+                  <div className="flex-auto block py-8 pt-6 px-9">
+                    <div className="overflow-x-auto">
+                      <table className="w-full my-0 align-middle text-slate-900">
+                        <thead className="align-bottom ">
+                          <tr className="font-bold !text-xl text-slate-500">
+                            <th className="pb-3 text-start min-w-[80px]">CODE</th>
+                            <th className="pb-3 text-start min-w-[100px]">DÉSIGNATION</th>
+                            <th className="pb-3 text-end min-w-[50px]">TITLE</th>
+                            <th className="pb-3 text-end min-w-[50px]">SITE</th>
+                            <th className="pb-3 text-end min-w-[50px]">QTE DISPO</th>
+                            <th className="pb-3 pr-12 text-end min-w-[50px]">UV</th>
+                            <th className="pb-3 text-end min-w-[50px]">DETAILS</th>
+                          </tr>
+                        </thead>
+    
+                        <tbody>
+                          {pagedRows.map((r: any, idx: number) => (
+                            <tr
+                              key={r.id ?? idx}
+                              className="border-b border-dashed !text-xl last:border-b-0 hover:bg-white/60"
+                            >
+                              {/* Code */}
+                              <td className="p-3 pl-0">
+                                <span className="font-semibold text-slate-900">
+                                  {r.code ?? "—"}
+                                </span>
+                              </td>
+    
+                              {/* Désignation (titre + sous-texte) */}
+                              <td className="p-3 pl-0">
+                                <div className="flex items-center">
+                                  {/* mini “avatar” (pure style) */}
+                                  <div className="relative inline-flex shrink-0 rounded-2xl me-3 h-[46px] w-[46px] items-center justify-center bg-slate-100 text-slate-600 font-semibold">
+                                    {String(r.code ?? "S").slice(0, 1)}
+                                  </div>
+    
+                                  <div className="flex flex-col justify-start">
+                                    <div className="mb-0.5 font-semibold text-[1rem] leading-snug text-slate-900">
+                                      {r.label ?? r.designation ?? "—"}
+                                    </div>
+                                    <div className="text-s text-slate-500">
+                                      Détails de la pièce / commentaire
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+    
+                              <td className="p-3  text-end">
+                                <span className="font-semibold text-slate-700">
+                                  {r.site ?? query.site ?? "—"}
+                                </span>
+                              </td>
+                              <td className="p-3 text-end">
+                                <span className="font-semibold text-slate-700">
+                                  {r.site ?? query.site ?? "—"}
+                                </span>
+                              </td>
+                              <td className="p-3  text-end">
+                                <span className="font-semibold text-slate-700">
+                                  {r.qtyAvailable ?? r.qte ?? 0}
+                                </span>
+                              </td>
+    
+                              <td className="p-3 pr-12 text-end">
+                                <span className="font-semibold text-slate-700">
+                                  {r.uv ?? "UN"}
+                                </span>
+                              </td>
+    
+                              {/* Action -> bouton carré “details” */}
+                              <td className="p-3 pr-0 text-end">
+                                <button
+                                  type="button"
+                                  className="ml-auto inline-flex h-[28px] w-[28px] items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+                                  aria-label="Details"
+                                  title="Details"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.8"
+                                    stroke="currentColor"
+                                    className="h-4 w-4"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                  </svg>
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+    
+                          {!isFetching && total === 0 ? (
+                            <tr className="border-b border-dashed last:border-b-0">
+                              <td className="py-10 text-center text-slate-500" colSpan={6}>
+                                Aucune donnée. Branche ton backend sur GET /api/stock.
+                              </td>
+                            </tr>
+                          ) : null}
+                        </tbody>
+                      </table>
+                    </div>
+    
+                    {/* Pagination (style proche Loopple) */}
+                    <div className="mt-6 flex flex-col gap-3 border-t border-dashed border-stone-200 pt-5 md:flex-row md:items-center md:justify-between">
+                      <div className="!text-lg text-slate-500">
+                        Showing{" "}
+                        <span className="font-semibold text-slate-900">
+                          {total ? startIndex + 1 : 0}
+                        </span>{" "}
+                        to{" "}
+                        <span className="font-semibold text-slate-900">
+                          {endIndex}
+                        </span>{" "}
+                        of{" "}
+                        <span className="font-semibold text-slate-900">
+                          {total}
+                        </span>{" "}
+                        Results
+                      </div>
+    
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          type="button"
+                          onClick={() => goTo(safePage - 1)}
+                          disabled={safePage === 1}
+                          className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black bold text-slate-700 transition hover:bg-slate-200 disabled:opacity-40"
+                          aria-label="Previous"
+                        >
+                          ‹
+                        </Button>
+    
+                        <div className="flex items-center gap-1">
+                          {pageNumbers.map((n, i) => {
+                            const prev = pageNumbers[i - 1];
+                            const showDots = i > 0 && n - prev > 1;
+    
+                            return (
+                              <div key={n} className="flex items-center gap-1">
+                                {showDots ? (
+                                  <span className="px-1 text-sm text-slate-400">…</span>
+                                ) : null}
+    
+                                <Button
+                                  type="button"
+                                  onClick={() => goTo(n)}
+                                  className={
+                                    n === safePage
+                                      ? "grid h-9 w-9 place-items-center rounded-2xl bg-slate-900 text-white !text-xl shadow-sm"
+                                      : "grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black text-slate-700 transition hover:bg-slate-200"
+                                  }
+                                >
+                                  {n}
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </div>
+    
+                        <Button
+                          type="button"
+                          onClick={() => goTo(safePage + 1)}
+                          disabled={safePage === totalPages}
+                          className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black bold text-slate-700 transition hover:bg-slate-200 disabled:opacity-40"
+                          aria-label="Next"
+                        >
+                          ›
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+    
+                  {/* end body */}
+                </div>
+              </div>
             </div>
-          }
-        />
-        <CardContent>
-          <div className="grid gap-3 md:grid-cols-3">
-            <Input
-              label="Recherche"
-              placeholder="Code, désignation…"
-              value={query.q}
-              onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-            />
-            <Select
-              label="Site"
-              value={query.site}
-              onChange={(e) => dispatch(stockActions.setQuery({ site: e.target.value }))}
-            >
-              <option value="SIG">SIG</option>
-              <option value="CAS">CAS</option>
-              <option value="RAB">RAB</option>
-            </Select>
-       
           </div>
-<div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-  <div className="flex items-center gap-3">
-    {/* Show */}
-    <div className="relative">
-      <select
-        value={pageSize}
-        onChange={(e) => setPageSize(Number(e.target.value))}
-        className="
-          h-10 w-[120px] appearance-none
-          rounded-xl border border-border bg-white px-4 pr-9
-          text-sm font-medium text-text shadow-sm
-          outline-none transition
-          focus:ring-2 focus:ring-[rgba(67,24,255,0.15)]
-        "
-      >
-        <option value={5}>Show 5</option>
-        <option value={10}>Show 10</option>
-        <option value={20}>Show 20</option>
-        <option value={50}>Show 50</option>
-      </select>
-      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">▾</span>
-    </div>
-
-    {/* records input look */}
-    <div
-      className="
-        h-10 w-[260px]
-       px-4
-        text-sm text-muted 
-        flex items-center
-      "
-    >
-      {total} record(s)
-    </div>
-  </div>
-</div>
-
-
-<div className="mt-3 overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
-  <div className="overflow-x-auto">
-    <table className="w-full text-left text-sm">
-      {/* header gris comme l’image */}
-      <thead className="bg-slate-50 text-[12px] font-semibold text-slate-500">
-        <tr className="[&>th]:px-5 [&>th]:py-4">
-          <th>Code</th>
-          <th>Désignation</th>
-          <th>Site</th>
-          <th>Qte dispo</th>
-          <th>UV</th>
-          <th className="text-right">Action</th>
-        </tr>
-      </thead>
-
-      <tbody className="divide-y divide-border">
-        {pagedRows.map((r: any, idx: number) => (
-          <tr key={r.id ?? idx} className="hover:bg-slate-50/60">
-            {/* Code */}
-            <td className="px-5 py-4 font-semibold text-text">
-              {r.code ?? "—"}
-            </td>
-
-            {/* Désignation -> look “Projects” (titre + sous-texte) */}
-            <td className="px-5 py-4">
-              <div className="font-semibold text-text">
-                {r.label ?? r.designation ?? "—"}
-              </div>
-              <div className="mt-1 text-xs text-muted">
-                {/* sous-texte fictif (style seulement) */}
-                Détails de la pièce / commentaire
-              </div>
-            </td>
-
-            <td className="px-5 py-4 text-text/80">{r.site ?? query.site}</td>
-            <td className="px-5 py-4 text-text/80">{r.qtyAvailable ?? r.qte ?? 0}</td>
-            <td className="px-5 py-4 text-text/80">{r.uv ?? "UN"}</td>
-
-            {/* Action */}
-            <td className="px-5 py-4 text-right">
-              <button
-                type="button"
-                className="
-                  inline-flex h-9 w-9 items-center justify-center
-                  rounded-xl hover:bg-slate-100
-                  text-slate-500
-                "
-                aria-label="Actions"
-              >
-                ⋯
-              </button>
-            </td>
-          </tr>
-        ))}
-
-        {!isFetching && total === 0 ? (
-          <tr>
-            <td className="px-5 py-10 text-center text-muted" colSpan={6}>
-              Aucune donnée. Branche ton backend sur GET /api/stock.
-            </td>
-          </tr>
-        ) : null}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div className="flex flex-col gap-3 border-t border-border bg-white px-5 py-4 md:flex-row md:items-center md:justify-between">
-  <div className="text-xs text-muted">
-    Showing{" "}
-    <span className="font-semibold text-text">{total ? startIndex + 1 : 0}</span>
-    {" "}to{" "}
-    <span className="font-semibold text-text">{endIndex}</span>
-    {" "}of{" "}
-    <span className="font-semibold text-text">{total}</span>
-    {" "}Results
-  </div>
-
-  <div className="flex items-center justify-end gap-2">
-    <button
-      type="button"
-      onClick={() => goTo(safePage - 1)}
-      disabled={safePage === 1}
-className="grid h-9 w-9 place-items-center rounded-full bg-white text-sm text-slate-600 shadow-sm ring-1 ring-border hover:bg-slate-50 disabled:opacity-40"
-      aria-label="Previous"
-    >
-      ‹
-    </button>
-
-    {/* pages */}
-    <div className="flex items-center gap-1">
-      {pageNumbers.map((n, i) => {
-        const prev = pageNumbers[i - 1];
-        const showDots = i > 0 && n - prev > 1;
-
-        return (
-          <div key={n} className="flex items-center gap-1">
-            {showDots ? <span className="px-1 text-sm text-muted">…</span> : null}
-
-            <button
-              type="button"
-              onClick={() => goTo(n)}
-              className={
-                n === safePage
-                  ? "grid h-9 w-9 place-items-center rounded-full bg-brand text-white text-sm shadow-sm"
-                  : "grid h-9 w-9 place-items-center rounded-full bg-white text-sm text-slate-700 shadow-sm ring-1 ring-border hover:bg-slate-50"
-              }
-            >
-              {n}
-            </button>
-          </div>
-        );
-      })}
-    </div>
-
-    <button
-      type="button"
-      onClick={() => goTo(safePage + 1)}
-      disabled={safePage === totalPages}
-className="grid h-9 w-9 place-items-center rounded-full bg-white text-sm text-slate-600 shadow-sm ring-1 ring-border hover:bg-slate-50 disabled:opacity-40"
-      aria-label="Next"
-    >
-      ›
-    </button>
-  </div>
-</div>
- {/* <p className="mt-3 text-xs text-muted">
-            Astuce: pour tester sans backend, tu peux créer un petit serveur mock Express ou utiliser MSW.
-          </p> */}
-          
-        </CardContent>
-      </Card>
+      </CardContent>
+    </Card>
     </div>
   );
 }
