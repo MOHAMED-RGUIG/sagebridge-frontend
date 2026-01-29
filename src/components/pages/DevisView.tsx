@@ -33,9 +33,9 @@ export default function DevisView() {
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
   const articles = useMemo(
     () => [
-      { ITMREF: "ART-001", ITMDES: "Filtre à huile" },
-      { ITMREF: "ART-002", ITMDES: "Bougie d’allumage" },
-      { ITMREF: "ART-003", ITMDES: "Courroie" },
+      { ITMREF: "90200", ITMDES: "TOYOTA CH" },
+      { ITMREF: "MO", ITMDES: "PRESTATION MAIN" },
+      { ITMREF: "KC", ITMDES: "KIT DE COLLE" },
       { ITMREF: "ART-004", ITMDES: "Plaquettes de frein" },
     ],
     []
@@ -83,8 +83,7 @@ const openArticleModal = (lineId: string) => {
 
   const totalLines = form.items.length;
   const isValid = useMemo(() => {
-    
-    if (!form.INDT.trim()) return false;
+    {/**    if (!form.INDT.trim()) return false;
     if (!form.PSHFCY.trim()) return false;
     if (!form.TYPDV.trim()) return false;
     if (!form.NDV.trim()) return false;
@@ -93,6 +92,7 @@ const openArticleModal = (lineId: string) => {
     if (!form.REF.trim()) return false;
     if (!form.DEV.trim()) return false;
     if (!form.REFS.trim()) return false;
+ */}
 
     if (form.items.some((it) => !it.ITMREF.trim() || it.QTYPUU <= 0)) return false;
     return true;
