@@ -8,10 +8,10 @@ type State = {
 const initialState: State = {
   form: {
     YTYPE: "",
-    YCMP: "",
+    YCMPASS: "",
     REQUSR: "",
     PSHFCY: "",
-    CPY: "",
+    PSHNUM: "",
     PRQDAT: "",
     YMATRICULE: "",
 
@@ -21,12 +21,12 @@ const initialState: State = {
         ITMREF: "",
         ITMDES: "",
         QTYPUU: 1,
-        neededDate: "",
+        EXTRCPDAT: "",
         PUU: "UN",
         PSHFCY: ""
       },
     ],
-    neededDate: "",
+    EXTRCPDAT: "",
     QTYPUU: 1
   },
 };
@@ -44,7 +44,7 @@ const slice = createSlice({
         ITMREF: "",
         ITMDES: "",
         QTYPUU: 1,
-        neededDate:"",
+        EXTRCPDAT:"",
         PUU: "UN",
         PSHFCY:""
       });

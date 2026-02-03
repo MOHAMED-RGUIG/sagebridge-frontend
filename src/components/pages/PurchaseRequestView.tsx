@@ -3,6 +3,7 @@
 import { useMemo, useEffect ,useState } from "react";
 import { useCreatePurchaseRequestMutation } from "@/lib/api/baseApi";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { COMPANIES , TypeDemande } from "@/features/purchaseRequest/purchaseConstante";
 import { purchaseRequestActions } from "@/features/purchaseRequest/purchaseRequestSlice";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { useDispatch } from "react-redux";
@@ -21,12 +22,10 @@ export default function PurchaseRequestView() {
   const [mat1, setMat1] = useState("");
   const [mat2, setMat2] = useState("");
   const [mat3, setMat3] = useState("");
-
     // --- Article picker modal ---
   const [articleModalOpen, setArticleModalOpen] = useState(false);
   const [activeLineId, setActiveLineId] = useState<string | null>(null);
-
-
+ 
   const [articleQuery, setArticleQuery] = useState("");
 
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
@@ -85,7 +84,7 @@ const openArticleModal = (lineId: string) => {
     if (!form.REQUSR.trim()) return false;
     if (!form.PSHFCY.trim()) return false;
     if (!form.YTYPE.trim()) return false;
-    if (!form.YCMP.trim()) return false;
+    if (!form.YCMPASS.trim()) return false;
     if (form.items.some((it) => !it.ITMREF.trim() || it.QTYPUU <= 0)) return false;
     return true;
   }, [form]);
@@ -105,7 +104,7 @@ const openArticleModal = (lineId: string) => {
     );
     dispatch(
       purchaseRequestActions.setField({
-        key : "neededDate",
+        key : "EXTRCPDAT",
         value : datePlusOne,
       })
     );
@@ -123,15 +122,15 @@ const openArticleModal = (lineId: string) => {
         REQUSR: form.REQUSR,
         PSHFCY: form.PSHFCY,
         YTYPE: form.YTYPE,
-        YCMP: form.YCMP,
-        CPY: form.CPY,
+        YCMPASS: form.YCMPASS,
+        PSHNUM: form.PSHNUM,
         PRQDAT: form.PRQDAT || null,
         YMATRICULE: form.YMATRICULE,
         items: form.items.map((it) => ({
           ITMREF: it.ITMREF,
           ITMDES: it.ITMDES,
           QTYPUU: Number(it.QTYPUU),
-          neededDate: form.neededDate || null,
+          EXTRCPDAT: form.EXTRCPDAT || null,
           PUU: it.PUU,
         })),
       };
@@ -204,26 +203,9 @@ const matriculeDisabled = matType === "NORMAL";
           title="Voiture"
           subtitle="Informations concernant la voiture"
         /> 
-        <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           
-        <Input
-            label="Société"
-            value={'GAE'}
-            onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "CPY", value: e.target.value }))
-            }
-            
-            disabled
-            className="
-                    w-full rounded-4xl border px-3 py-2
-                    disabled:bg-gray-100
-                    disabled:text-gray-500
-                    disabled:border-gray-300
-                    disabled:cursor-not-allowed
-                    
-                  "
-          />
-          
+      
           <Select
             label= "Site *"
             value={form.PSHFCY}
@@ -259,68 +241,61 @@ const matriculeDisabled = matType === "NORMAL";
                       disabled:cursor-not-allowed
                     "
           />
+
+<Input
+            label="N demande"
+            
+            onChange={(e) =>
+              dispatch(purchaseRequestActions.setField({ key: "PSHNUM", value: e.target.value }))}
+           
+            className="
+                    w-full rounded-4xl border px-3 py-2
+                  "/>
+          
           <Input
-              label="Date d'achat"
+              label="Date demande"
               type="date"
               value={form.PRQDAT}
               disabled
-              className="
-                      w-full rounded-4xl border px-3 py-2
-                      disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed
-                    "/>
+              className="w-full rounded-4xl border px-3 py-2
+              disabled:bg-gray-100
+              disabled:text-gray-500
+              disabled:border-gray-300
+              disabled:cursor-not-allowed
+              "/>
 
+          <Select
+              label= "Type demande *"
+              value={form.YTYPE}
+              onChange={(e) =>
+                dispatch(purchaseRequestActions.setField({ key: "YTYPE", value: e.target.value }))}>
+            <option value=""> -- Choisir un type de demande --</option>
 
-
-        <Select
-            label= "Type d'achat *"
-            value={form.YTYPE}
-            onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "YTYPE", value: e.target.value }))
-            }          
-          >
-            <option value=""> Métier – Local – En masse</option>
-            <option value="">Informatique</option>
-            <option value="">Achat Métier Ponctuel</option>
-            <option value="">Technique</option>
-            <option value="">Moyens Généraux</option>
-            <option value="">Aménagement</option>
-            <option value="">Métier – Import – En Masse</option>
+          {TypeDemande.map((demande) => (
+          <option key={demande.value} value={demande.value}>
+            {demande.label}
+          </option>
+        ))}
             
           </Select>
 
-             <Select
+          <Select
             label="Compagnie"
-            value={form.YCMP}
+            value={form.YCMPASS}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "YCMP", value: e.target.value }))
-            }            >
-            <option value=""> AGE EUROPE</option>
-            <option value="">ALD AUTOMOTIVE</option>
-            <option value="">ALLIANZ</option>
-            <option value="">ARVAL MAROC</option>
-            <option value="">ATLANTA SANAD</option>
-            <option value="">AXA</option>
-            <option value="">CAISSE COMPTOIRE</option>
-            <option value="">CAISSE FLOTTE</option>
-            <option value="">CHAABI LLD</option>
-            <option value="">COPAG</option>
-            <option value="">LOCAMA</option>
-            <option value="">LOCASOM</option>
-            <option value="">MAMDA - MCMA</option>
-            <option value="">MATU</option>
-            <option value="">PETIT FORESTIER MAROC</option>
-            <option value="">RMA</option>
-            <option value="">Sanlam Maroc</option>
-            <option value="">TIMLOG</option>
-            <option value="">VerAuto</option>
-            <option value="">WAFA ASSURANCES</option>
-            <option value="">WAFA CASSE</option>
-            <option value="">WAFA LLD</option>    
+            dispatch(
+            purchaseRequestActions.setField({
+            key: "YCMPASS",
+            value: e.target.value,
+            }))}>
 
-         </Select>
+          <option value="">-- Choisir une compagnie --</option>
+          {COMPANIES.map((company) => (
+            <option key={company.value} value={company.value}>
+              {company.label}
+            </option>
+          ))}</Select>
+
 
 
          <div className="w-full space-y-3">
@@ -395,7 +370,8 @@ const matriculeDisabled = matType === "NORMAL";
                 <tr className="mb-2 text-lg font-semibold text-slate-700">
                   <th className="px-3 py-2 ">Code article*</th>
                   <th className="px-3 py-2">Désignation</th>
-                  <th className="px-3 py-2">Site de réception</th>
+                  {/*<th className="px-3 py-2">Site de réception</th> */}
+                  
                   <th className="px-3 py-2">Unité d'achat</th>
                   <th className="px-5 py-2">Qté *</th>
                   <th className="px-3 py-2">Date souhaitée</th>
@@ -446,21 +422,23 @@ const matriculeDisabled = matType === "NORMAL";
   </div>
 </td>
 <td className="px-3 py-2"> 
-<Input value={it.ITMDES} onChange={(e) => dispatch( purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } 
+
+<Input value={it.ITMDES} 
+onChange={(e) => dispatch(purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } 
 className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             text-gray-500
             cursor-not-allowed
             border-gray-300 px-4 text-[14px] outline-none transition 
             placeholder:text-muted2 focus:border-brand focus:ring-4 
             disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed"
-             placeholder="Désignation"          
-             disabled
-         /> </td>
+            disabled:text-gray-500
+            disabled:border-gray-300
+            disabled:cursor-not-allowed"
+            placeholder="Désignation"          
+            disabled/>
+            </td>
 
-                    <td className="px-3 py-2">
+                   {/* <td className="px-3 py-2">
                       <Input
                         value={it.PSHFCY}
                         onChange={(e) =>
@@ -472,21 +450,22 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                             })
                           )
                         }
- className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
-            text-gray-500
-            cursor-not-allowed
-            border-gray-300 px-4 text-[14px] outline-none transition 
-            placeholder:text-muted2 focus:border-brand focus:ring-4
-            disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-300
-                      disabled:cursor-not-allowed "           
-            disabled
-   
+                        className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
+                        text-gray-500
+                        cursor-not-allowed
+                        border-gray-300 px-4 text-[14px] outline-none transition 
+                        placeholder:text-muted2 focus:border-brand focus:ring-4
+                        disabled:bg-gray-100
+                        disabled:text-gray-500
+                        disabled:border-gray-300
+                        disabled:cursor-not-allowed "           
+                        disabled
+              
                         placeholder="Site"
                            
                       />
-                    </td>
+                    </td> */} 
+                  
                     <td className="px-3 py-2">
                       <Select
                         value={it.PUU}
@@ -526,14 +505,10 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                     </td>
 
                     <td className="px-1 py-2">
-                    <Input
-            
-            type="date"
-            value={form.neededDate}
+<Input  type="date"
+            value={form.EXTRCPDAT}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "neededDate", value: e.target.value }))
-            }
-          />    
+              dispatch(purchaseRequestActions.setField({ key: "EXTRCPDAT", value: e.target.value })) } />    
                     </td>
 
 

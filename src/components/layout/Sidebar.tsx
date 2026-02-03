@@ -1,6 +1,6 @@
-
 "use client";
 
+import React from "react";
 import { cn } from "@/lib/utils/cn";
 
 export type NavKey =
@@ -11,17 +11,22 @@ export type NavKey =
   | "devis"
   | "devisView"
   | "stock"
-  | "option";
+  | "option"
+  | "logout";
 
 const NAV: Array<{ key: NavKey; label: string }> = [
-  { key: "claims", label: "Dossier sinistre" },
-  { key: "purchase", label: "Demande d'achat" },
-  { key: "devis", label: "Devis" },
-  { key: "stock", label: "Stock disponible" },
+  { key: "claims", label: "" },
+  { key: "purchase", label: "" },
+  { key: "devis", label: "" },
+  { key: "stock", label: "" },
 ];
 
- {/**{ key: "option", label: "Paramétres" }, */} 
-// garde ton ICONS tel quel (je ne touche pas)
+const BOTTOM_ACTIONS: Array<{ key: NavKey; label: string }> = [
+  { key: "option", label: "" },
+  { key: "logout", label: "" },
+];
+
+// ✅ garde tes ICONS tel quel
 const ICONS: Record<NavKey, React.ReactNode> = {
   purchase: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -51,9 +56,6 @@ const ICONS: Record<NavKey, React.ReactNode> = {
       <path d="M9 13l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   ),
-  purchaseRequestView: <span />,
-  claimsView: <span />,
-  devisView: <span />,
   stock: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" />
@@ -62,47 +64,63 @@ const ICONS: Record<NavKey, React.ReactNode> = {
   ),
   option: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2l2 3.5 4-.5-1 4 3 2.5-3 2.5 1 4-4-.5L12 22l-2-3.5-4 .5 1-4L4 11l3-2.5-1-4 4 .5L12 2z"
-        stroke="currentColor" strokeWidth="2" strokeLinejoin="round"
+      <path
+        d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9 4a7.96 7.96 0 0 0-.6-3l2.1-1.6-2-3.4-2.5 1a8.3 8.3 0 0 0-2.6-1.5L14 1h-4l-.4 2.5a8.3 8.3 0 0 0-2.6 1.5l-2.5-1-2 3.4 2.1 1.6A7.96 7.96 0 0 0 3 12c0 1 .2 2 .6 3L1.5 16.6l2 3.4 2.5-1a8.3 8.3 0 0 0 2.6 1.5L10 23h4l.4-2.5a8.3 8.3 0 0 0 2.6-1.5l2.5 1 2-3.4-2.1-1.6c.4-1 .6-2 .6-3Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
       />
     </svg>
   ),
+  logout: (
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#00000">
+      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+    </svg>
+  ),
+  purchaseRequestView: <span />,
+  claimsView: <span />,
+  devisView: <span />,
 };
 
 function NavItem({
   active,
   icon,
-  label,
   onClick,
+  title,
 }: {
   active: boolean;
   icon: React.ReactNode;
-  label: string;
   onClick: () => void;
+  title?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      title={title}
+      aria-label={title}
       className={cn(
-        "w-full rounded-2xl px-4 py-3 text-left transition",
-        "flex items-center gap-3",
-        "focus:outline-none focus:ring-2 focus:ring-violet-500/30",
-        active
-          ? "bg-gradient-to-r from-[#4318FF] to-[#6D28D9] text-white shadow-lg shadow-violet-500/25"
-          : "text-white hover:bg-white/5 hover:text-white"
+        "group grid place-items-center",
+        "h-11 w-11 rounded-2xl",
+        "transition-all duration-200",
+        "",
+        // base
+        "border-indigo-200/80 text-slate-700",
+        // hover
+        "hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-200/30",
+        // active
+        active &&
+          "border-indigo-400 bg-indigo-50 text-indigo-700 shadow-lg shadow-indigo-200/40 ring-2 ring-indigo-200/60"
       )}
     >
       <span
         className={cn(
-          "grid h-9 w-9 place-items-center rounded-xl",
-          active ? "bg-white/15" : "bg-white/5"
+          "transition-transform duration-200",
+          "group-hover:scale-[1.06]",
+          active && "scale-[1.06]"
         )}
       >
         {icon}
-      </span>
-      <span className={cn("text-[14px] font-semibold", active ? "text-white" : "text-white")}>
-        {label}
       </span>
     </button>
   );
@@ -122,94 +140,68 @@ export default function Sidebar({
   return (
     <aside
       className={cn(
-        // ✅ Dark sidebar like image 1
-        "z-40 w-[270px] shrink-0 text-white",
-        "rounded-[24px] bg-gradient-to-b from-[#0B0F1C] via-[#0B1022] to-[#070A14]",
-        "border-r border-white/5",
-        "md:sticky md:top-0 md:h-screen",
-        "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full ",
-        "max-md:transition-transform" )}>
-          
-      <div className="flex h-full flex-col scale-[0.92]">
-        {/* HEADER (logos/titre) */}
-        <div className="flex items-center justify-between px-6 py-6">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
-              <span className="text-[16px] font-black border rounded-[7px] p-1 bg-white !text-black">SB</span>
-            </div>
-            <div>
-              <div className="text-[20px] font-extrabold tracking-tight ">SageBridge</div>
-              {/*<div className="text-[12px] text-white/55">Achats • Sinistres • Stock</div>*/}
-            </div>
+        "z-40 shrink-0",
+        // container shape like screenshot
+        "w-[65px] m-3",
+        "rounded-[28px] bg-white",
+        "border border-indigo-100",
+        "shadow-xl shadow-indigo-200/30",
+        "md:sticky md:top-0 md:h-[calc(100vh-24px)]",
+        "max-md:fixed max-md:inset-y-0 max-md:left-0",
+        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+        "max-md:transition-transform"
+      )}
+    >
+      <div className="flex h-full flex-col items-center py-5">
+        {/* TOP / LOGO */}
+        <div className="relative">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl border border-indigo-200 bg-white shadow-sm">
+            <span className="text-[14px] font-black tracking-tight text-slate-900">SB</span>
           </div>
 
+          {/* close on mobile */}
           <button
             type="button"
-            className="rounded-xl p-2 hover:bg-white/10 md:hidden"
             onClick={onClose}
             aria-label="Fermer"
+            className="md:hidden absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-xl border border-indigo-200 bg-white shadow"
           >
             ✕
           </button>
         </div>
 
-        {/* NAV */}
-        <div className="px-4 pt-6 mt-6">
-          <div className="px-2 pt-6 mt-6 text-[12px] font-semibold tracking-wide text-white/50">
-            MAIN MENU
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {NAV.map((it) => (
-              <NavItem
-                key={it.key}
-                active={active === it.key}
-                icon={ICONS[it.key]}
-                label={it.label}
-                onClick={() => onNavigate(it.key)}
-              />
-            ))}
-          </div>
+        {/* MAIN NAV */}
+        <div className="mt-8 flex flex-col items-center gap-3">
+          {NAV.map((it) => (
+            <NavItem
+              key={it.key}
+              active={active === it.key}
+              icon={ICONS[it.key]}
+              onClick={() => onNavigate(it.key)}
+              title={it.key}
+            />
+          ))}
         </div>
 
-        {/* FOOTER (Settings/Help like image 1) */}
-        <div className="mt-auto px-4 pb-6">
-          <div className="my-6 h-px bg-white/10" />
+        {/* BOTTOM ACTIONS */}
+        <div className="mt-auto flex flex-col items-center gap-3 pb-4">
+          <div className="h-px w-10 bg-indigo-100" />
 
-          <button
-            type="button"
-            className="w-full rounded-2xl px-4 py-3 text-left text-white hover:bg-white/5 hover:text-white transition"
-            onClick={() => onNavigate("option")}
-          >
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white">⚙️</span>
-              <span className="text-[14px] font-semibold">Settings</span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            className="mt-3 w-full rounded-2xl px-4 py-3 text-left text-white/70 hover:bg-white/5 hover:text-white transition"
-            onClick={() => alert("Help (placeholder)")}
-          >
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/1"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg></span>
-              <span className="text-[14px] font-semibold text-white">Déconnexion</span>
-            </div>
-
-          </button>
-
-
- 
-
-
-
+          {BOTTOM_ACTIONS.map((it) => (
+            <NavItem
+              key={it.key}
+              active={active === it.key}
+              icon={ICONS[it.key]}
+              onClick={() => onNavigate(it.key)}
+              title={it.key}
+            />
+          ))}
         </div>
       </div>
     </aside>
   );
 }
+
 
 
 {/*"use client";
@@ -218,15 +210,11 @@ import { cn } from "@/lib/utils/cn";
 
 export type NavKey = "purchase" | "purchaseRequestView" | "claims" | "claimsView" |"stock" | "option" ;
 
-const NAV: Array<{ key: NavKey; label: string; hint: string }> = [
- 
+const NAV: Array<{ key: NavKey; label: string; hint: string }> = [ 
   { key: "claims", label: "Dossier sinistre", hint: "Insertion" },
   { key: "purchase", label: "Demande d'achat", hint: "Insertion" },
   { key: "stock", label: "Stock disponible", hint: "Consultation" },
   { key: "option", label: "Paramétres", hint: "options" },
-
-
-
 ];
 
 const ICONS: Record<NavKey, React.ReactNode> = {

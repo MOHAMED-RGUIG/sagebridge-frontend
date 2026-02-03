@@ -26,7 +26,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </button>
           <div>
           <div className="mt-5 p-2">
-  <h1 className="text-5xl md:text-5xl font-extrabold tracking-tight
+  <h1 className="text-6xl md:text-6xl font-extrabold tracking-tight
                  bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
                  bg-clip-text text-transparent">
     {title}
@@ -42,7 +42,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </div>
         </div>
 
-        <div className="flex items-center gap-3 px-4">
+        <div className="flex items-center gap-3 ">
           {/*<div className="hidden md:flex md:w-[300px] lg:w-[380px] items-center gap-2 rounded-full border border-border bg-white px-5 py-3 text-[14px] shadow-cardSm">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="rgba(100,116,139,0.9)" strokeWidth="2" />
@@ -59,7 +59,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
               🔔
             </button>*/}
         
-            <div className="ml-1 flex items-center gap-2 pr-2 ">
+            <div className="ml-1 flex items-center gap-2 ">
               <div className="grid h-9 w-9 place-items-center rounded-full bg-brand text-[12px] font-black text-white">
                 MR
               </div>

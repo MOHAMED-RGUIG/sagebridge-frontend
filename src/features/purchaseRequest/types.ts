@@ -4,19 +4,19 @@ export type PurchaseRequestItem = {
   ITMDES: string;
   QTYPUU: number;
   PUU: string;
-  neededDate:string;
+  EXTRCPDAT:string;
   PSHFCY: string;
 };
 
 export type PurchaseRequestForm = {
-  neededDate: string;
+  EXTRCPDAT: string;
   YTYPE: string;
-  YCMP: string;
+  YCMPASS: string;
   REQUSR: string;
   PSHFCY: string;
   QTYPUU: 1,
 
-  CPY: string;
+  PSHNUM: string;
   PRQDAT: string;
   YMATRICULE: string;
   items: PurchaseRequestItem[];

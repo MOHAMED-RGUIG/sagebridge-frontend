@@ -14,6 +14,7 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   devisView :"Devis",
   stock: "Stock",
   option: "Paramètres",
+  logout:"logout"
 };
 export default function AppShell({
   children,
@@ -65,7 +66,7 @@ export default function AppShell({
             onOpenSidebar={() => setMobileOpen(true)}
             title={ROUTE_TITLES[active] ?? "Dashboard"}
           />
-          <main className="w-full px-4">
+          <main className=" px-5 mx-6">
             {children}
           </main>
       </div>

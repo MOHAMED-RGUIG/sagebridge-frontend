@@ -12,7 +12,7 @@ export default function Select({
   return (
     <label className="block">
       {label ? (
-       <span className="mb-2 block text-xl font-bold text-slate-700">
+       <span className="mb-2 block text-xl font-bold text-slate-700 pb-2">
        {label}
      </span>
       ) : null}

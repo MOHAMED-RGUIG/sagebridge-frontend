@@ -12,7 +12,7 @@ export default function Input({
   return (
     <label className="block">
       {label ? (
-        <span className="mb-2 block text-xl font-bold text-slate-700">
+        <span className="mb-2 block text-xl font-bold pb-2 text-slate-700">
   {label}
 </span>
       ) : null}

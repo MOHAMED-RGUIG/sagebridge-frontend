@@ -46,6 +46,7 @@ export default function HomePage() {
     if (active === "devisView") return <DevisView/>;
     if (active === "devis") return <DevisList />;
     if (active === "option") return <ParameterView/>;
+    if (active==="logout") return <ParameterView/>;
     return <StockView />;
   }, [active]);
   return (
