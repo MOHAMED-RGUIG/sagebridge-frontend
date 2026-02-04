@@ -10,7 +10,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl2 border border-border bg-surface shadow-card",
+        "border border-border bg-surface shadow-card",
         className
       )}
     >
@@ -29,7 +29,7 @@ export function CardHeader({
   right?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
+    <div className="flex items-start justify-between gap-4  border-b border-border px-6 py-5">
       <div>
         <div className="text-2xl md:text-2xl font-extrabold tracking-tight
           bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
@@ -48,5 +48,5 @@ export function CardContent({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn("p-6", className)}>{children}</div>;
+  return <div className={cn("p-6 shadow-xl", className)}>{children}</div>;
 }

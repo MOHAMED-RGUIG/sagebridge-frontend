@@ -66,7 +66,7 @@ export default function AppShell({
             onOpenSidebar={() => setMobileOpen(true)}
             title={ROUTE_TITLES[active] ?? "Dashboard"}
           />
-          <main className=" px-5 mx-6">
+          <main className="w-full px-4 ">
             {children}
           </main>
       </div>

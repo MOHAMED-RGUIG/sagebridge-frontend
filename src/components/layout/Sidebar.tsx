@@ -142,10 +142,10 @@ export default function Sidebar({
       className={cn(
         "z-40 shrink-0",
         // container shape like screenshot
-        "w-[65px] m-3",
-        "rounded-[28px] bg-white",
-        "border border-indigo-100",
-        "shadow-xl shadow-indigo-200/30",
+        "w-[70px] m-3",
+        "rounded-[1px] bg-white",
+        "",
+        "shadow-2xl",
         "md:sticky md:top-0 md:h-[calc(100vh-24px)]",
         "max-md:fixed max-md:inset-y-0 max-md:left-0",
         mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
