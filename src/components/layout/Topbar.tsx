@@ -26,12 +26,12 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           </button>
           <div>
           <div className="mt-5 p-2">
-  <h1 className="text-6xl md:text-6xl font-extrabold tracking-tight
+  <h1 className="text-6xl px-7 md:text-6xl font-extrabold tracking-tight
                  bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
                  bg-clip-text text-transparent">
     {title}
   </h1>
-  <div className="h-1 w-20 mt-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+  <div className="h-1 w-20 mx-7 mt-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
 {/**<p className="text-sm text-slate-500 mt-1">
     Tableau de gestion • Interface moderne
   </p> */}

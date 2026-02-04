@@ -142,21 +142,21 @@ export default function Sidebar({
       className={cn(
         "z-40 shrink-0",
         // container shape like screenshot
-        "w-[70px] m-3",
-        "rounded-[1px] bg-white",
+        "w-[70px]",
+        "bg-white",
         "",
         "shadow-2xl",
-        "md:sticky md:top-0 md:h-[calc(100vh-24px)]",
+        "md:sticky md:top-0  md:h-[calc(100vh)]",
         "max-md:fixed max-md:inset-y-0 max-md:left-0",
         mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
         "max-md:transition-transform"
       )}
     >
-      <div className="flex h-full flex-col items-center py-5">
+      <div className="flex h-full flex-col items-center py-5 mt-5">
         {/* TOP / LOGO */}
-        <div className="relative">
-          <div className="grid h-12 w-12 place-items-center rounded-2xl border border-indigo-200 bg-white shadow-sm">
-            <span className="text-[14px] font-black tracking-tight text-slate-900">SB</span>
+        <div className="relative  mb-6 pb-12">
+          <div className="grid h-12 w-12 place-items-center mt-6 rounded-2xl border border-indigo-100 bg-white shadow-sm">
+            <span className="text-[14px] font-black tracking-tight text-slate-900 ">SB</span>
           </div>
 
           {/* close on mobile */}
@@ -171,7 +171,7 @@ export default function Sidebar({
         </div>
 
         {/* MAIN NAV */}
-        <div className="mt-8 flex flex-col items-center gap-3">
+        <div className="mt-8 flex flex-col items-center mt-6 gap-3 pt-12 ">
           {NAV.map((it) => (
             <NavItem
               key={it.key}
@@ -179,13 +179,14 @@ export default function Sidebar({
               icon={ICONS[it.key]}
               onClick={() => onNavigate(it.key)}
               title={it.key}
+              
             />
           ))}
         </div>
 
         {/* BOTTOM ACTIONS */}
-        <div className="mt-auto flex flex-col items-center gap-3 pb-4">
-          <div className="h-px w-10 bg-indigo-100" />
+        <div className="mt-auto flex flex-col items-center gap-3 pb-4 ">
+          <div className="h-px w-10 bg-indigo-100 mt-5" />
 
           {BOTTOM_ACTIONS.map((it) => (
             <NavItem
