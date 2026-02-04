@@ -4,6 +4,7 @@ import claimsReducer from "@/features/claims/claimsSlice";
 import stockReducer from "@/features/stock/stockSlice";
 import devisReducer from "@/features/devis/devisSlice";
 import { baseApi } from "@/lib/api/baseApi";
+import authReducer  from "@/features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     claims: claimsReducer,
     stock: stockReducer,
     devis:devisReducer,
+    auth: authReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefault) => getDefault().concat(baseApi.middleware),

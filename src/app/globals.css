@@ -5,7 +5,7 @@
 :root {
   color-scheme: light;
   /* Horizon/NextAdmin-like tokens (very close to screenshots) */
-  --bg: 222 100% 98%;       /* #F4F7FE */
+  --bg: 222 100% 98%;       /* #F4F7FE */ /*#f8fafc*/
   
   --surface: 0 0% 100%;     /* white cards */
   --surface-2: 225 100% 99%;

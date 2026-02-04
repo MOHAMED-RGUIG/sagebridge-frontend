@@ -48,5 +48,5 @@ export function CardContent({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn("p-6 shadow-xl", className)}>{children}</div>;
+  return <div className={cn("p-6 ", className)}>{children}</div>;
 }

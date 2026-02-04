@@ -1,7 +1,10 @@
 "use client";
-
+import { useAppDispatch } from "@/store/hooks";
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { authActions } from "@/features/auth/authSlice";
+
+
 
 export type NavKey =
   | "purchase"
@@ -25,7 +28,7 @@ const BOTTOM_ACTIONS: Array<{ key: NavKey; label: string }> = [
   { key: "option", label: "" },
   { key: "logout", label: "" },
 ];
-
+  
 // ✅ garde tes ICONS tel quel
 const ICONS: Record<NavKey, React.ReactNode> = {
   purchase: (
@@ -137,6 +140,7 @@ export default function Sidebar({
   mobileOpen: boolean;
   onClose: () => void;
 }) {
+  const dispatch = useAppDispatch();
   return (
     <aside
       className={cn(
@@ -145,7 +149,7 @@ export default function Sidebar({
         "w-[70px]",
         "bg-white",
         "",
-        "shadow-2xl",
+        
         "md:sticky md:top-0  md:h-[calc(100vh)]",
         "max-md:fixed max-md:inset-y-0 max-md:left-0",
         mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
@@ -188,15 +192,29 @@ export default function Sidebar({
         <div className="mt-auto flex flex-col items-center gap-3 pb-4 ">
           <div className="h-px w-10 bg-indigo-100 mt-5" />
 
-          {BOTTOM_ACTIONS.map((it) => (
-            <NavItem
-              key={it.key}
-              active={active === it.key}
-              icon={ICONS[it.key]}
-              onClick={() => onNavigate(it.key)}
-              title={it.key}
-            />
-          ))}
+    {BOTTOM_ACTIONS.map((it) => {
+  const isLogout = it.key === "logout";
+
+  return (
+    <NavItem
+      key={it.key}
+      active={false}
+      icon={ICONS[it.key]}
+      title={it.key}
+      onClick={() => {
+        if (isLogout) {
+          // 🔥 LOGOUT LOGIC
+          localStorage.removeItem("sb_token");
+          dispatch(authActions.logout());
+          window.location.href = "/login";
+        } else {
+          onNavigate(it.key);
+        }
+      }}
+    />
+  );
+})}
+
         </div>
       </div>
     </aside>

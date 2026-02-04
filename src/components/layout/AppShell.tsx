@@ -1,8 +1,11 @@
 "use client";
-
+import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store/hooks";
 import { useEffect, useMemo, useState } from "react";
 import Sidebar, { NavKey } from "./Sidebar";
 import Topbar from "./Topbar";
+
+
 
 export type RouteKey = NavKey;
 const ROUTE_TITLES: Record<RouteKey, string> = {
@@ -26,6 +29,13 @@ export default function AppShell({
   onNavigate: (k: RouteKey) => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+const router = useRouter();
+
+useEffect(() => {
+  if (!isAuthenticated) router.replace("/login");
+}, [isAuthenticated, router]);
+
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -61,7 +71,7 @@ export default function AppShell({
           onClose={() => setMobileOpen(false)}
         />
       <div className="flex-1 min-w-0 overflow-hidden">
-      <div className="origin-top-left scale-[0.85] w-[calc(100%/0.85)]">
+      <div className="origin-top-left scale-[0.82] w-[calc(100%/0.82)]">
           <Topbar
             onOpenSidebar={() => setMobileOpen(true)}
             title={ROUTE_TITLES[active] ?? "Dashboard"}
