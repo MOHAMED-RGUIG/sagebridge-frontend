@@ -4,8 +4,6 @@ import React from "react";
 import { cn } from "@/lib/utils/cn";
 import { authActions } from "@/features/auth/authSlice";
 
-
-
 export type NavKey =
   | "purchase"
   | "purchaseRequestView"
@@ -102,19 +100,16 @@ function NavItem({
       onClick={onClick}
       title={title}
       aria-label={title}
-      className={cn(
-        "group grid place-items-center",
-        "h-11 w-11 rounded-2xl",
-        "transition-all duration-200",
-        "",
-        // base
-        "border-indigo-200/80 text-slate-700",
-        // hover
-        "hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-200/30",
-        // active
-        active &&
-          "border-indigo-400 bg-indigo-50 text-indigo-700 shadow-lg shadow-indigo-200/40 ring-2 ring-indigo-200/60"
-      )}
+ className={cn(
+  "group grid place-items-center h-11 w-11 rounded-2xl",
+  "transition-all duration-200",
+  "border border-white/40 bg-white/50 backdrop-blur text-slate-700 shadow-sm",
+  "hover:bg-white/70 hover:shadow-md hover:shadow-indigo-500/10",
+
+  active &&
+    "border-white/60 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-lg shadow-indigo-500/25 ring-2 ring-indigo-200/60"
+)}
+
     >
       <span
         className={cn(
@@ -142,26 +137,30 @@ export default function Sidebar({
 }) {
   const dispatch = useAppDispatch();
   return (
-    <aside
-      className={cn(
-        "z-40 shrink-0",
-        // container shape like screenshot
-        "w-[70px]",
-        "bg-white",
-        "",
-        
-        "md:sticky md:top-0  md:h-[calc(100vh)]",
-        "max-md:fixed max-md:inset-y-0 max-md:left-0",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-        "max-md:transition-transform"
-      )}
-    >
+<aside
+  className={cn(
+    "z-40 shrink-0",
+    "w-[78px] md:w-[82px]",
+    // glass like login
+    "bg-white/55 backdrop-blur-xl",
+    "border-r border-white/40",
+    "shadow-2xl shadow-indigo-500/10",
+    "md:sticky md:top-0 md:h-[100vh]",
+    "max-md:fixed max-md:inset-y-0 max-md:left-0",
+    mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+    "max-md:transition-transform"
+  )}
+>
+
       <div className="flex h-full flex-col items-center py-5 mt-5">
         {/* TOP / LOGO */}
         <div className="relative  mb-6 pb-12">
-          <div className="grid h-12 w-12 place-items-center mt-6 rounded-2xl border border-indigo-100 bg-white shadow-sm">
-            <span className="text-[14px] font-black tracking-tight text-slate-900 ">SB</span>
-          </div>
+<div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 backdrop-blur border border-white/50 shadow-lg shadow-indigo-500/10">
+  <span className="text-[14px] font-black tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+    SB
+  </span>
+</div>
+
 
           {/* close on mobile */}
           <button

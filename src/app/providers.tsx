@@ -8,7 +8,7 @@ function BootstrapAuth() {
   useEffect(() => {
     const token = localStorage.getItem("sb_token");
     if (token) {
-      store.dispatch(authActions.loginSuccess({ token, user: { email: "saved@user.com" } }));
+      store.dispatch(authActions.loginSuccess({ token, user: { userName: "saved@user.com" } }));
     }
   }, []);
   return null;

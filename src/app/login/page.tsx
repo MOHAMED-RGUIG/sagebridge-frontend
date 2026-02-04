@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -7,34 +6,29 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { authActions } from "@/features/auth/authSlice";
 import type React from "react";
 import Input from "@/components/ui/Input";
-
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isAuthenticated, isLoading, error } = useAppSelector((s) => s.auth);
-
-  const [email, setEmail] = useState("");
+  const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
-
   useEffect(() => {
     if (isAuthenticated) router.replace("/");
   }, [isAuthenticated, router]);
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     dispatch(authActions.loginStart());
-
     try {
       // ✅ placeholder: remplace par ton vrai backend plus tard
       // ex: POST /api/auth/login
       await new Promise((r) => setTimeout(r, 600));
 
-      if (!email || !password) throw new Error("Email & mot de passe requis");
+      if (!userName || !password) throw new Error("userName & mot de passe requis");
 
       // Token fake (remplace par le token renvoyé par ton API)
       const token = "fake-jwt-token";
-      dispatch(authActions.loginSuccess({ token, user: { email } }));
+      dispatch(authActions.loginSuccess({ token, user: { userName } }));
 
       if (remember) localStorage.setItem("sb_token", token);
       else localStorage.removeItem("sb_token");
@@ -76,7 +70,7 @@ export default function LoginPage() {
 
   <p className="mt-2 text-sm text-muted">Bienvenue 👋 Merci de se connecter</p>
 
-  {/* EMAIL */}
+  {/* userName */}
   <div className="mt-8 relative">
     <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted">📧</span>
     <Input
@@ -92,8 +86,8 @@ export default function LoginPage() {
         focus:ring-2 focus:ring-[hsl(var(--brand))]/30
         transition
       "
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
+      value={userName}
+      onChange={(e) => setuserName(e.target.value)}
       required
     />
   </div>

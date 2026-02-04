@@ -1,7 +1,7 @@
 export type User = {
   id?: string;
   name?: string;
-  email: string;
+  userName: string;
 };
 
 export type AuthState = {

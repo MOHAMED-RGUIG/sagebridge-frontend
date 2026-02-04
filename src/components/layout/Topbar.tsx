@@ -14,9 +14,9 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 bg-bg">
-      <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 md:px-6">
-        <div className="flex items-center gap-3">
+<header className="sticky top-0 z-20 border-b border-white/40 bg-white/35 backdrop-blur-xl">
+  <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 md:px-6">
+           <div className="flex items-center gap-3">
           <button
             type="button"
             className="rounded-2xl border border-border bg-white/70 px-3 py-2 text-sm shadow-sm hover:bg-surface2 md:hidden"
