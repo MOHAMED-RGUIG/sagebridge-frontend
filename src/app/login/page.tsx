@@ -61,110 +61,121 @@ export default function LoginPage() {
 
         {/* RIGHT FORM */}
         <div className="flex w-full items-center justify-center px-6 py-10 md:w-1/2">
-          <form onSubmit={onSubmit} className="w-full max-w-[380px]">
-            <h2 className="text-4xl font-semibold text-text">Sign in</h2>
-            <p className="mt-3 text-sm text-muted">
-              Welcome back! Please sign in to continue
-            </p>
+<form
+  onSubmit={onSubmit}
+  className="
+    w-full max-w-[420px]
+    rounded-3xl
+    bg-white/60 backdrop-blur-xl
+    border border-white/40
+    shadow-2xl shadow-indigo-500/10
+    p-10
+  "
+>
+  <h2 className="text-4xl font-bold text-text tracking-tight">Sign in</h2>
 
-            <button
-              type="button"
-              className="mt-8 flex h-12 w-full items-center justify-center rounded-full bg-black/5 transition hover:bg-black/10"
-              onClick={() => alert("Google login plus tard")}
-            >
-              <img
-                src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
-                alt="googleLogo"
-              />
-            </button>
+  <p className="mt-2 text-sm text-muted">Bienvenue 👋 Merci de se connecter</p>
 
-            <div className="my-6 flex items-center gap-4">
-              <div className="h-px w-full bg-border" />
-              <p className="whitespace-nowrap text-sm text-muted">
-                or sign in with email
-              </p>
-              <div className="h-px w-full bg-border" />
-            </div>
+  {/* EMAIL */}
+  <div className="mt-8 relative">
+    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted">📧</span>
+    <Input
+      type="text"
+      placeholder="Nom d'utilisateur"
+      className="
+        h-12 w-full pl-12 pr-4
+        rounded-full
+        border border-border/60
+        bg-white/70 backdrop-blur
+        text-sm text-text/90
+        placeholder:text-muted
+        focus:ring-2 focus:ring-[hsl(var(--brand))]/30
+        transition
+      "
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+    />
+  </div>
 
-            {/* EMAIL */}
-            <div className="flex h-12 w-full items-center gap-2 overflow-hidden rounded-full border border-border bg-white/70 pl-6 focus-within:ring-2 focus-within:ring-[rgba(67,24,255,0.15)]">
+  {/* PASSWORD */}
+  <div className="mt-6 relative">
+    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted">🔒</span>
+    <Input
+      type="password"
+      placeholder="Password"
+      className="
+        h-12 w-full pl-12 pr-4
+        rounded-full
+        border border-border/60
+        bg-white/70 backdrop-blur
+        text-sm text-text/90
+        placeholder:text-muted
+        focus:ring-2 focus:ring-[hsl(var(--brand))]/30
+        transition
+      "
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+    />
+  </div>
 
-              <Input
-                type="text"
-                placeholder="Email id"
-                className="h-full w-full bg-transparent text-sm text-text/80 placeholder:text-muted outline-none"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+  {/* ERROR */}
+  {error && (
+    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {error}
+    </div>
+  )}
 
-            {/* PASSWORD */}
-            <div className="mt-6 flex h-12 w-full items-center gap-2 overflow-hidden rounded-full border border-border bg-white/70 pl-6 focus-within:ring-2 focus-within:ring-[rgba(67,24,255,0.15)]">
-           
-              <Input
-                type="password"
-                placeholder="Password"
-                className="h-full w-full bg-transparent text-sm text-text/80 placeholder:text-muted outline-none"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+  {/* REMEMBER / FORGOT */}
+  <div className="mt-8 flex items-center justify-between text-sm text-text/70">
+    <label className="flex items-center gap-2 cursor-pointer">
+      <input
+        className="h-4 w-4 accent-[hsl(var(--brand))]"
+        type="checkbox"
+        checked={remember}
+        onChange={(e) => setRemember(e.target.checked)}
+      />
+      Remember me
+    </label>
 
-            {/* ERROR */}
-            {error ? (
-              <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                {error}
-              </div>
-            ) : null}
+    <button
+      type="button"
+      className="hover:text-text transition"
+      onClick={() => alert("Forgot password plus tard")}
+    >
+      Forgot password?
+    </button>
+  </div>
 
-            {/* REMEMBER / FORGOT */}
-            <div className="mt-8 flex w-full items-center justify-between text-text/70">
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  className="h-5 w-5 accent-[hsl(var(--brand))]"
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                />
-                Remember me
-              </label>
-              <button
-                type="button"
-                className="text-sm underline hover:text-text"
-                onClick={() => alert("Forgot password plus tard")}
-              >
-                Forgot password?
-              </button>
-            </div>
+  {/* SUBMIT */}
+  <button
+    type="submit"
+    disabled={isLoading}
+    className="
+      mt-8 h-12 w-full rounded-full
+      bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+      text-white font-semibold
+      shadow-lg shadow-indigo-500/25
+      transition hover:scale-[1.02] active:scale-95
+      disabled:opacity-60
+    "
+  >
+    {isLoading ? "Loading..." : "Login"}
+  </button>
 
-            {/* SUBMIT */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="
-                mt-8 h-11 w-full rounded-full
-                bg-[hsl(var(--brand))] text-white
-                shadow-md shadow-indigo-500/20
-                transition hover:opacity-95
-                disabled:opacity-60
-              "
-            >
-              {isLoading ? "Loading..." : "Login"}
-            </button>
+  <p className="mt-6 text-center text-sm text-muted">
+    Don’t have an account?{" "}
+    <button
+      type="button"
+      className="font-semibold text-[hsl(var(--brand))] hover:underline"
+      onClick={() => alert("Sign up plus tard")}
+    >
+      Sign up
+    </button>
+  </p>
+</form>
 
-            <p className="mt-4 text-sm text-muted">
-              Don’t have an account?{" "}
-              <button
-                type="button"
-                className="text-[hsl(var(--brand))] hover:underline"
-                onClick={() => alert("Sign up plus tard")}
-              >
-                Sign up
-              </button>
-            </p>
-          </form>
         </div>
       </div>
     </div>
