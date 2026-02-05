@@ -12,16 +12,21 @@ export default function Select({
   return (
     <label className="block">
       {label ? (
-       <span className="mb-2 block text-xl font-bold text-slate-700 pb-2">
+       <span className="mb-2 block text-[13px] font-semibold text-slate-600">
        {label}
      </span>
       ) : null}
       <select
         {...props}
         className={cn(
-          "h-12 w-full rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition",
-          "focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]",
-          className
+      "h-11 w-full rounded-xl bg-white px-4 text-[14px]",
+      "border border-[hsl(var(--border))]",
+      "shadow-[0_8px_18px_rgba(15,23,42,0.06)]",
+      "outline-none transition",
+      "placeholder:text-slate-400",
+      "focus:border-transparent focus:ring-4 focus:ring-black/5",
+      props.disabled && "bg-slate-50 text-slate-500 shadow-none",
+      className
         )}
       >
         {children}

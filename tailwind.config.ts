@@ -9,7 +9,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+      
+      sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
+    
       },
       colors: {
         // Design tokens (Horizon / NextAdmin look)

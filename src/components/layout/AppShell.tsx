@@ -12,7 +12,7 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   claims: "Dossier sinistre",
   claimsView: "Nouveau dossier sinistre",
   purchase: "Demande d'achat",
-  purchaseRequestView: "Nouvelle Demande d’achat",
+  purchaseRequestView: "Demande d’achat",
   devis :"Devis",
   devisView :"Devis",
   stock: "Stock",
@@ -58,7 +58,7 @@ useEffect(() => {
   );
 
   return (
-  <div className="min-h-screen  ">   
+  <div className="min-h-screen bg-gradient-to-br from-indigo-10/70 via-white to-cyan-50/70 ">   
     {overlay}
     <div className="flex">
         <Sidebar
@@ -71,13 +71,16 @@ useEffect(() => {
           onClose={() => setMobileOpen(false)}
         />
       <div className="flex-1 min-w-0 overflow-hidden">
-      <div className="origin-top-left scale-[0.82] w-[calc(100%/0.82)]">
+      <div className="origin-top-left scale-[0.65] w-[calc(100%/0.65)]">
           <Topbar
             onOpenSidebar={() => setMobileOpen(true)}
             title={ROUTE_TITLES[active] ?? "Dashboard"}
           />
-          <main className="px-6 mx-4">
-            {children}
+          <main className="px-6 mx-4 ">
+                <div className="mx-auto w-full max-w-[1400px]">{children}</div>
+                
+               
+         
           </main>
       </div>
       </div>

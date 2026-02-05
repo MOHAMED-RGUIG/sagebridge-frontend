@@ -61,7 +61,7 @@ export default function StockView() {
   
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="!mt-8">
        {/* <CardHeader
           title=""
           subtitle=""
@@ -70,7 +70,7 @@ export default function StockView() {
             </div>
           }
         /> */}       
-        <CardContent>
+        <CardContent className="pt-8">
           {/*start search and filter section  */}
           <div className="grid gap-3 md:grid-cols-5">
             <Input

@@ -4,47 +4,27 @@
 
 :root {
   color-scheme: light;
-  /* Horizon/NextAdmin-like tokens (very close to screenshots) */
-  --bg: 222 100% 98%;       /* #F4F7FE */ /*#f8fafc*/
-  
-  --surface: 0 0% 100%;     /* white cards */
-  --surface-2: 225 100% 99%;
-  
-  --text: 224 30% 12%;      /* deep navy */
-  --muted: 222 22% 62%;     /* #A3AED0-ish */
-  --muted-2: 222 24% 72%;
-  --border: 222 22% 90%;
 
-  --brand: 252 100% 55%;    /* #4318FF */
-  --brand-2: 255 95% 62%;
-  --success: 142 71% 45%;
-  --danger: 0 84% 60%;
-  --warn: 35 92% 55%;
-    
+  /* Soft UI-ish */
+  --bg: 220 33% 98%;          /* #f8f9fb */
+  --surface: 0 0% 100%;       /* white */
+  --text: 220 18% 20%;        /* slate-ish */
+  --muted: 220 10% 45%;
+  --border: 220 16% 90%;
+
+  --brand: 316 85% 52%;       /* magenta/pink like Soft UI */
+  --brand2: 270 85% 55%;      /* purple */
 }
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-html,
-body {
-  height: 100%;
-  font-size: 10px;   
-}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+html, body { height: 100%; }
+
+/* ✅ IMPORTANT: laisse la typo “normale” */
+html { font-size: 16px; }
 body {
   background: hsl(var(--bg));
   color: hsl(var(--text));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 8px; 
-  /* match dashboard typography */
 }
-html {
-  scroll-behavior: smooth;
-}
-
-@layer base {
-  ::selection {
-    background: rgba(67, 24, 255, 0.18);
-  }
-}
-

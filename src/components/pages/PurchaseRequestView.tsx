@@ -198,7 +198,7 @@ const matriculeDisabled = matType === "NORMAL";
         </div>
       ) : null}
 
-      <Card>
+      <Card className="!mt-8" >
         <CardHeader
           title="Voiture"
           subtitle="Informations concernant la voiture"
@@ -345,7 +345,7 @@ const matriculeDisabled = matType === "NORMAL";
         
       </Card>
 
-      <Card>
+        <Card className="!mt-8">
         <CardHeader
           title="Articles"
           subtitle="Ajoute une ou plusieurs lignes d’articles"
@@ -538,7 +538,7 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             >
               Réinitialiser
             </Button>
-            <Button type="button"  onClick={onSubmit} disabled={isLoading}>
+            <Button type="button" variant="primary" onClick={onSubmit} disabled={isLoading}>
               {isLoading ? "Envoi..." : "Envoyer"}
             </Button>
           </div>

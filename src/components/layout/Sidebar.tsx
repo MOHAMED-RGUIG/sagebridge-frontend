@@ -1,7 +1,8 @@
 "use client";
-import { useAppDispatch } from "@/store/hooks";
+
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/features/auth/authSlice";
 
 export type NavKey =
@@ -16,66 +17,47 @@ export type NavKey =
   | "logout";
 
 const NAV: Array<{ key: NavKey; label: string }> = [
-  { key: "claims", label: "" },
-  { key: "purchase", label: "" },
-  { key: "devis", label: "" },
-  { key: "stock", label: "" },
+  { key: "claims", label: "Dossier sinistre" },
+  { key: "purchase", label: "Demande d'achat" },
+  { key: "devis", label: "Devis" },
+  { key: "stock", label: "Stock" },
 ];
 
 const BOTTOM_ACTIONS: Array<{ key: NavKey; label: string }> = [
-  { key: "option", label: "" },
-  { key: "logout", label: "" },
+  { key: "option", label: "Paramètres" },
+  { key: "logout", label: "Logout" },
 ];
-  
+
 // ✅ garde tes ICONS tel quel
 const ICONS: Record<NavKey, React.ReactNode> = {
-  purchase: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 8h12l-1 12H7L6 8z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  ),
   claims: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M9 13l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M12 2a10 10 0 100 20 10 10 0 000-20zM11 7h2v6h-2zm0 8h2v2h-2z" />
     </svg>
   ),
-  devis: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M9 13l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  purchase: (
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M7 4h-2l-1 2v2h2l3.6 7.59-1.35 2.44A1.99 1.99 0 0010 20h10v-2h-9.42a.25.25 0 01-.23-.37L11.1 16h6.45a2 2 0 001.79-1.11l3.58-6.49A1 1 0 0022 7H6.21l-.94-2z" />
     </svg>
   ),
   stock: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" />
-      <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M3 13h2v-2H3v2zm4 0h14v-2H7v2zm-4 6h2v-2H3v2zm4 0h14v-2H7v2zM3 5v2h18V5H3z" />
+    </svg>
+  ),
+  devis: (
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M3 3h18v2H3zm2 4h14v14H5z" />
     </svg>
   ),
   option: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9 4a7.96 7.96 0 0 0-.6-3l2.1-1.6-2-3.4-2.5 1a8.3 8.3 0 0 0-2.6-1.5L14 1h-4l-.4 2.5a8.3 8.3 0 0 0-2.6 1.5l-2.5-1-2 3.4 2.1 1.6A7.96 7.96 0 0 0 3 12c0 1 .2 2 .6 3L1.5 16.6l2 3.4 2.5-1a8.3 8.3 0 0 0 2.6 1.5L10 23h4l.4-2.5a8.3 8.3 0 0 0 2.6-1.5l2.5 1 2-3.4-2.1-1.6c.4-1 .6-2 .6-3Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M19.14 12.94a7.49 7.49 0 000-1.88l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.6-.22l-2.39.96a7.28 7.28 0 00-1.63-.95l-.36-2.54a.5.5 0 00-.5-.42h-3.84a.5.5 0 00-.5.42l-.36 2.54a7.28 7.28 0 00-1.63.95l-2.39-.96a.5.5 0 00-.6.22L2.71 8.84a.5.5 0 00.12.64l2.03 1.58a7.49 7.49 0 000 1.88l-2.03 1.58a.5.5 0 00-.12.64l1.92 3.32a.5.5 0 00.6.22l2.39-.96c.5.39 1.04.72 1.63.95l.36 2.54a.5.5 0 00.5.42h3.84a.5.5 0 00.5-.42l.36-2.54c.59-.23 1.13-.56 1.63-.95l2.39.96a.5.5 0 00.6-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8a3.5 3.5 0 010 7.5z" />
     </svg>
   ),
   logout: (
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#00000">
-      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+    <svg className="h-8 w-8 fill-current" viewBox="0 0 24 24">
+      <path d="M10 17l5-5-5-5v3H3v4h7v3zM20 3H12v2h8v14h-8v2h8a2 2 0 002-2V5a2 2 0 00-2-2z" />
     </svg>
   ),
   purchaseRequestView: <span />,
@@ -86,39 +68,46 @@ const ICONS: Record<NavKey, React.ReactNode> = {
 function NavItem({
   active,
   icon,
+  label,
   onClick,
-  title,
 }: {
   active: boolean;
   icon: React.ReactNode;
+  label: string;
   onClick: () => void;
-  title?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      title={title}
-      aria-label={title}
- className={cn(
-  "group grid place-items-center h-11 w-11 rounded-2xl",
-  "transition-all duration-200",
-  "border border-white/40 bg-white/50 backdrop-blur text-slate-700 shadow-sm",
-  "hover:bg-white/70 hover:shadow-md hover:shadow-indigo-500/10",
-
-  active &&
-    "border-white/60 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-lg shadow-indigo-500/25 ring-2 ring-indigo-200/60"
-)}
-
+      className={cn(
+        "group w-full flex items-center gap-4 rounded-2xl px-4 py-3 text-left transition",
+        active
+          ? "bg-white shadow-[0_18px_35px_rgba(15,23,42,0.10)]"
+          : "hover:bg-white/70"
+      )}
     >
+      {/* Icon tile */}
       <span
         className={cn(
-          "transition-transform duration-200",
-          "group-hover:scale-[1.06]",
-          active && "scale-[1.06]"
+          "grid h-11 w-11  place-items-center rounded-2xl",
+          "shadow-[0_12px_22px_rgba(15,23,42,0.12)]",
+          active
+            ? "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white"
+            : "bg-white text-slate-700"
         )}
       >
-        {icon}
+        <span className="scale-[0.85]">{icon}</span>
+      </span>
+
+      {/* Label */}
+      <span
+        className={cn(
+          "text-[14px] font-semibold",
+          active ? "text-slate-900" : "text-slate-600"
+        )}
+      >
+        {label}
       </span>
     </button>
   );
@@ -136,294 +125,114 @@ export default function Sidebar({
   onClose: () => void;
 }) {
   const dispatch = useAppDispatch();
+
   return (
-<aside
-  className={cn(
-    "z-40 shrink-0",
-    "w-[78px] md:w-[82px]",
-    // glass like login
-    "bg-white/55 backdrop-blur-xl",
-    "border-r border-white/40",
-    "shadow-2xl shadow-indigo-500/10",
-    "md:sticky md:top-0 md:h-[100vh]",
-    "max-md:fixed max-md:inset-y-0 max-md:left-0",
-    mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-    "max-md:transition-transform"
-  )}
->
-
-      <div className="flex h-full flex-col items-center py-5 mt-5">
-        {/* TOP / LOGO */}
-        <div className="relative  mb-6 pb-12">
-<div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 backdrop-blur border border-white/50 shadow-lg shadow-indigo-500/10">
-  <span className="text-[14px] font-black tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-    SB
-  </span>
-</div>
-
-
-          {/* close on mobile */}
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Fermer"
-            className="md:hidden absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-xl border border-indigo-200 bg-white shadow"
-          >
-            ✕
-          </button>
+    <aside
+      className={cn(
+        "z-40 shrink-0 w-[280px]",
+        "bg-white/80 backdrop-blur",
+        "border-r border-[hsl(var(--border))]",
+        "shadow-[0_20px_60px_rgba(15,23,42,0.08)]",
+        "md:sticky md:top-0 md:h-screen",
+        "max-md:fixed max-md:inset-y-0 max-md:left-0",
+        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+        "max-md:transition-transform"
+      )}
+    >
+      <div className="flex h-full flex-col px-5 py-6">
+        {/* Brand */}
+        <div className="flex items-center gap-3 px-2">
+          <div className="grid h-11 w-10 place-items-center rounded-2xl mx-2 bg-white shadow-[0_12px_22px_rgba(15,23,42,0.10)]">
+            {/* petit logo placeholder */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 4h7v3h-7v-3Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-slate-900"
+              />
+            </svg>
+          </div>
+          <div className="font-semibold text-[15px] text-slate-800">
+            SageBridge
+          </div>
         </div>
 
+        <div className="my-5 h-px bg-slate-200/70" />
+
         {/* MAIN NAV */}
-        <div className="mt-8 flex flex-col items-center mt-6 gap-3 pt-12 ">
+        <div className="space-y-3">
           {NAV.map((it) => (
             <NavItem
               key={it.key}
               active={active === it.key}
               icon={ICONS[it.key]}
+              label={it.label}
               onClick={() => onNavigate(it.key)}
-              title={it.key}
-              
             />
           ))}
         </div>
 
-        {/* BOTTOM ACTIONS */}
-        <div className="mt-auto flex flex-col items-center gap-3 pb-4 ">
-          <div className="h-px w-10 bg-indigo-100 mt-5" />
-
-    {BOTTOM_ACTIONS.map((it) => {
-  const isLogout = it.key === "logout";
-
-  return (
-    <NavItem
-      key={it.key}
-      active={false}
-      icon={ICONS[it.key]}
-      title={it.key}
-      onClick={() => {
-        if (isLogout) {
-          // 🔥 LOGOUT LOGIC
-          localStorage.removeItem("sb_token");
-          dispatch(authActions.logout());
-          window.location.href = "/login";
-        } else {
-          onNavigate(it.key);
-        }
-      }}
-    />
-  );
-})}
-
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-
-
-{/*"use client";
-
-import { cn } from "@/lib/utils/cn";
-
-export type NavKey = "purchase" | "purchaseRequestView" | "claims" | "claimsView" |"stock" | "option" ;
-
-const NAV: Array<{ key: NavKey; label: string; hint: string }> = [ 
-  { key: "claims", label: "Dossier sinistre", hint: "Insertion" },
-  { key: "purchase", label: "Demande d'achat", hint: "Insertion" },
-  { key: "stock", label: "Stock disponible", hint: "Consultation" },
-  { key: "option", label: "Paramétres", hint: "options" },
-];
-
-const ICONS: Record<NavKey, React.ReactNode> = {
-  purchase: (
-    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M6 8h12l-1 12H7L6 8z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9 8a3 3 0 0 1 6 0"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-  
-  
-  ),
-  claims: (
-    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9 13l2 2 4-4"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-  
-  ),
-  purchaseRequestView: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  ),
-  claimsView: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M7 3h10v18H7V3Z" stroke="currentColor" strokeWidth="2" />
-      <path d="M9 7h6M9 11h6M9 15h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  ),
-  stock: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" />
-      <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  ), 
-  option: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 6h16v12H4V6Z" stroke="currentColor" strokeWidth="2" />
-      <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  ),
-};
-
-function Item({
-  active,
-  icon,
-  label,
-  hint,
-  onClick,
-}: {
-  active: boolean;
-  icon: React.ReactNode;
-  label: string;
-  hint: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "group relative w-full rounded-[14px] px-3 py-3 text-left transition",
-        "focus:outline-none focus:ring-2 focus:ring-[rgba(67,24,255,0.20)]",
-        active ? "bg-[rgba(67,24,255,0.08)]" : "hover:bg-surface2"
-      )}
-    >
-      {active ? (
-        <span className="absolute left-0 top-2 h-[calc(100%-16px)] w-[4px] rounded-r-full bg-brand" />
-      ) : null}
-
-      <div className="flex items-center justify-between gap-3 pl-2">
-        <div className="flex items-center gap-3">
-          <span
-            className={cn(
-              "grid h-9 w-9 place-items-center rounded-full bg-surface text-muted shadow-cardSm",
-              active && "text-brand"
-            )}
-          >
-            {icon}
-          </span>
-          <div>
-            <div className={cn("text-[14px] font-semibold", active ? "text-text" : "text-text/80")}>{label}</div>
-            <div className="text-[12px] text-muted">{hint}</div>
-          </div>
-        </div>
-      </div>
-    </button>
-  );
-}
-
-export default function Sidebar({
-  active,
-  onNavigate,
-  mobileOpen,
-  onClose,
-}: {
-  active: NavKey;
-  onNavigate: (k: NavKey) => void;
-  mobileOpen: boolean;
-  onClose: () => void;
-}) {
-  return (
-    <aside
-      className={cn(
-        "z-40 w-[250px] shrink-0 border-r border-border bg-surface text-text",
-
-        "md:sticky md:top-0 md:h-screen",
-        "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:shadow-2xl",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-        "max-md:transition-transform"
-      )}
-    >
-      <div className="flex h-full flex-col">
-        <div className="flex items-center justify-between px-5 py-6">
-
-          <div>
-            <div className="flex items-center gap-2">
-<div className="grid h-10 w-10 place-items-center rounded-full bg-brand text-white shadow-cardSm"> <span className="text-[12px] font-black">SB</span>
-              </div>
-              <div>
-<div className="text-[16px] font-extrabold tracking-tight">SageBridge</div>
-                <div className="text-[12px] font-medium text-muted">Achats • Sinistres • Stock</div>
+        {/* Help Card   <div className="mt-6 rounded-3xl bg-gradient-to-br from-slate-700/25 to-slate-400/25 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
+          <div className="flex items-start gap-3">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/90 shadow-sm">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-slate-700"
+                />
+              </svg>
+            </div>
+            <div>
+              <div className="text-white text-[16px] font-bold">Need help?</div>
+              <div className="mt-1 text-white/85 text-[13px]">
+                Please check our docs
               </div>
             </div>
           </div>
+
           <button
             type="button"
-            className="rounded-xl p-2 hover:bg-surface2 md:hidden"
-            onClick={onClose}
-            aria-label="Fermer"
+            className="mt-5 w-full rounded-2xl bg-white px-4 py-3 text-[13px] font-bold tracking-wide text-slate-900 shadow-[0_12px_20px_rgba(15,23,42,0.10)] hover:brightness-[0.98]"
           >
-            ✕
+            DOCUMENTATION
           </button>
-        </div>
+        </div>*/}
+      
 
-       <div className="px-5">
+{/* Bottom actions */}
+<div className="mt-auto pt-6 space-y-3">
 
-          <div className="text-[12px] font-semibold text-muted">MAIN MENU</div>
-          <div className="mt-3 space-y-2">
-            {NAV.map((it) => (
-              <Item
-                key={it.key}
-                active={active === it.key}
-                icon={ICONS[it.key]}
-                label={it.label}
-                hint={it.hint}
-                onClick={() => onNavigate(it.key)}
-              />
-            ))}
-          </div>
+  {/* Upgrade Button */}
 
-        </div>
+<div     className="bg-gradient-to-r from-fuchsia-600 to-purple-600 px-1 py-1 text-[7px] tracking-wide text-white shadow-[0_18px_35px_rgba(147,51,234,0.25)] hover:brightness-[0.98]"
+> </div>    
 
 
-          <div className="mt-6 overflow-hidden rounded-xl2 border border-border bg-surface px-5 py-5 shadow-cardSm">
-            <div className="text-sm font-semibold">Backend ready</div>
-            <p className="mt-2 text-[12px] text-muted">
-              RTK Query est déjà câblé. Branche Node/Express + SQL Server sans modifier l’UI.
-            </p>
-            <div className="mt-4 h-2 w-full rounded-full bg-surface2">
-              <div className="h-2 w-[65%] rounded-full bg-brand" />
-            </div>
-          </div>
-<div className="mt-auto px-5 py-5 text-xs text-muted">
-          v1 • Next.js + TS + Tailwind + Redux
-        </div> 
-        
+  {/* Logout Button */}
+  <button
+    type="button"
+    className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition hover:bg-rose-50"
+    onClick={() => {
+      localStorage.removeItem("sb_token");
+      dispatch(authActions.logout());
+      window.location.href = "/login";
+    }}
+  >
+    <span className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-[0_12px_22px_rgba(15,23,42,0.12)] text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition">
+      {ICONS.logout}
+    </span>
+
+    <span className="text-[14px] font-semibold text-rose-600 group-hover:text-rose-700">
+      Logout
+    </span>
+  </button>
+
+</div>
+
       </div>
     </aside>
   );
-}*/}
-
-
-
+}

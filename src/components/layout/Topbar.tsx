@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-
+import Button from "@/components/ui/Button";
 export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => void;  title: string; }) {
   const today = useMemo(() => {
     const d = new Date();
@@ -14,24 +14,26 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
   }, []);
 
   return (
-<header className="sticky top-0 z-20 border-b border-white/40 bg-white/35 backdrop-blur-xl">
+<header className="sticky top-0 z-20 border-b border-white/40 bg-white backdrop-blur-xl">
   <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 md:px-6">
            <div className="flex items-center gap-3">
-          <button
+          <Button
             type="button"
             className="rounded-2xl border border-border bg-white/70 px-3 py-2 text-sm shadow-sm hover:bg-surface2 md:hidden"
             onClick={onOpenSidebar}
           >
             ☰
-          </button>
+          </Button>
           <div>
           <div className="mt-5 p-2">
-  <h1 className="text-6xl px-7 md:text-6xl font-extrabold tracking-tight
-                 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+  <h1 className="text-5xl px-7 md:text-5xl font-extrabold tracking-tight
+                bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
                  bg-clip-text text-transparent">
     {title}
   </h1>
-  <div className="h-1 w-20 mx-7 mt-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+  {/* bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+                 bg-clip-text text-transparent*/}
+  <div className="h-1 w-20 mx-7 mt-2 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600" />
 {/**<p className="text-sm text-slate-500 mt-1">
     Tableau de gestion • Interface moderne
   </p> */}

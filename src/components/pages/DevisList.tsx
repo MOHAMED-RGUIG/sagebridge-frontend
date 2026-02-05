@@ -65,7 +65,7 @@ export default function DevisList() {
 
 
 <div className="space-y-4">
-<Card>
+<Card className="!mt-8">
  {/* <CardHeader
     title=""
     subtitle=""
@@ -74,7 +74,7 @@ export default function DevisList() {
       </div>
     }
   /> */}       
-  <CardContent>
+  <CardContent className="pt-8">
     {/*start search and filter section  */}
     <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 
@@ -117,17 +117,17 @@ export default function DevisList() {
 
 {/* ====== RIGHT SIDE (BOUTON) ====== */}
 <div className="flex justify-end">
-  <a
-    href="#devisView"
-    onClick={(e) => {
-      e.preventDefault();
+  <Button
+    type="button"
+    onClick={() => {
       window.location.hash = "devisView";
       window.dispatchEvent(new Event("hashchange"));
     }}
     className="
       inline-flex items-center gap-2
-      rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600
-      px-6 py-3 mb-2 w-full md:w-[100px]
+      rounded-xl
+      bg-gradient-to-r from-indigo-500 to-violet-600
+      px-6 py-3 mb-2 w-full md:w-[160px]
       text-xl font-bold text-white
       shadow-md shadow-indigo-500/30
       transition-all duration-200
@@ -135,8 +135,8 @@ export default function DevisList() {
       active:scale-[0.97]
     "
   >
-    + Ajouter
-  </a>
+   Ajouter
+  </Button>
 </div>
 
 </div>
