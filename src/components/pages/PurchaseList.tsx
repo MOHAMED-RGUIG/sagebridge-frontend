@@ -246,20 +246,19 @@ const pagedRows = useMemo(
 
 
           {/* CARD (style Loopple/Riva) */}
-          <div className="flex flex-wrap -mx-3 mb-5 mt-4">
+
             <div className="w-full max-w-full px-3 mb-6 mx-auto">
-              <div className="relative flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-white">
-                <div className="relative flex flex-col min-w-0 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-slate-50/30">
+            
     
                   {/* HEADER like Riva */}
-                  <div className="px-9 pt-3 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
+                  <div className="px-9 pt-3 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent mb-2">
                     <h3 className="flex flex-col items-start justify-center m-2 ml-0">
                       <span className="mr-3 !font-bold text-slate-900 !text-3xl">
-                        Stock Items
+                        Liste des demandes d'achats
                       </span>
-                      <span className="mt-1 font-medium text-slate-500 !text-lg">
+                 {/*     <span className="mt-1 font-medium text-slate-500 !text-lg">
                         Articles disponibles (filtrés par site / recherche)
-                      </span>
+                      </span>*/}
                     </h3>
     
             
@@ -281,7 +280,7 @@ const pagedRows = useMemo(
                   </div>
     
                   {/* BODY */}
-                  <div className="flex-auto block py-8 pt-6 px-9">
+                  <div className="flex-auto block py-8 pt-8 mt-2 px-9 border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-slate-50/30">
                     <div className="overflow-x-auto">
                       <table className="w-full my-0 align-middle text-slate-900">
                         <thead className="align-bottom ">
@@ -453,11 +452,10 @@ const pagedRows = useMemo(
                     </div>
                   </div>
     
-                  {/* end body */}
-                </div>
-              </div>
+           
+             
             </div>
-          </div>
+       
       </CardContent>
     </Card>
     </div>
