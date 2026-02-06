@@ -58,7 +58,7 @@ useEffect(() => {
   );
 
   return (
-  <div className="min-h-screen bg-gradient-to-br from-indigo-10/70 via-white to-cyan-50/70 ">   
+  <div className="min-h-screen ">   
     {overlay}
     <div className="flex">
         <Sidebar

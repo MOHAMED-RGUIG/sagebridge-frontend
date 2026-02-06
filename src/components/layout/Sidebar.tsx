@@ -127,108 +127,81 @@ export default function Sidebar({
   const dispatch = useAppDispatch();
 
   return (
-    <aside
-      className={cn(
-        "z-40 shrink-0 w-[240px]",
-        "bg-white/80 backdrop-blur",
-        "border-r border-[hsl(var(--border))]",
-        "shadow-[0_20px_60px_rgba(15,23,42,0.08)]",
-        "md:sticky md:top-0 md:h-screen",
-        "max-md:fixed max-md:inset-y-0 max-md:left-0",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-        "max-md:transition-transform"
-      )}
-    >
-      <div className="flex h-full flex-col px-5 py-6">
-        {/* Brand */}
-<div className="flex items-center gap-3 px-4">
-  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-600 shadow-lg">
-    <span className="text-white font-bold text-lg tracking-tight">
-      SB
-    </span>
-  </div>
+<aside className={cn(
+  "z-40 shrink-0 w-[260px]",
+  "relative overflow-visible", // 👈 important (pas hidden)
+  "bg-white",                  // 👈 fond normal
+  "md:sticky md:top-0 md:h-screen",
+  "max-md:fixed max-md:inset-y-0 max-md:left-0",
+  mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+  "max-md:transition-transform"
+)}>
 
-  <div className="font-semibold text-[16px] text-slate-900 tracking-tight">
-    SageBridge
-  </div>
-</div>
-
-        <div className="my-5 h-px bg-slate-200/70" />
-
-        {/* MAIN NAV */}
-        <div className="space-y-3 ">
-          {NAV.map((it) => (
-            <NavItem
-              key={it.key}
-              active={active === it.key}
-              icon={ICONS[it.key]}
-              label={it.label}
-              onClick={() => onNavigate(it.key)}
-              
-            />
-          ))}
-        </div>
-
-        {/* Help Card   <div className="mt-6 rounded-3xl bg-gradient-to-br from-slate-700/25 to-slate-400/25 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.12)]">
-          <div className="flex items-start gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/90 shadow-sm">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="text-slate-700"
-                />
-              </svg>
-            </div>
-            <div>
-              <div className="text-white text-[16px] font-bold">Need help?</div>
-              <div className="mt-1 text-white/85 text-[13px]">
-                Please check our docs
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="mt-5 w-full rounded-2xl bg-white px-4 py-3 text-[13px] font-bold tracking-wide text-slate-900 shadow-[0_12px_20px_rgba(15,23,42,0.10)] hover:brightness-[0.98]"
-          >
-            DOCUMENTATION
-          </button>
-        </div>*/}
-      
-
-{/* Bottom actions */}
-<div className="mt-auto pt-6 space-y-3">
-
-  {/* Upgrade Button */}
-
- <div className="my-5 h-px bg-slate-200/70" />
- 
-
-
-  {/* Logout Button */}
-  <button
-    type="button"
-    className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition hover:bg-rose-50"
-    onClick={() => {
-      localStorage.removeItem("sb_token");
-      dispatch(authActions.logout());
-      window.location.href = "/login";
-    }}
+  {/* Curvy background */}
+  <svg
+    className="absolute inset-0 h-full w-full text-white"
+    style={{ filter: "drop-shadow(10px 0 10px rgba(0,0,0,0.18))" }}
+    preserveAspectRatio="none"
+    viewBox="0 0 309 800"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <span className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-[0_12px_22px_rgba(15,23,42,0.12)] text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition">
-      {ICONS.logout}
-    </span>
+    <path d="M268.487 0H0V800H247.32C207.957 725 207.975 492.294 268.487 367.647C329 243 314.906 53.4314 268.487 0Z" />
+  </svg>
 
-    <span className="text-[14px] font-semibold text-rose-600 group-hover:text-rose-700">
-      Logout
-    </span>
-  </button>
+  {/* Optional: gradient accent (to match your brand) */}
+  <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-b from-fuchsia-50 via-white to-purple-50 opacity-70" />
 
-</div>
-
+  {/* Content */}
+  <div className="relative z-10 flex h-full flex-col px-5 py-6">
+    {/* ✅ your existing content exactly */}
+    <div className="flex items-center gap-3 px-4">
+      <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-600 shadow-lg">
+        <span className="text-white font-bold text-lg tracking-tight">SB</span>
       </div>
-    </aside>
+      <div className="font-semibold text-[16px] text-slate-900 tracking-tight">
+        SageBridge
+      </div>
+    </div>
+
+    <div className="my-5 h-px bg-slate-200/70" />
+
+    <div className="space-y-3">
+      {NAV.map((it) => (
+        <NavItem
+          key={it.key}
+          active={active === it.key}
+          icon={ICONS[it.key]}
+          label={it.label}
+          onClick={() => onNavigate(it.key)}
+        />
+      ))}
+    </div>
+
+    <div className="mt-auto pt-6 space-y-3">
+
+
+      <button
+        type="button"
+        className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition hover:bg-rose-50"
+        onClick={() => {
+          localStorage.removeItem("sb_token");
+          dispatch(authActions.logout());
+          window.location.href = "/login";
+        }}
+      >
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-[0_12px_22px_rgba(15,23,42,0.12)] text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition">
+          {ICONS.logout}
+        </span>
+
+        <span className="text-[14px] font-semibold text-rose-600 group-hover:text-rose-700">
+          Logout
+        </span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+
   );
 }
