@@ -17,8 +17,8 @@ export type NavKey =
   | "logout";
 
 const NAV: Array<{ key: NavKey; label: string }> = [
-  { key: "claims", label: "Dossier sinistre" },
-  { key: "purchase", label: "DA" },
+  { key: "claims", label: "DOSSIER" },
+  { key: "purchase", label: "DEMANDE" },
   { key: "devis", label: "Devis" },
   { key: "stock", label: "Stock" },
 ];
@@ -103,7 +103,7 @@ function NavItem({
       {/* Label */}
       <span
         className={cn(
-          "text-[14px] font-semibold",
+          "text-[14px] font-semibold uppercase"  ,
           active ? "text-slate-900" : "text-slate-600"
         )}
       >
@@ -156,7 +156,7 @@ export default function Sidebar({
         <div className="my-5 h-px bg-slate-200/70" />
 
         {/* MAIN NAV */}
-        <div className="space-y-3">
+        <div className="space-y-3 ">
           {NAV.map((it) => (
             <NavItem
               key={it.key}
@@ -164,6 +164,7 @@ export default function Sidebar({
               icon={ICONS[it.key]}
               label={it.label}
               onClick={() => onNavigate(it.key)}
+              
             />
           ))}
         </div>
