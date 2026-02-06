@@ -14,6 +14,7 @@ import Button from "../ui/Button";
 export default function PurchaseList() {
   const dispatch = useAppDispatch();
   const query = useAppSelector((s) => s.stock.query);
+const [filterMode, setFilterMode] = useState<"single" | "range">("single");
 
   const { data, isFetching, isError } = useGetStockQuery(
     { q: query.q || undefined, site: query.site || undefined },
@@ -27,19 +28,59 @@ export default function PurchaseList() {
   const rows = useMemo(() => data ?? [], [data]);
   const [pageSize, setPageSize] = useState(5);
   const [page, setPage] = useState(1);
-  
+ const filteredRows = useMemo(() => {
+  // rows est toujours un tableau (data ?? [])
+  return rows.filter((item: any) => {
+    // adapte le champ date (ex: item.date / item.createdAt / item.INDT ...)
+    if (!item?.date) return true;
+
+    const itemDate = new Date(item.date);
+    if (Number.isNaN(itemDate.getTime())) return true;
+
+    // 1) Date précise
+    if (filterMode === "single" && query.date) {
+      const selectedDate = new Date(query.date);
+      if (Number.isNaN(selectedDate.getTime())) return true;
+
+      return itemDate.toDateString() === selectedDate.toDateString();
+    }
+
+    // 2) Intervalle
+    if (filterMode === "range" && (query.dateFrom || query.dateTo)) {
+      const from = query.dateFrom ? new Date(query.dateFrom) : null;
+      const to = query.dateTo ? new Date(query.dateTo) : null;
+
+      if (from && !Number.isNaN(from.getTime()) && itemDate < from) return false;
+      if (to && !Number.isNaN(to.getTime())) {
+        // inclure toute la journée de "to"
+        const endOfDay = new Date(to);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (itemDate > endOfDay) return false;
+      }
+
+      return true;
+    }
+
+    return true;
+  });
+}, [rows, query.date, query.dateFrom, query.dateTo, filterMode]); 
   useEffect(() => {
     // reset page quand on change la recherche/site ou quand la data change
     setPage(1);
   }, [query.q, query.site, rows.length]);
   
-  const total = rows.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const safePage = Math.min(page, totalPages);
-  
-  const startIndex = (safePage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, total);
-  const pagedRows = useMemo(() => rows.slice(startIndex, endIndex), [rows, startIndex, endIndex]);
+const total = filteredRows.length;
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
+const safePage = Math.min(page, totalPages);
+
+const startIndex = (safePage - 1) * pageSize;
+const endIndex = Math.min(startIndex + pageSize, total);
+
+const pagedRows = useMemo(
+  () => filteredRows.slice(startIndex, endIndex),
+  [filteredRows, startIndex, endIndex]
+);
+
   
   function goTo(p: number) {
     setPage(Math.min(Math.max(1, p), totalPages));
@@ -60,7 +101,10 @@ export default function PurchaseList() {
   
     return arr;
   }, [safePage, totalPages]);
-  
+
+
+
+
   return (
     <div className="space-y-4">
           <Card className="!mt-8">
@@ -73,7 +117,7 @@ export default function PurchaseList() {
           </div>
         }
       />        
-      <CardContent className="pt-4">
+      <CardContent className="">
         {/*start search and filter section  */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 
@@ -97,17 +141,58 @@ export default function PurchaseList() {
     value={query.q}
     onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
   />
-
-  <Select
+  <Input
     label=""
-    value={pageSize}
-    onChange={(e) => setPageSize(Number(e.target.value))}
-  >
-    <option value={5}>Afficher 5 lignes</option>
-    <option value={10}>Afficher 10 lignes</option>
-    <option value={20}>Afficher 20 lignes</option>
-    <option value={50}>Afficher 50 lignes</option>
-  </Select>
+    placeholder="Matricule…"
+    value={query.q}
+    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
+  />
+
+
+
+
+
+<Select value={filterMode} onChange={(e) => setFilterMode(e.target.value as any)}>
+  <option value="single">Date précise</option>
+  <option value="range">Intervalle</option>
+</Select>
+
+{filterMode === "single" ? (
+  <Input
+    type="date"
+    value={query.date || ""}
+    onChange={(e) =>
+      dispatch(stockActions.setQuery({
+        date: e.target.value,
+        dateFrom: "",
+        dateTo: "",
+      }))
+    }
+  />
+) : (
+  <div className="flex gap-2">
+    <Input
+      type="date"
+      value={query.dateFrom || ""}
+      onChange={(e) =>
+        dispatch(stockActions.setQuery({
+          dateFrom: e.target.value,
+          date: "",
+        }))
+      }
+    />
+    <Input
+      type="date"
+      value={query.dateTo || ""}
+      onChange={(e) =>
+        dispatch(stockActions.setQuery({
+          dateTo: e.target.value,
+          date: "",
+        }))
+      }
+    />
+  </div>
+)}
 
 
 
@@ -115,7 +200,7 @@ export default function PurchaseList() {
 
 {/* ====== RIGHT SIDE (BOUTON) ======
 */}
-<div className="flex justify-end">
+<div className="flex justify-end ">
   <Button
     type="button"
     variant="primary"
@@ -127,7 +212,7 @@ export default function PurchaseList() {
       inline-flex items-center gap-2
       rounded-xl
       bg-brand text-white shadow-cardSm hover:brightness-[0.98] hover:-translate-y-[7px] active:-translate-y-[1px]
-      px-6 py-3 mb-2 w-full md:w-[160px]
+      px-6 py-3 mb-10 w-full md:w-[160px]
       text-lg text-white
       shadow-md shadow-indigo-500/30
       transition-all duration-200
@@ -179,10 +264,18 @@ export default function PurchaseList() {
     
             
                         <div className="flex items-center gap-2">
+                          
                                 <Badge tone={isError ? "red" : isFetching ? "amber" : "green"}>
                                 {isError ? "Erreur" : isFetching ? "Chargement" : "OK"}
                                 </Badge>
-                                <Badge tone="slate">{rows.length} ligne(s)</Badge>   
+                               <Badge tone="slate">{filteredRows.length} ligne(s)</Badge>
+                                 <Select label="" value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+                                    <option value={5}>Afficher 5 lignes</option>
+                                    <option value={10}>Afficher 10 lignes</option>
+                                    <option value={20}>Afficher 20 lignes</option>
+                                    <option value={50}>Afficher 50 lignes</option>
+                                  </Select>
+ 
                           </div>
                   
                   </div>

@@ -6,7 +6,9 @@ type State = {
 };
 
 const initialState: State = {
-  query: { q: "", site: "SIG" },
+  query: { q: "",   date: "",
+  dateFrom: "",
+  dateTo: "",site: "SIG" },
 };
 
 const slice = createSlice({

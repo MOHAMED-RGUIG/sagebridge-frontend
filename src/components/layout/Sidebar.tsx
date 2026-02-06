@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils/cn";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { authActions } from "@/features/auth/authSlice";
 
 export type NavKey =
@@ -24,7 +24,7 @@ const NAV: Array<{ key: NavKey; label: string }> = [
 ];
 
 const BOTTOM_ACTIONS: Array<{ key: NavKey; label: string }> = [
-  { key: "option", label: "Paramètres" },
+
   { key: "logout", label: "Logout" },
 ];
 
@@ -65,6 +65,29 @@ const ICONS: Record<NavKey, React.ReactNode> = {
   devisView: <span />,
 };
 
+function TopIconBtn({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      className={cn(
+        "relative grid h-10 w-10 place-items-center rounded-2xl",
+        "bg-white/5 text-white/80",
+        "hover:bg-white/10 hover:text-white transition"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 function NavItem({
   active,
   icon,
@@ -82,29 +105,24 @@ function NavItem({
       onClick={onClick}
       className={cn(
         "group w-full flex items-center gap-4 rounded-2xl px-4 py-3 text-left transition",
-        active
-          ? "bg-white shadow-[0_18px_35px_rgba(15,23,42,0.10)]"
-          : "hover:bg-white/70"
+        active ? "bg-white/12" : "hover:bg-white/5"
       )}
     >
       {/* Icon tile */}
       <span
         className={cn(
-          "grid h-11 w-11  place-items-center rounded-2xl",
-          "shadow-[0_12px_22px_rgba(15,23,42,0.12)]",
-          active
-            ? "bg-brand text-white shadow-cardSm hover:brightness-[0.98] hover:-translate-y-[7px] active:-translate-y-[1px]"
-            : "bg-white text-slate-700"
+          "grid h-11 w-11 place-items-center rounded-2xl",
+          active ? "bg-white/10 text-white" : "bg-white/5 text-white/70"
         )}
       >
-        <span className="scale-[0.85]">{icon}</span>
+        <span className="scale-[0.75]">{icon}</span>
       </span>
 
       {/* Label */}
       <span
         className={cn(
-          "text-[14px] font-semibold uppercase"  ,
-          active ? "text-slate-900" : "text-slate-600"
+          "text-[15px] font-semibold tracking-wide",
+          active ? "text-white" : "text-white/75"
         )}
       >
         {label}
@@ -125,91 +143,145 @@ export default function Sidebar({
   onClose: () => void;
 }) {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.auth.user);
+
+  const initials = (user?.name ?? "SB")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
 
   return (
-  <aside
-      className={cn(
-        "z-40 shrink-0 w-[210px]",
-        "bg-[#153B8E] text-white", // bleu sidebar
-        "md:sticky md:top-0 md:h-screen",
-        "max-md:fixed max-md:inset-y-0 max-md:left-0",
-        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-        "max-md:transition-transform max-md:duration-300"
-      )}
-    >
-      <div className="relative flex h-full flex-col px-6 py-8">
-        {/* Top right circle menu (like screenshot) */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-5 top-6 grid h-12 w-12 place-items-center rounded-full border border-white/25 bg-white/10 backdrop-blur hover:bg-white/15 transition md:hidden"
-          aria-label="Close"
-        >
-          <span className="h-[2px] w-6 bg-white rounded-full block" />
-          <span className="mt-2 h-[2px] w-6 bg-white rounded-full block" />
-        </button>
+    <>
+      {/* overlay mobile */}
+      <button
+        type="button"
+        onClick={onClose}
+        className={cn(
+          "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden",
+          mobileOpen ? "block" : "hidden"
+        )}
+        aria-label="Close sidebar overlay"
+      />
 
-        {/* Brand */}
-        <div className="flex items-end gap-4 pt-2">
-          {/* Logo icon */}
-
-
-          <div className="leading-none">
-            <div className="text-2xl font-extrabold tracking-tight px-3">
-              SageBridge
-              
+      <aside
+        className={cn(
+          "z-50 shrink-0",
+          "fixed inset-y-0 left-0 w-[290px] md:static",
+          "md:sticky md:top-0 md:h-[calc(100vh-16px)] md:m-2 ",
+          "overflow-hidden",
+          "transition-transform md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          // dark gradient like template
+          "bg-gradient-to-b from-[#0B1022] via-[#0B0F1C] to-[#060913]",
+          "shadow-2xl shadow-black/30"
+        )}
+      >
+        {/* TOP ROW: logo + icons */}
+        <div className="flex items-center justify-between px-5 pt-5">
+          <div className="flex items-center gap-2">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-white/5">
+              <span className="text-[18px] font-black text-white">SB</span>
             </div>
+            <div className="text-[16px] font-extrabold text-white/90">
+              SageBridge
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <TopIconBtn title="Notifications">
+              <span className="text-[16px]">🔔</span>
+              <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] font-black text-white">
+                3
+              </span>
+            </TopIconBtn>
+
+            <TopIconBtn title="Compte">
+              <span className="text-[16px]">👤</span>
+              <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-[#0B1022]" />
+            </TopIconBtn>
           </div>
         </div>
 
-        <div className="mt-10 space-y-2">
-          {NAV.map((it) => {
-            const isActive = active === it.key;
-            return (
-              <button
+        {/* PROFILE */}
+   
+
+        {/* divider */}
+        <div className="mx-5 mt-6 h-px bg-white/10" />
+
+        {/* CONTENT */}
+        <div className="px-4 pb-6 pt-6">
+
+
+          <div className="mt-4 space-y-2">
+            {NAV.map((it) => (
+              <NavItem
                 key={it.key}
-                type="button"
-                onClick={() => onNavigate(it.key)}
-                className={cn(
-                  "group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition",
-                  isActive ? "bg-white/15" : "hover:bg-white/10"
-                )}
-              >
-                <span className="grid h-9 w-9 place-items-center">
-                  {/* icône inchangée */}
-                  <span className="scale-[0.80] text-white">{ICONS[it.key]}</span>
-                </span>
+                active={active === it.key}
+                icon={ICONS[it.key]}
+                label={it.label}
+                onClick={() => {
+                  onNavigate(it.key);
+                  onClose();
+                }}
+              />
+            ))}
+          </div>
 
-                <span className="text-[15px] font-semibold tracking-wide">
-                  {it.label}
-                </span>
-              </button>
-            );
-          })}
+          {/* bottom actions */}
+          <div className="mt-8">
+
+
+            <div className="mt-4 space-y-2">
+              {BOTTOM_ACTIONS.map((it) => {
+                const isLogout = it.key === "logout";
+                const isActive = active === it.key;
+
+                return (
+                  <button
+                    key={it.key}
+                    type="button"
+                    onClick={() => {
+                      if (isLogout) {
+                        localStorage.removeItem("sb_token");
+                        dispatch(authActions.logout());
+                        window.location.href = "/login";
+                        return;
+                      }
+                      onNavigate(it.key);
+                      onClose();
+                    }}
+                    className={cn(
+                      "group w-full flex items-center gap-4 rounded-2xl px-4 py-3 text-left transition",
+                      isActive ? "bg-white/12" : "hover:bg-white/5"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "grid h-11 w-11 place-items-center rounded-2xl",
+                        isActive ? "bg-white/10 text-white" : "bg-white/5 text-white/70",
+                        isLogout && "text-rose-200"
+                      )}
+                    >
+                      <span className="scale-[0.75]">{ICONS[it.key]}</span>
+                    </span>
+
+                    <span
+                      className={cn(
+                        "text-[15px] font-semibold tracking-wide",
+                        isLogout ? "text-rose-200" : isActive ? "text-white" : "text-white/75"
+                      )}
+                    >
+                      {it.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-
-        {/* Bottom actions (logout stays bottom) */}
-        <div className="mt-auto pt-8">
-          <button
-            type="button"
-            className="group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition hover:bg-white/10"
-            onClick={() => {
-              localStorage.removeItem("sb_token");
-              dispatch(authActions.logout());
-              window.location.href = "/login";
-            }}
-          >
-            <span className="grid h-10 w-10 place-items-center">
-              <span className="scale-[0.95]">{ICONS.logout}</span>
-            </span>
-            <span className="text-[18px] font-semibold tracking-wide">
-              Logout
-            </span>
-          </button>
-        </div>
-      </div>
-    </aside>
-
-
+      </aside>
+    </>
   );
 }
