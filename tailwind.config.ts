@@ -10,9 +10,7 @@ export default {
     extend: {
       fontFamily: {
       
-      sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
-    
-      },
+      sans: ["var(--font-jakarta)"],      },
       colors: {
         // Design tokens (Horizon / NextAdmin look)
         bg: "hsl(var(--bg))",

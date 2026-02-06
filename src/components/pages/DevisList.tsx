@@ -119,6 +119,7 @@ export default function DevisList() {
 <div className="flex justify-end">
   <Button
     type="button"
+    variant="primary"
     onClick={() => {
       window.location.hash = "devisView";
       window.dispatchEvent(new Event("hashchange"));
@@ -126,7 +127,7 @@ export default function DevisList() {
     className="
       inline-flex items-center gap-2
       rounded-xl
-      bg-gradient-to-r from-indigo-500 to-violet-600
+      
       px-6 py-3 mb-2 w-full md:w-[160px]
       text-xl font-bold text-white
       shadow-md shadow-indigo-500/30

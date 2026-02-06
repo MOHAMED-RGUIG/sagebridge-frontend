@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import { useAppSelector } from "@/store/hooks";
+
 import Button from "@/components/ui/Button";
 export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => void;  title: string; }) {
   const today = useMemo(() => {
@@ -12,6 +14,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
       day: "numeric",
     });
   }, []);
+const user = useAppSelector((s) => s.auth.user);
 
   return (
 <header className="sticky top-0 z-20 border-b border-white/40 bg-white backdrop-blur-xl">
@@ -28,7 +31,7 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
           <div className="mt-5 p-2">
   <h1 className="text-5xl px-7 md:text-5xl font-extrabold tracking-tight
                 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
-                 bg-clip-text text-transparent">
+                 bg-clip-text text-transparent uppercase">
     {title}
   </h1>
   {/* bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
@@ -63,9 +66,14 @@ export default function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => 
         
             <div className="ml-1 flex items-center gap-2 ">
               <div className="grid h-9 w-9 place-items-center rounded-full bg-brand text-[12px] font-black text-white">
-                MR
+              {(user?.name ?? "SB")
+  .split(" ")
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((w) => w[0]?.toUpperCase())
+  .join("")}
               </div>
-              <div className="hidden text-[14px] font-semibold md:block">Mohamed Rguig</div>
+              <div className="hidden text-[14px] font-semibold md:block"> {user?.name ?? "—"}</div>
             </div>
            
 

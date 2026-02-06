@@ -12,7 +12,7 @@ const ROUTE_TITLES: Record<RouteKey, string> = {
   claims: "Dossier sinistre",
   claimsView: "Nouveau dossier sinistre",
   purchase: "Demande d'achat",
-  purchaseRequestView: "Demande d’achat",
+  purchaseRequestView: "DA",
   devis :"Devis",
   devisView :"Devis",
   stock: "Stock",
@@ -31,10 +31,10 @@ export default function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false);
 const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
 const router = useRouter();
-
-useEffect(() => {
+/*useEffect(() => {
   if (!isAuthenticated) router.replace("/login");
 }, [isAuthenticated, router]);
+ */
 
 
   useEffect(() => {
@@ -77,7 +77,7 @@ useEffect(() => {
             title={ROUTE_TITLES[active] ?? "Dashboard"}
           />
           <main className="px-6 mx-4 ">
-                <div className="mx-auto w-full max-w-[1400px]">{children}</div>
+                <div className="mx-auto w-full max-w-[1500px]">{children}</div>
                 
                
          

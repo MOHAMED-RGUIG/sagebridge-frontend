@@ -18,7 +18,7 @@ export type NavKey =
 
 const NAV: Array<{ key: NavKey; label: string }> = [
   { key: "claims", label: "Dossier sinistre" },
-  { key: "purchase", label: "Demande d'achat" },
+  { key: "purchase", label: "DA" },
   { key: "devis", label: "Devis" },
   { key: "stock", label: "Stock" },
 ];
@@ -93,7 +93,7 @@ function NavItem({
           "grid h-11 w-11  place-items-center rounded-2xl",
           "shadow-[0_12px_22px_rgba(15,23,42,0.12)]",
           active
-            ? "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white"
+            ? "bg-brand text-white shadow-cardSm hover:brightness-[0.98] hover:-translate-y-[7px] active:-translate-y-[1px]"
             : "bg-white text-slate-700"
         )}
       >
@@ -129,7 +129,7 @@ export default function Sidebar({
   return (
     <aside
       className={cn(
-        "z-40 shrink-0 w-[280px]",
+        "z-40 shrink-0 w-[240px]",
         "bg-white/80 backdrop-blur",
         "border-r border-[hsl(var(--border))]",
         "shadow-[0_20px_60px_rgba(15,23,42,0.08)]",
@@ -141,22 +141,17 @@ export default function Sidebar({
     >
       <div className="flex h-full flex-col px-5 py-6">
         {/* Brand */}
-        <div className="flex items-center gap-3 px-2">
-          <div className="grid h-11 w-10 place-items-center rounded-2xl mx-2 bg-white shadow-[0_12px_22px_rgba(15,23,42,0.10)]">
-            {/* petit logo placeholder */}
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 4h7v3h-7v-3Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-slate-900"
-              />
-            </svg>
-          </div>
-          <div className="font-semibold text-[15px] text-slate-800">
-            SageBridge
-          </div>
-        </div>
+<div className="flex items-center gap-3 px-4">
+  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-600 shadow-lg">
+    <span className="text-white font-bold text-lg tracking-tight">
+      SB
+    </span>
+  </div>
+
+  <div className="font-semibold text-[16px] text-slate-900 tracking-tight">
+    SageBridge
+  </div>
+</div>
 
         <div className="my-5 h-px bg-slate-200/70" />
 
@@ -207,8 +202,8 @@ export default function Sidebar({
 
   {/* Upgrade Button */}
 
-<div     className="bg-gradient-to-r from-fuchsia-600 to-purple-600 px-1 py-1 text-[7px] tracking-wide text-white shadow-[0_18px_35px_rgba(147,51,234,0.25)] hover:brightness-[0.98]"
-> </div>    
+ <div className="my-5 h-px bg-slate-200/70" />
+ 
 
 
   {/* Logout Button */}

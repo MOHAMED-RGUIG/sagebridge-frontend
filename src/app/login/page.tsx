@@ -16,28 +16,48 @@ export default function LoginPage() {
   useEffect(() => {
     if (isAuthenticated) router.replace("/");
   }, [isAuthenticated, router]);
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    dispatch(authActions.loginStart());
-    try {
-      // ✅ placeholder: remplace par ton vrai backend plus tard
-      // ex: POST /api/auth/login
-      await new Promise((r) => setTimeout(r, 600));
+async function onSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  dispatch(authActions.loginStart());
 
-      if (!userName || !password) throw new Error("userName & mot de passe requis");
+  try {
+    if (!userName || !password) throw new Error("userName & mot de passe requis");
 
-      // Token fake (remplace par le token renvoyé par ton API)
-      const token = "fake-jwt-token";
-      dispatch(authActions.loginSuccess({ token, user: { userName } }));
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL; // ex: http://localhost:4000
+    if (!base) throw new Error("NEXT_PUBLIC_API_BASE_URL manquant");
 
-      if (remember) localStorage.setItem("sb_token", token);
-      else localStorage.removeItem("sb_token");
+    const res = await fetch(`${base}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ login: userName, password }),
+    });
 
-      router.replace("/");
-    } catch (err: any) {
-      dispatch(authActions.loginError(err?.message ?? "Erreur login"));
-    }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.message ?? "Erreur login");
+
+    // data = { token, user: { login0, usr0, nomusr0 } }
+    const token = data.token as string;
+
+    dispatch(
+      authActions.loginSuccess({
+        token,
+        user: {
+          userName: data.user.login0,
+          usr0: data.user.usr0,
+          name: data.user.nomusr0,
+        },
+      })
+    );
+
+    if (remember) localStorage.setItem("sb_token", token);
+    else localStorage.removeItem("sb_token");
+
+    router.replace("/");
+  } catch (err: any) {
+    dispatch(authActions.loginError(err?.message ?? "Erreur login"));
   }
+}
+
 
   return (
     <div className="min-h-screen w-full bg-[hsl(var(--bg))]">

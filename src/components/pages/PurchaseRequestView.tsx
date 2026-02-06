@@ -27,7 +27,14 @@ export default function PurchaseRequestView() {
   const [activeLineId, setActiveLineId] = useState<string | null>(null);
  
   const [articleQuery, setArticleQuery] = useState("");
+const authUser = useAppSelector((s) => s.auth.user);
 
+useEffect(() => {
+  // ✅ remplir REQUSR automatiquement avec USR_0
+  if (authUser?.usr0) {
+    dispatch(purchaseRequestActions.setField({ key: "REQUSR", value: authUser.usr0 }));
+  }
+}, [authUser?.usr0, dispatch]);
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
   const articles = useMemo(
     () => [
