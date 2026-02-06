@@ -129,7 +129,7 @@ export default function DevisList() {
       rounded-xl
       
       px-6 py-3 mb-2 w-full md:w-[160px]
-      text-xl font-bold text-white
+      text-lg font-bold text-white
       shadow-md shadow-indigo-500/30
       transition-all duration-200
       hover:scale-[1.03] hover:shadow-lg

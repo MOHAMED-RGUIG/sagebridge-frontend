@@ -46,7 +46,7 @@ useEffect(() => {
     []
   );
 
-  const filteredArticles = useMemo(() => {
+const filteredArticles = useMemo(() => {
     const q = articleQuery.trim().toLowerCase();
     if (!q) return articles;
     return articles.filter(
@@ -248,7 +248,6 @@ const matriculeDisabled = matType === "NORMAL";
                       disabled:cursor-not-allowed
                     "
           />
-
 <Input
             label="N demande"
             
@@ -258,18 +257,22 @@ const matriculeDisabled = matType === "NORMAL";
             className="
                     w-full rounded-4xl border px-3 py-2
                   "/>
-          
+           
+
           <Input
               label="Date demande"
               type="date"
               value={form.PRQDAT}
-              disabled
               className="w-full rounded-4xl border px-3 py-2
-              disabled:bg-gray-100
-              disabled:text-gray-500
-              disabled:border-gray-300
-              disabled:cursor-not-allowed
-              "/>
+              "
+                onChange={(e) =>
+    dispatch(
+      purchaseRequestActions.setField({
+        key: "PRQDAT",
+        value: e.target.value,
+      })
+    )
+  }/>
 
           <Select
               label= "Type demande *"
@@ -305,7 +308,7 @@ const matriculeDisabled = matType === "NORMAL";
 
 
 
-         <div className="w-full space-y-3">
+
   {/* SELECT TYPE */}
   <div className="w-full">
 
@@ -322,10 +325,18 @@ const matriculeDisabled = matType === "NORMAL";
 
   {/* 3 INPUTS */}
   {matType === "NORMAL" && (
-    <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-3">
-      <Input label="" value={mat1} onChange={(e) => setMat1(e.target.value)} />
-      <Input label="" value={mat2} onChange={(e) => setMat2(e.target.value.toUpperCase())} />
-      <Input label="" value={mat3} onChange={(e) => setMat3(e.target.value)} />
+    <div className="grid w-full grid-cols-1 gap-3 mt-7 md:grid-cols-3">
+       <div className="[&>span]:hidden">
+    <Input value={mat1} onChange={(e) => setMat1(e.target.value)} />
+  </div>
+
+  <div className="[&>span]:hidden">
+    <Input value={mat2} onChange={(e) => setMat2(e.target.value.toUpperCase())} />
+  </div>
+
+  <div className="[&>span]:hidden">
+    <Input value={mat3} onChange={(e) => setMat3(e.target.value)} />
+  </div>
     </div>
   )}
 
@@ -346,7 +357,7 @@ const matriculeDisabled = matType === "NORMAL";
       }
     />
   </div>
-</div>
+
 
         </CardContent>
         

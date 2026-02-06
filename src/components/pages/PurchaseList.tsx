@@ -127,7 +127,7 @@ export default function PurchaseList() {
       rounded-xl
       bg-brand text-white shadow-cardSm hover:brightness-[0.98] hover:-translate-y-[7px] active:-translate-y-[1px]
       px-6 py-3 mb-2 w-full md:w-[160px]
-      text-xl font-bold text-white
+      text-lg text-white
       shadow-md shadow-indigo-500/30
       transition-all duration-200
       hover:scale-[1.03] hover:shadow-lg
