@@ -63,57 +63,58 @@ export default function PurchaseList() {
   
   return (
     <div className="space-y-4">
-    <Card className="!mt-8">
-     {/* <CardHeader
-        title=""
+          <Card className="!mt-8">
+     <CardHeader
+     
+        title="Rechercher par"
         subtitle=""
         right={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ">
           </div>
         }
-      /> */}       
-      <CardContent className="pt-8">
+      />        
+      <CardContent className="pt-4">
         {/*start search and filter section  */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 
 {/* ====== LEFT SIDE (filtres) ====== */}
 <div className="grid flex-1 gap-3 md:grid-cols-4">
-
   <Input
-    label="Recherche"
-    placeholder="Code, désignation…"
+    label=""
+    placeholder="Demandeur…"
+    value={query.q}
+    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
+  />
+  <Input
+    label=""
+    placeholder="Type de demande…"
+    value={query.q}
+    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
+  />
+  <Input
+    label=""
+    placeholder="Compagnie d'assurance…"
     value={query.q}
     onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
   />
 
   <Select
-    label="Site"
-    value={query.site}
-    onChange={(e) => dispatch(stockActions.setQuery({ site: e.target.value }))}
-  >
-    <option value="SIG">SIG</option>
-    <option value="CAS">CAS</option>
-    <option value="RAB">RAB</option>
-  </Select>
-
-  <Select
-    label="Lignes"
+    label=""
     value={pageSize}
     onChange={(e) => setPageSize(Number(e.target.value))}
   >
-    <option value={5}>Show 5</option>
-    <option value={10}>Show 10</option>
-    <option value={20}>Show 20</option>
-    <option value={50}>Show 50</option>
+    <option value={5}>Afficher 5 lignes</option>
+    <option value={10}>Afficher 10 lignes</option>
+    <option value={20}>Afficher 20 lignes</option>
+    <option value={50}>Afficher 50 lignes</option>
   </Select>
 
-  <div className="flex items-end pb-2 text-lg text-muted">
-    {total} record(s)
-  </div>
+
 
 </div>
 
-{/* ====== RIGHT SIDE (BOUTON) ====== */}
+{/* ====== RIGHT SIDE (BOUTON) ======
+*/}
 <div className="flex justify-end">
   <Button
     type="button"
@@ -136,12 +137,29 @@ export default function PurchaseList() {
   >
    Ajouter
   </Button>
-</div>
+</div> 
 
 
 </div>
 
         {/*end search and filter section  */}
+
+      </CardContent>
+    </Card>
+
+
+    <Card className="!mt-8">
+     {/* <CardHeader
+        title=""
+        subtitle=""
+        right={
+          <div className="flex items-center gap-2">
+          </div>
+        }
+      /> */}       
+      <CardContent className="pt-8">
+
+
           {/* CARD (style Loopple/Riva) */}
           <div className="flex flex-wrap -mx-3 mb-5 mt-4">
             <div className="w-full max-w-full px-3 mb-6 mx-auto">

@@ -530,13 +530,13 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                     </td>
 
 
-                    <td className="px-3 py-2 text-right">
+                    <td className="px-3">
                       <Button
-                        variant="ghost"
+                        variant="inverse"
                         type="button"
                         onClick={() => dispatch(purchaseRequestActions.removeItem(it.id))}
                         title="Supprimer"
-                        className="h-10 w-11 text-3xl rounded-xl"
+                        className="h-[45px] w-11 text-xl rounded-xl"
                         
                       >
                         🗑
@@ -557,7 +557,7 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
               Réinitialiser
             </Button>
             <Button type="button" variant="primary" onClick={onSubmit} disabled={isLoading}>
-              {isLoading ? "Envoi..." : "Envoyer"}
+              {isLoading ? "Envoi..." : "Créer"}
             </Button>
           </div>
         </CardContent>
@@ -574,21 +574,22 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
           />
 
           {/* modal */}
-          <div className="absolute left-1/2 top-1/2 w-[min(920px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl">
+          <div className="absolute left-1/2 top-1/2 w-[min(1500px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
               <div>
-                <div className="text-4xl md:text-3xl font-extrabold tracking-tight
+                <div className="text-4xl md:text-4xl font-extrabold tracking-tight
           bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
-          bg-clip-text text-transparent">Sélectionner un article</div>
-                <div className="text-[12px] text-muted2">
-                  Recherche par code ou désignation
-                </div>
+          bg-clip-text text-transparent mt-4">Sélectionner un article</div>
+               {/*  <div className="text-[12px] text-muted2">
+                  Recherche un article
+                </div> */}
               </div>
 
               <Button
                 type="button"
+                variant="inverse"
                 onClick={() => setArticleModalOpen(false)}
-                className="grid h-9 w-9 place-items-center rounded-3xl border border-border text-muted2 bg-gray-50 !text-black"
+                className="grid h-9 w-9 place-items-center rounded-3xl border border-border text-muted2 "
                 title="Fermer"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -603,18 +604,24 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                 autoFocus
                 value={articleQuery}
                 onChange={(e) => setArticleQuery(e.target.value)}
-                placeholder="Rechercher… (ex: ART-001 ou Filtre à huile)"
+                placeholder="Rechercher un artcile ... (ex: par  ITMREF_0 ou ITMDES1_0 ...)"
                 className="h-11 w-full rounded-2xl border border-border bg-white px-4 text-[14px] outline-none focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
               />
 
               {/* list */}
               <div className="mt-4 max-h-[55vh] overflow-auto rounded-2xl border border-border">
-                <table className="w-full text-left text-[13px]">
-                  <thead className="sticky top-0 bg-white">
+                <table className="w-full text-left ">
+                  <thead className="sticky top-0 bg-white text-[16px] font-extrabold">
                     <tr className="border-b border-border">
-                      <th className="px-4 py-3 font-semibold">Code</th>
-                      <th className="px-4 py-3 font-semibold">Désignation</th>
-                      <th className="px-4 py-3 font-semibold">Autre</th>
+                      <th className="px-4 py-3">ITMREF_0</th>
+                      <th className="px-4 py-3">ITMDES1_0</th>
+                      <th className="px-4 py-3 ">TSICOD_0</th>
+                       <th className="px-4 py-3 ">TSICOD_1</th>
+                      <th className="px-4 py-3 ">TSICOD_2</th>
+                      <th className="px-4 py-3 ">TSICOD_3</th>
+                       <th className="px-4 py-3 ">TSICOD_4</th>
+                      <th className="px-4 py-3 ">PUU_0</th>
+                     
                     </tr>
                   </thead>
                   <tbody>
@@ -633,14 +640,19 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                           <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
                           <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
                           <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
                           <td className="px-4 py-2">
                             <Button
-                            
+                            variant="secondary"
                               type="button"
                               onClick={() => pickArticle(a)}
-                              className="h-11 rounded-xl border border-border px-3 text-[13px] hover:bg-gray-50 hover:text-black transition"
+                              className="h-9 rounded-xl border border-border px-3 text-[13px] hover:bg-gray-50 hover:text-black transition"
                             >
-                              Choisir
+                              +
                             </Button>
                           </td>
                         </tr>

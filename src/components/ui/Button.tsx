@@ -29,7 +29,7 @@ export default function Button({
         // 🔥 NEW INVERSE STYLE
         variant === "inverse" &&
           `
-          bg-black text-white
+          bg-black text-white 
           hover:bg-white hover:text-black
           hover:shadow-[0px_15px_20px_rgba(0,0,0,0.25)]
           hover:-translate-y-[7px]
