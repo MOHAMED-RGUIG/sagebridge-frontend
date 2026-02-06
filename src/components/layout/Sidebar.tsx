@@ -127,80 +127,88 @@ export default function Sidebar({
   const dispatch = useAppDispatch();
 
   return (
-<aside className={cn(
-  "z-40 shrink-0 w-[260px]",
-  "relative overflow-visible", // 👈 important (pas hidden)
-  "bg-white",                  // 👈 fond normal
-  "md:sticky md:top-0 md:h-screen",
-  "max-md:fixed max-md:inset-y-0 max-md:left-0",
-  mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-  "max-md:transition-transform"
-)}>
+  <aside
+      className={cn(
+        "z-40 shrink-0 w-[210px]",
+        "bg-[#153B8E] text-white", // bleu sidebar
+        "md:sticky md:top-0 md:h-screen",
+        "max-md:fixed max-md:inset-y-0 max-md:left-0",
+        mobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+        "max-md:transition-transform max-md:duration-300"
+      )}
+    >
+      <div className="relative flex h-full flex-col px-6 py-8">
+        {/* Top right circle menu (like screenshot) */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-5 top-6 grid h-12 w-12 place-items-center rounded-full border border-white/25 bg-white/10 backdrop-blur hover:bg-white/15 transition md:hidden"
+          aria-label="Close"
+        >
+          <span className="h-[2px] w-6 bg-white rounded-full block" />
+          <span className="mt-2 h-[2px] w-6 bg-white rounded-full block" />
+        </button>
 
-  {/* Curvy background */}
-  <svg
-    className="absolute inset-0 h-full w-full text-white"
-    style={{ filter: "drop-shadow(10px 0 10px rgba(0,0,0,0.18))" }}
-    preserveAspectRatio="none"
-    viewBox="0 0 309 800"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M268.487 0H0V800H247.32C207.957 725 207.975 492.294 268.487 367.647C329 243 314.906 53.4314 268.487 0Z" />
-  </svg>
+        {/* Brand */}
+        <div className="flex items-end gap-4 pt-2">
+          {/* Logo icon */}
 
-  {/* Optional: gradient accent (to match your brand) */}
-  <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-b from-fuchsia-50 via-white to-purple-50 opacity-70" />
 
-  {/* Content */}
-  <div className="relative z-10 flex h-full flex-col px-5 py-6">
-    {/* ✅ your existing content exactly */}
-    <div className="flex items-center gap-3 px-4">
-      <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-600 shadow-lg">
-        <span className="text-white font-bold text-lg tracking-tight">SB</span>
+          <div className="leading-none">
+            <div className="text-2xl font-extrabold tracking-tight px-3">
+              SageBridge
+              
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 space-y-2">
+          {NAV.map((it) => {
+            const isActive = active === it.key;
+            return (
+              <button
+                key={it.key}
+                type="button"
+                onClick={() => onNavigate(it.key)}
+                className={cn(
+                  "group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition",
+                  isActive ? "bg-white/15" : "hover:bg-white/10"
+                )}
+              >
+                <span className="grid h-9 w-9 place-items-center">
+                  {/* icône inchangée */}
+                  <span className="scale-[0.80] text-white">{ICONS[it.key]}</span>
+                </span>
+
+                <span className="text-[15px] font-semibold tracking-wide">
+                  {it.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Bottom actions (logout stays bottom) */}
+        <div className="mt-auto pt-8">
+          <button
+            type="button"
+            className="group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition hover:bg-white/10"
+            onClick={() => {
+              localStorage.removeItem("sb_token");
+              dispatch(authActions.logout());
+              window.location.href = "/login";
+            }}
+          >
+            <span className="grid h-10 w-10 place-items-center">
+              <span className="scale-[0.95]">{ICONS.logout}</span>
+            </span>
+            <span className="text-[18px] font-semibold tracking-wide">
+              Logout
+            </span>
+          </button>
+        </div>
       </div>
-      <div className="font-semibold text-[16px] text-slate-900 tracking-tight">
-        SageBridge
-      </div>
-    </div>
-
-    <div className="my-5 h-px bg-slate-200/70" />
-
-    <div className="space-y-3">
-      {NAV.map((it) => (
-        <NavItem
-          key={it.key}
-          active={active === it.key}
-          icon={ICONS[it.key]}
-          label={it.label}
-          onClick={() => onNavigate(it.key)}
-        />
-      ))}
-    </div>
-
-    <div className="mt-auto pt-6 space-y-3">
-
-
-      <button
-        type="button"
-        className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition hover:bg-rose-50"
-        onClick={() => {
-          localStorage.removeItem("sb_token");
-          dispatch(authActions.logout());
-          window.location.href = "/login";
-        }}
-      >
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-[0_12px_22px_rgba(15,23,42,0.12)] text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition">
-          {ICONS.logout}
-        </span>
-
-        <span className="text-[14px] font-semibold text-rose-600 group-hover:text-rose-700">
-          Logout
-        </span>
-      </button>
-    </div>
-  </div>
-</aside>
+    </aside>
 
 
   );
