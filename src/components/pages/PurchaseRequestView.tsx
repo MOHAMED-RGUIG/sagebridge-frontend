@@ -10,6 +10,8 @@ import { useDispatch } from "react-redux";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
+import { useGetArticlesQuery } from "@/lib/api/baseApi";
+
 import Badge from "@/components/ui/Badge";
 type MatriculeType = "NORMAL" | "AUTRE";
 export default function PurchaseRequestView() {
@@ -29,6 +31,48 @@ export default function PurchaseRequestView() {
   const [articleQuery, setArticleQuery] = useState("");
 const authUser = useAppSelector((s) => s.auth.user);
 
+// 1) ✅ Hook API au top level
+const qLower = articleQuery.trim().toLowerCase();
+
+const {
+  data: articlesData,
+  isFetching: isFetchingArticles,
+  isError: isErrorArticles,
+} = useGetArticlesQuery(
+  { q: undefined }, // <= on récupère tout (ou TOP 200)
+  { refetchOnFocus: false, refetchOnReconnect: true }
+);
+
+// 2) ✅ Normaliser la data
+const articles = useMemo(() => articlesData ?? [], [articlesData]);
+
+// 3) ✅ Filtre frontend (exactement ton code, mais safe)
+const filteredArticles = useMemo(() => {
+  if (!qLower) return articles;
+
+  return articles.filter((a: any) => {
+    const ITMREF_0 = String(a.ITMREF_0 ?? "").toLowerCase();
+    const ITMDES1_0 = String(a.ITMDES1_0 ?? "").toLowerCase();
+    const TSICOD_0 = String(a.TSICOD_0 ?? "").toLowerCase();
+    const TSICOD_1 = String(a.TSICOD_1 ?? "").toLowerCase();
+    const TSICOD_2 = String(a.TSICOD_2 ?? "").toLowerCase();
+    const TSICOD_3 = String(a.TSICOD_3 ?? "").toLowerCase();
+    const TSICOD_4 = String(a.TSICOD_4 ?? "").toLowerCase();
+    const PUU_0 = String(a.PUU_0 ?? "").toLowerCase();
+
+    return (
+      ITMREF_0.includes(qLower) ||
+      ITMDES1_0.includes(qLower) ||
+      TSICOD_0.includes(qLower) ||
+      TSICOD_1.includes(qLower) ||
+      TSICOD_2.includes(qLower) ||
+      TSICOD_3.includes(qLower) ||
+      TSICOD_4.includes(qLower) ||
+      PUU_0.includes(qLower)
+    );
+  });
+}, [qLower, articles]);
+
 useEffect(() => {
   // ✅ remplir REQUSR automatiquement avec USR_0
   if (authUser?.usr0) {
@@ -36,31 +80,8 @@ useEffect(() => {
   }
 }, [authUser?.usr0, dispatch]);
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
-  const articles = useMemo(
-    () => [
-      { ITMREF_0: "ART-001", ITMDES1_0: "Filtre à huile",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
-      { ITMREF_0: "ART-002", ITMDES1_0: "Bougie d’allumage",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
-      { ITMREF_0: "ART-003", ITMDES1_0: "Courroie",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: "" },
-      { ITMREF_0: "ART-004", ITMDES1_0: "Plaquettes de frein", TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
-    ],
-    []
-  );
 
-const filteredArticles = useMemo(() => {
-    const q = articleQuery.trim().toLowerCase();
-    if (!q) return articles;
-    return articles.filter(
-      (a) =>
-        a.ITMREF_0.toLowerCase().includes(q) ||
-        a.ITMDES1_0.toLowerCase().includes(q) ||
-        a.TSICOD_0.toLowerCase().includes(q) ||
-        a.TSICOD_1.toLowerCase().includes(q) ||
-        a.TSICOD_2.toLowerCase().includes(q) ||
-        a.TSICOD_3.toLowerCase().includes(q) ||
-        a.TSICOD_4.toLowerCase().includes(q) ||
-        a.PUU_0.toLowerCase().includes(q)
-    );
-  }, [articleQuery, articles]);
+
 
 const openArticleModal = (lineId: string) => {
   setActiveLineId(lineId);
@@ -69,27 +90,23 @@ const openArticleModal = (lineId: string) => {
 };
 
 
-  const pickArticle = (a: { ITMREF_0: string; ITMDES1_0: string }) => {
-    if (activeLineId == null) return;
+  const pickArticle = (a: any) => {
+  if (activeLineId == null) return;
 
-    dispatch(
-      purchaseRequestActions.updateItem({
-        id: activeLineId,
-        key: "ITMREF_0",
-        value: a.ITMREF_0,
-      })
-    );
-    dispatch(
-      purchaseRequestActions.updateItem({
-        id: activeLineId,
-        key: "ITMDES1_0",
-        value: a.ITMDES1_0,
-      })
-    );
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "ITMREF_0", value: a.ITMREF_0 }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "ITMDES1_0", value: a.ITMDES1_0 }));
 
-    setArticleModalOpen(false);
-    setActiveLineId(null);
-  };
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "PUU_0", value: a.PUU_0 ?? "UN" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_0", value: a.TSICOD_0 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_1", value: a.TSICOD_1 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_2", value: a.TSICOD_2 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_3", value: a.TSICOD_3 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_4", value: a.TSICOD_4 ?? "" }));
+
+  setArticleModalOpen(false);
+  setActiveLineId(null);
+};
+
 
 
   const totalLines = form.items.length;
@@ -590,6 +607,16 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                {/*  <div className="text-[12px] text-muted2">
                   Recherche un article
                 </div> */}
+                {isFetchingArticles ? (
+  <div className="px-4 py-3 text-sm text-muted2">Chargement des articles...</div>
+) : null}
+
+{isErrorArticles ? (
+  <div className="px-4 py-3 text-sm text-red-600">
+    Erreur: impossible de charger les articles.
+  </div>
+) : null}
+
               </div>
 
               <Button

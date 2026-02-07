@@ -9,6 +9,9 @@ export const ENDPOINTS = {
   stock: {
     list: "/api/stock",
   },
-  devis: { create: "/api/devis" } // exemple
+  devis: { create: "/api/devis" },
+    articles: {
+    list: "/api/articles",
+  }, // exemple
 
 } as const;

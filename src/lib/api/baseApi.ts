@@ -7,11 +7,23 @@ export type ApiError = {
   status?: number;
   message?: string;
 };
+export type ArticleRow = {
+  ITMREF_0: string;
+  ITMDES1_0: string;
+  TSICOD_0: string | null;
+  TSICOD_1: string | null;
+  TSICOD_2: string | null;
+  TSICOD_3: string | null;
+  TSICOD_4: string | null;
+  PUU_0: string | null;
+};
 
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000",
+
+    credentials: "include",
     prepareHeaders: (headers) => {
       return headers;
     },
@@ -36,6 +48,14 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["Devis"],
     }),
+      getArticles: builder.query<ArticleRow[], { q?: string }>({
+  query: (params) => ({
+    url: ENDPOINTS.articles.list, // ✅ /api/articles
+    method: "GET",
+    params: params?.q ? { q: params.q } : undefined,
+  }),
+}),
+
 
     createClaim: builder.mutation<{ id: string }, any>({
       query: (body) => ({
@@ -62,4 +82,5 @@ export const {
   useCreateDevisRequestMutation, // ✅
   useCreateClaimMutation,
   useGetStockQuery,
+  useGetArticlesQuery,
 } = baseApi;
