@@ -38,10 +38,10 @@ useEffect(() => {
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
   const articles = useMemo(
     () => [
-      { ITMREF: "ART-001", ITMDES: "Filtre à huile" },
-      { ITMREF: "ART-002", ITMDES: "Bougie d’allumage" },
-      { ITMREF: "ART-003", ITMDES: "Courroie" },
-      { ITMREF: "ART-004", ITMDES: "Plaquettes de frein" },
+      { ITMREF_0: "ART-001", ITMDES1_0: "Filtre à huile",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
+      { ITMREF_0: "ART-002", ITMDES1_0: "Bougie d’allumage",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
+      { ITMREF_0: "ART-003", ITMDES1_0: "Courroie",TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: "" },
+      { ITMREF_0: "ART-004", ITMDES1_0: "Plaquettes de frein", TSICOD_0: "", TSICOD_1: "", TSICOD_2: "", TSICOD_3: "",TSICOD_4: "", PUU_0: ""},
     ],
     []
   );
@@ -51,8 +51,14 @@ const filteredArticles = useMemo(() => {
     if (!q) return articles;
     return articles.filter(
       (a) =>
-        a.ITMREF.toLowerCase().includes(q) ||
-        a.ITMDES.toLowerCase().includes(q)
+        a.ITMREF_0.toLowerCase().includes(q) ||
+        a.ITMDES1_0.toLowerCase().includes(q) ||
+        a.TSICOD_0.toLowerCase().includes(q) ||
+        a.TSICOD_1.toLowerCase().includes(q) ||
+        a.TSICOD_2.toLowerCase().includes(q) ||
+        a.TSICOD_3.toLowerCase().includes(q) ||
+        a.TSICOD_4.toLowerCase().includes(q) ||
+        a.PUU_0.toLowerCase().includes(q)
     );
   }, [articleQuery, articles]);
 
@@ -63,21 +69,21 @@ const openArticleModal = (lineId: string) => {
 };
 
 
-  const pickArticle = (a: { ITMREF: string; ITMDES: string }) => {
+  const pickArticle = (a: { ITMREF_0: string; ITMDES1_0: string }) => {
     if (activeLineId == null) return;
 
     dispatch(
       purchaseRequestActions.updateItem({
         id: activeLineId,
-        key: "ITMREF",
-        value: a.ITMREF,
+        key: "ITMREF_0",
+        value: a.ITMREF_0,
       })
     );
     dispatch(
       purchaseRequestActions.updateItem({
         id: activeLineId,
-        key: "ITMDES",
-        value: a.ITMDES,
+        key: "ITMDES1_0",
+        value: a.ITMDES1_0,
       })
     );
 
@@ -92,7 +98,7 @@ const openArticleModal = (lineId: string) => {
     if (!form.PSHFCY.trim()) return false;
     if (!form.YTYPE.trim()) return false;
     if (!form.YCMPASS.trim()) return false;
-    if (form.items.some((it) => !it.ITMREF.trim() || it.QTYPUU <= 0)) return false;
+    if (form.items.some((it) => !it.ITMREF_0.trim() || it.QTYPUU <= 0)) return false;
     return true;
   }, [form]);
 
@@ -134,11 +140,12 @@ const openArticleModal = (lineId: string) => {
         PRQDAT: form.PRQDAT || null,
         YMATRICULE: form.YMATRICULE,
         items: form.items.map((it) => ({
-          ITMREF: it.ITMREF,
-          ITMDES: it.ITMDES,
+          ITMREF_0: it.ITMREF_0,
+          ITMDES1_0: it.ITMDES1_0,
           QTYPUU: Number(it.QTYPUU),
           EXTRCPDAT: form.EXTRCPDAT || null,
-          PUU: it.PUU,
+          PUU_0: it.PUU_0,
+          TSICOD_4: it.TSICOD_4,
         })),
       };
 
@@ -401,12 +408,12 @@ const matriculeDisabled = matType === "NORMAL";
 <td className="px-3 py-2">
   <div className="relative">
     <Input
-      value={it.ITMREF}
+      value={it.ITMREF_0}
       onChange={(e) =>
         dispatch(
           purchaseRequestActions.updateItem({
             id: it.id,
-            key: "ITMREF",
+            key: "ITMREF_0",
             value: e.target.value,
           })
         )
@@ -441,8 +448,8 @@ const matriculeDisabled = matType === "NORMAL";
 </td>
 <td className="px-3 py-2"> 
 
-<Input value={it.ITMDES} 
-onChange={(e) => dispatch(purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES", value: e.target.value, }) ) } 
+<Input value={it.ITMDES1_0} 
+onChange={(e) => dispatch(purchaseRequestActions.updateItem({ id: it.id, key: "ITMDES1_0", value: e.target.value, }) ) } 
 className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             text-gray-500
             cursor-not-allowed
@@ -486,12 +493,12 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                   
                     <td className="px-3 py-2">
                       <Select
-                        value={it.PUU}
+                        value={it.PUU_0}
                         onChange={(e) =>
                           dispatch(
                             purchaseRequestActions.updateItem({
                               id: it.id,
-                              key: "PUU",
+                              key: "PUU_0",
                               value: e.target.value,
                             })
                           )
@@ -634,17 +641,17 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                     ) : (
                       filteredArticles.map((a) => (
                         <tr
-                          key={a.ITMREF}
+                          key={a.ITMREF_0}
                           className="border-b border-border last:border-b-0 hover:bg-gray-50"
                         >
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
-                          <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
-                          <td className="px-4 py-3 text-muted2">{a.ITMDES}</td>
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
-                          <td className="px-4 py-3 font-medium">{a.ITMREF}</td>
+                          <td className="px-4 py-3 font-medium">{a.ITMREF_0}</td>
+                          <td className="px-4 py-3 text-muted2">{a.ITMDES1_0}</td>
+                          <td className="px-4 py-3 text-muted2">{a.TSICOD_0}</td>
+                          <td className="px-4 py-3 font-medium">{a.TSICOD_1}</td>
+                          <td className="px-4 py-3 font-medium">{a.TSICOD_2}</td>
+                          <td className="px-4 py-3 font-medium">{a.TSICOD_3}</td>
+                          <td className="px-4 py-3 font-medium">{a.TSICOD_4}</td>
+                          <td className="px-4 py-3 font-medium">{a.PUU_0}</td>
                           <td className="px-4 py-2">
                             <Button
                             variant="secondary"

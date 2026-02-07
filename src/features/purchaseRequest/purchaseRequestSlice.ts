@@ -18,12 +18,17 @@ const initialState: State = {
     items: [
       {
         id: nanoid(),
-        ITMREF: "",
-        ITMDES: "",
+        ITMREF_0: "",
+        ITMDES1_0: "",
         QTYPUU: 1,
         EXTRCPDAT: "",
-        PUU: "UN",
-        PSHFCY: ""
+        PUU_0: "UN",
+        TSICOD_0: "",
+        TSICOD_1: "",
+        TSICOD_2: "",
+        TSICOD_3: "",
+        TSICOD_4: "",
+      
       },
     ],
     EXTRCPDAT: "",
@@ -41,12 +46,17 @@ const slice = createSlice({
     addItem(state) {
       state.form.items.push({
         id: nanoid(),
-        ITMREF: "",
-        ITMDES: "",
+        ITMREF_0: "",
+        ITMDES1_0: "",
         QTYPUU: 1,
         EXTRCPDAT:"",
-        PUU: "UN",
-        PSHFCY:""
+        PUU_0: "UN",
+        TSICOD_0: "",
+        TSICOD_1: "",
+        TSICOD_2: "",
+        TSICOD_3: "",
+        TSICOD_4: "",
+  
       });
     },
     removeItem(state, action: PayloadAction<string>) {

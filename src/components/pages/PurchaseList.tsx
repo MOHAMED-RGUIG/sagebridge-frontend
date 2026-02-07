@@ -212,15 +212,15 @@ const pagedRows = useMemo(
       inline-flex items-center gap-2
       rounded-xl
       bg-brand text-white shadow-cardSm hover:brightness-[0.98] hover:-translate-y-[7px] active:-translate-y-[1px]
-      px-6 py-3 mb-10 w-full md:w-[160px]
-      text-lg text-white
+      px-6 py-3 mb-14 w-full md:w-[30px]
+      text-lg text-white h-[50px]
       shadow-md shadow-indigo-500/30
       transition-all duration-200
       hover:scale-[1.03] hover:shadow-lg
-      active:scale-[0.97]
+      active:scale-[0.92]
     "
   >
-   Ajouter
+   +
   </Button>
 </div> 
 

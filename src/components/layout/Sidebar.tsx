@@ -168,7 +168,7 @@ export default function Sidebar({
       <aside
         className={cn(
           "z-50 shrink-0",
-          "fixed inset-y-0 left-0 w-[290px] md:static",
+          "fixed inset-y-0 left-0 w-[250px] md:static",
           "md:sticky md:top-0 md:h-[calc(100vh-16px)] md:m-2 ",
           "overflow-hidden",
           "transition-transform md:translate-x-0",
@@ -190,17 +190,17 @@ export default function Sidebar({
           </div>
 
           <div className="flex items-center gap-2">
-            <TopIconBtn title="Notifications">
+           <TopIconBtn title="Notifications">
               <span className="text-[16px]">🔔</span>
               <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[11px] font-black text-white">
                 3
               </span>
             </TopIconBtn>
-
+ {/* 
             <TopIconBtn title="Compte">
               <span className="text-[16px]">👤</span>
               <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-[#0B1022]" />
-            </TopIconBtn>
+            </TopIconBtn>*/}
           </div>
         </div>
 

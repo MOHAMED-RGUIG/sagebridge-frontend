@@ -1,11 +1,16 @@
 export type PurchaseRequestItem = {
   id: string;
-  ITMREF: string;
-  ITMDES: string;
+  ITMREF_0: string;
+  ITMDES1_0: string;
   QTYPUU: number;
-  PUU: string;
+  PUU_0: string;
   EXTRCPDAT:string;
-  PSHFCY: string;
+  TSICOD_0: string;
+  TSICOD_1: string;
+  TSICOD_2: string;
+  TSICOD_3: string;
+  TSICOD_4: string;
+
 };
 
 export type PurchaseRequestForm = {
