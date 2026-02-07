@@ -48,15 +48,14 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["Devis"],
     }),
+    
       getArticles: builder.query<ArticleRow[], { q?: string }>({
-  query: (params) => ({
-    url: ENDPOINTS.articles.list, // ✅ /api/articles
-    method: "GET",
-    params: params?.q ? { q: params.q } : undefined,
-  }),
-}),
-
-
+      query: (params) => ({
+        url: ENDPOINTS.articles.list, // ✅ /api/articles
+        method: "GET",
+        params: params?.q ? { q: params.q } : undefined,
+      }),
+      }),
     createClaim: builder.mutation<{ id: string }, any>({
       query: (body) => ({
         url: ENDPOINTS.claims.create,

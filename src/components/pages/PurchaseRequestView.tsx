@@ -15,12 +15,24 @@ import { useGetArticlesQuery } from "@/lib/api/baseApi";
 import Badge from "@/components/ui/Badge";
 type MatriculeType = "NORMAL" | "AUTRE";
 export default function PurchaseRequestView() {
+  
+const [filters, setFilters] = useState({
+  ITMREF_0: "",
+  ITMDES1_0: "",
+  TSICOD_0: "",
+  TSICOD_1: "",
+  TSICOD_2: "",
+  TSICOD_3: "",
+  TSICOD_4: "",
+  PUU_0: "",
+});
+
+  
   const dispatch = useAppDispatch();
   const form = useAppSelector((s) => s.purchaseRequest.form);
   const [createPurchaseRequest, { isLoading }] = useCreatePurchaseRequestMutation();
   const [toast, setToast] = useState<string | null>(null);
   const [matType, setMatType] = useState<MatriculeType>("NORMAL");
-
   const [mat1, setMat1] = useState("");
   const [mat2, setMat2] = useState("");
   const [mat3, setMat3] = useState("");
@@ -46,8 +58,7 @@ const {
 // 2) ✅ Normaliser la data
 const articles = useMemo(() => articlesData ?? [], [articlesData]);
 
-// 3) ✅ Filtre frontend (exactement ton code, mais safe)
-const filteredArticles = useMemo(() => {
+   {/*const filteredArticles = useMemo(() => {
   if (!qLower) return articles;
 
   return articles.filter((a: any) => {
@@ -73,6 +84,26 @@ const filteredArticles = useMemo(() => {
   });
 }, [qLower, articles]);
 
+        */}
+   const filteredArticles = useMemo(() => {
+  return articles.filter((a: any) => {
+    return (
+      String(a.ITMREF_0 ?? "").toLowerCase().includes(filters.ITMREF_0.toLowerCase()) &&
+      String(a.ITMDES1_0 ?? "").toLowerCase().includes(filters.ITMDES1_0.toLowerCase()) &&
+      String(a.TSICOD_0 ?? "").toLowerCase().includes(filters.TSICOD_0.toLowerCase()) &&
+      String(a.TSICOD_1 ?? "").toLowerCase().includes(filters.TSICOD_1.toLowerCase()) &&
+      String(a.TSICOD_2 ?? "").toLowerCase().includes(filters.TSICOD_2.toLowerCase()) &&
+      String(a.TSICOD_3 ?? "").toLowerCase().includes(filters.TSICOD_3.toLowerCase()) &&
+      String(a.TSICOD_4 ?? "").toLowerCase().includes(filters.TSICOD_4.toLowerCase()) &&
+      String(a.PUU_0 ?? "").toLowerCase().includes(filters.PUU_0.toLowerCase())
+    );
+  });
+}, [articles, filters]);
+     
+
+
+// 3) ✅ Filtre frontend (exactement ton code, mais safe)
+
 useEffect(() => {
   // ✅ remplir REQUSR automatiquement avec USR_0
   if (authUser?.usr0) {
@@ -96,7 +127,7 @@ const openArticleModal = (lineId: string) => {
   dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "ITMREF_0", value: a.ITMREF_0 }));
   dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "ITMDES1_0", value: a.ITMDES1_0 }));
 
-  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "PUU_0", value: a.PUU_0 ?? "UN" }));
+  dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "PUU_0", value: a.PUU_0 ?? "" }));
   dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_0", value: a.TSICOD_0 ?? "" }));
   dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_1", value: a.TSICOD_1 ?? "" }));
   dispatch(purchaseRequestActions.updateItem({ id: activeLineId, key: "TSICOD_2", value: a.TSICOD_2 ?? "" }));
@@ -414,8 +445,8 @@ const matriculeDisabled = matType === "NORMAL";
                   <th className="px-3 py-2">Désignation</th>
                   {/*<th className="px-3 py-2">Site de réception</th> */}
                   
-                  <th className="px-3 py-2">Unité d'achat</th>
-                  <th className="px-5 py-2">Qté *</th>
+                  <th className="px-3 py-2">Unité</th>
+                  <th className="px-3 py-2">Qté *</th>
                   <th className="px-3 py-2">Date souhaitée</th>
                 </tr>
               </thead>
@@ -436,7 +467,7 @@ const matriculeDisabled = matType === "NORMAL";
         )
       }
       className="h-10 w-full rounded-[14px] border border-border bg-white px-4 pr-11 text-[14px] outline-none transition placeholder:text-muted2 focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
-      placeholder="Ex: ART-001"
+      placeholder="Selectionner un article"
     />
 
    
@@ -509,7 +540,8 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                     </td> */} 
                   
                     <td className="px-3 py-2">
-                      <Select
+                      <Input
+                        type="text"
                         value={it.PUU_0}
                         onChange={(e) =>
                           dispatch(
@@ -520,13 +552,8 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                             })
                           )
                         }
-                        className="h-10 rounded-[14px] border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
-                      >
-                        <option value="UN">UN</option>
-                        <option value="PCS">PCS</option>
-                        <option value="KG">KG</option>
-                        <option value="L">L</option>
-                      </Select>
+                        className="h-12 rounded-[14px] !w-24 border border-border bg-white px-4 text-[14px] outline-none transition focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
+                      />
                     </td>
                     <td className="px-2 py-2">
                       <Input
@@ -633,19 +660,21 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             </div>
 
             <div className="p-5">
-              {/* search */}
-              <Input
+              {/* search
+               <Input
                 autoFocus
                 value={articleQuery}
                 onChange={(e) => setArticleQuery(e.target.value)}
                 placeholder="Rechercher un artcile ... (ex: par  ITMREF_0 ou ITMDES1_0 ...)"
                 className="h-11 w-full rounded-2xl border border-border bg-white px-4 text-[14px] outline-none focus:border-brand focus:ring-4 focus:ring-[rgba(67,24,255,0.10)]"
               />
+              */}
+             
 
               {/* list */}
-              <div className="mt-4 max-h-[55vh] overflow-auto rounded-2xl border border-border">
+              <div className="mt-4 max-h-[70vh] overflow-auto rounded-2xl border border-border">
                 <table className="w-full text-left ">
-                  <thead className="sticky top-0 bg-white text-[16px] font-extrabold">
+                  <thead className="sticky top-0 !bg-black text-white text-[16px] font-extrabold ">
                     <tr className="border-b border-border">
                       <th className="px-4 py-3">ITMREF_0</th>
                       <th className="px-4 py-3">ITMDES1_0</th>
@@ -655,9 +684,78 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                       <th className="px-4 py-3 ">TSICOD_3</th>
                        <th className="px-4 py-3 ">TSICOD_4</th>
                       <th className="px-4 py-3 ">PUU_0</th>
-                     
+                     <th className="px-4 py-3 ">-</th>
                     </tr>
+                    <tr className="border-b border-border bg-white text-black">
+  <th className="px-4">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.ITMREF_0}
+      onChange={(e) => setFilters({ ...filters, ITMREF_0: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.ITMDES1_0}
+      onChange={(e) => setFilters({ ...filters, ITMDES1_0: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.TSICOD_0}
+      onChange={(e) => setFilters({ ...filters, TSICOD_0: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.TSICOD_1}
+      onChange={(e) => setFilters({ ...filters, TSICOD_1: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.TSICOD_2}
+      onChange={(e) => setFilters({ ...filters, TSICOD_2: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.TSICOD_3}
+      onChange={(e) => setFilters({ ...filters, TSICOD_3: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.TSICOD_4}
+      onChange={(e) => setFilters({ ...filters, TSICOD_4: e.target.value })}
+    />
+  </th>
+
+  <th className="px-4 py-2">
+    <input
+      className="w-full text-sm border border-border rounded px-2 py-1 outline-none"
+      value={filters.PUU_0}
+      onChange={(e) => setFilters({ ...filters, PUU_0: e.target.value })}
+    />
+  </th>
+
+  <th></th>
+</tr>
+
                   </thead>
+
                   <tbody>
                     {filteredArticles.length === 0 ? (
                       <tr>
