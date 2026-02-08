@@ -123,6 +123,12 @@ const pagedRows = useMemo(
 
 {/* ====== LEFT SIDE (filtres) ====== */}
 <div className="grid flex-1 gap-3 md:grid-cols-4">
+    <Input
+    label=""
+    placeholder="N de demande…"
+    value={query.q}
+    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
+  />
   <Input
     label=""
     placeholder="Demandeur…"
@@ -282,16 +288,17 @@ const pagedRows = useMemo(
                   {/* BODY */}
                   <div className="flex-auto block py-8 pt-8 mt-2 px-9 border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-slate-50/30">
                     <div className="overflow-x-auto">
-                      <table className="w-full my-0 align-middle text-slate-900">
-                        <thead className="align-bottom ">
-                          <tr className="font-bold !text-xl text-slate-500">
-                            <th className="pb-3 text-start min-w-[80px]">CODE</th>
-                            <th className="pb-3 text-start min-w-[100px]">DÉSIGNATION</th>
-                            <th className="pb-3 text-end min-w-[50px]">TITLE</th>
-                            <th className="pb-3 text-end min-w-[50px]">SITE</th>
-                            <th className="pb-3 text-end min-w-[50px]">QTE DISPO</th>
-                            <th className="pb-3 pr-12 text-end min-w-[50px]">UV</th>
-                            <th className="pb-3 text-end min-w-[50px]">DETAILS</th>
+                      <table className="w-full my-0 align-middle text-slate-900 !border !border-dashed !bg-clip-border !rounded-4xl">
+                        <thead className="align-bottom !bg-black !text-white  ">
+                          <tr className="font-bold !text-xl !pt-2 ">
+                            <th className="pb-1 text-center min-w-[50px]">N demande</th>
+                            <th className="pb-1 text-center min-w-[50px]">Demandeur</th>
+                            <th className="pb-1 text-center min-w-[50px]">Type</th>
+                            <th className="pb-1 text-center min-w-[50px]">Date</th>
+                            <th className="pb-1 text-center min-w-[50px]">Compagnie</th>
+                            <th className="pb-1 text-center min-w-[50px]">Matricule</th>
+                            <th className="pb-1 text-center min-w-[50px]">Qt</th>
+                            <th className="pb-1 text-center min-w-[50px]">Détails</th>
                           </tr>
                         </thead>
     
@@ -309,48 +316,33 @@ const pagedRows = useMemo(
                               </td>
     
                               {/* Désignation (titre + sous-texte) */}
-                              <td className="p-3 pl-0">
-                                <div className="flex items-center">
-                                  {/* mini “avatar” (pure style) */}
-                                  <div className="relative inline-flex shrink-0 rounded-2xl me-3 h-[46px] w-[46px] items-center justify-center bg-slate-100 text-slate-600 font-semibold">
-                                    {String(r.code ?? "S").slice(0, 1)}
-                                  </div>
-    
-                                  <div className="flex flex-col justify-start">
-                                    <div className="mb-0.5 font-semibold text-[1rem] leading-snug text-slate-900">
-                                      {r.label ?? r.designation ?? "—"}
-                                    </div>
-                                    <div className="text-s text-slate-500">
-                                      Détails de la pièce / commentaire
-                                    </div>
-                                  </div>
-                                </div>
+       
+                              <td className="p-3  text-center">
+                                <span className="font-semibold text-slate-700">
+                                  {r.label ?? r.designation ?? "—"}
+                                </span>
                               </td>
-    
-                              <td className="p-3  text-end">
+
+
+                              <td className="p-3 text-center">
                                 <span className="font-semibold text-slate-700">
                                   {r.site ?? query.site ?? "—"}
                                 </span>
                               </td>
-                              <td className="p-3 text-end">
-                                <span className="font-semibold text-slate-700">
-                                  {r.site ?? query.site ?? "—"}
-                                </span>
-                              </td>
-                              <td className="p-3  text-end">
+                              <td className="p-3  text-center">
                                 <span className="font-semibold text-slate-700">
                                   {r.qtyAvailable ?? r.qte ?? 0}
                                 </span>
                               </td>
     
-                              <td className="p-3 pr-12 text-end">
+                              <td className="p-3 pr-12 text-center">
                                 <span className="font-semibold text-slate-700">
                                   {r.uv ?? "UN"}
                                 </span>
                               </td>
     
                               {/* Action -> bouton carré “details” */}
-                              <td className="p-3 pr-0 text-end">
+                              <td className="p-3 pr-0 text-center">
                                 <button
                                   type="button"
                                   className="ml-auto inline-flex h-[28px] w-[28px] items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
