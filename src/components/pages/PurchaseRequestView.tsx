@@ -27,7 +27,8 @@ const [filters, setFilters] = useState({
   PUU_0: "",
 });
 
-  
+  const [selected, setSelected] = useState<Record<string, any>>({});
+const selectedCount = Object.keys(selected).length;
   const dispatch = useAppDispatch();
   const form = useAppSelector((s) => s.purchaseRequest.form);
   const [createPurchaseRequest, { isLoading }] = useCreatePurchaseRequestMutation();
@@ -120,9 +121,51 @@ useEffect(() => {
 const openArticleModal = (lineId: string) => {
   setActiveLineId(lineId);
   setArticleQuery("");
+   setSelected({});
   setArticleModalOpen(true);
 };
 
+const toggleSelect = (a: any) => {
+  setSelected((prev) => {
+    const key = String(a.ITMREF_0);
+    if (prev[key]) {
+      const copy = { ...prev };
+      delete copy[key];
+      return copy;
+    }
+    return { ...prev, [key]: a };
+  });
+};
+const fillLineWithArticle = (lineId: string, a: any) => {
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "ITMREF_0", value: a.ITMREF_0 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "ITMDES1_0", value: a.ITMDES1_0 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "PUU_0", value: a.PUU_0 ?? "UN" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "TSICOD_0", value: a.TSICOD_0 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "TSICOD_1", value: a.TSICOD_1 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "TSICOD_2", value: a.TSICOD_2 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "TSICOD_3", value: a.TSICOD_3 ?? "" }));
+  dispatch(purchaseRequestActions.updateItem({ id: lineId, key: "TSICOD_4", value: a.TSICOD_4 ?? "" }));
+};
+
+const applySelectedArticles = () => {
+  if (!activeLineId) return;
+
+  const chosen = Object.values(selected);
+  if (chosen.length === 0) return;
+
+  // 1) remplir la ligne active avec le premier article
+  fillLineWithArticle(activeLineId, chosen[0]);
+
+  // 2) ajouter le reste direct en lignes déjà remplies
+  const rest = chosen.slice(1);
+  if (rest.length > 0) {
+    dispatch(purchaseRequestActions.appendItemsFromArticles(rest as any));
+  }
+
+  setArticleModalOpen(false);
+  setActiveLineId(null);
+  setSelected({});
+};
 
   const pickArticle = (a: any) => {
   if (activeLineId == null) return;
@@ -684,7 +727,8 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                       <th className="px-4 py-3 ">TSICOD_3</th>
                        <th className="px-4 py-3 ">TSICOD_4</th>
                       <th className="px-4 py-3 ">PUU_0</th>
-                     <th className="px-4 py-3 ">-</th>
+                     <th className="px-4 py-3 ">Sel</th>
+
                     </tr>
                     <tr className="border-b border-border bg-white text-black">
   <th className="px-4">
@@ -777,16 +821,24 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                           <td className="px-4 py-3 font-medium">{a.TSICOD_3}</td>
                           <td className="px-4 py-3 font-medium">{a.TSICOD_4}</td>
                           <td className="px-4 py-3 font-medium">{a.PUU_0}</td>
-                          <td className="px-4 py-2">
-                            <Button
-                            variant="secondary"
-                              type="button"
-                              onClick={() => pickArticle(a)}
-                              className="h-9 rounded-xl border border-border px-3 text-[13px] hover:bg-gray-50 hover:text-black transition"
-                            >
-                              +
-                            </Button>
-                          </td>
+                      <td className="px-4 py-2 flex items-center gap-2">
+  <input
+    type="checkbox"
+    checked={Boolean(selected[String(a.ITMREF_0)])}
+    onChange={() => toggleSelect(a)}
+    className="h-4 w-4"
+  />
+
+  <Button
+    variant="secondary"
+    type="button"
+    onClick={() => pickArticle(a)}
+    className="h-9 rounded-xl border border-border px-3 text-[13px] hover:bg-gray-50 hover:text-black transition"
+  >
+    +
+  </Button>
+</td>
+
                         </tr>
                       ))
                     )}
@@ -794,15 +846,26 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
                 </table>
               </div>
 
-              <div className="mt-4 flex justify-end">
-                <Button
-                  type="button"
-                  onClick={() => setArticleModalOpen(false)}
-                  className="h-10 rounded-2xl border border-border px-4 text-[14px] bg-gray-50 !text-black"
-                >
-                  Annuler
-                </Button>
-              </div>
+  <div className="mt-4 flex justify-end gap-2">
+  <Button
+    type="button"
+    variant="secondary"
+    onClick={applySelectedArticles}
+    disabled={selectedCount === 0}
+    className="h-10 rounded-2xl border border-border px-4 text-[14px]"
+  >
+    Ajouter sélection ({selectedCount})
+  </Button>
+
+  <Button
+    type="button"
+    onClick={() => setArticleModalOpen(false)}
+    className="h-10 rounded-2xl border border-border px-4 text-[14px] bg-gray-50 !text-black"
+  >
+    Annuler
+  </Button>
+</div>
+
             </div>
           </div>
         </div>
