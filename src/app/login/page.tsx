@@ -44,6 +44,7 @@ async function onSubmit(e: React.FormEvent) {
         user: {
           userName: data.user.login0,
           usr0: data.user.usr0,
+           site: data.user.fcydef0,
           name: data.user.nomusr0,
         },
       })

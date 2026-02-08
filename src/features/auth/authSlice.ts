@@ -5,7 +5,7 @@ const initialState: AuthState = {
   user: null,
   token: null,
   isAuthenticated: false,
-
+  
   isLoading: false,
   error: null,
 };

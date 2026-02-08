@@ -109,7 +109,10 @@ useEffect(() => {
   if (authUser?.usr0) {
     dispatch(purchaseRequestActions.setField({ key: "REQUSR", value: authUser.usr0 }));
   }
-}, [authUser?.usr0, dispatch]);
+    if (authUser?.site) {
+    dispatch(purchaseRequestActions.setField({ key: "PSHFCY", value: authUser.site }));
+  }
+}, [authUser?.usr0,authUser?.site, dispatch]);
   // ✅ Données articles (placeholder). Plus tard tu les remplaces par un fetch API / RTK Query
 
 
@@ -267,26 +270,23 @@ const matriculeDisabled = matType === "NORMAL";
         /> 
         <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           
-      
-          <Select
-            label= "Site *"
+
+                    <Input
+            label="Site *"
             value={form.PSHFCY}
             onChange={(e) =>
               dispatch(purchaseRequestActions.setField({ key: "PSHFCY", value: e.target.value }))
             }
             disabled
-         className="
+            placeholder="Site"
+           className="
                       w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100
                       disabled:text-gray-500
                       disabled:border-gray-300
                       disabled:cursor-not-allowed
                     "
-          >
-            <option value="SIG">SIG</option>
-            <option value="CAS">CAS</option>
-            <option value="RAB">RAB</option>
-          </Select>
+          />
           <Input
             label="Demandeur *"
             value={form.REQUSR}
@@ -294,7 +294,7 @@ const matriculeDisabled = matType === "NORMAL";
               dispatch(purchaseRequestActions.setField({ key: "REQUSR", value: e.target.value }))
             }
             disabled
-            placeholder="Nom & prénom"
+            placeholder="Nom demandeur"
            className="
                       w-full rounded-4xl border px-3 py-2
                       disabled:bg-gray-100

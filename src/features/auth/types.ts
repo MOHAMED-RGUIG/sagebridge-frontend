@@ -2,6 +2,7 @@ export type User = {
   id?: string;
   name?: string;
   usr0?: string; 
+    site?: string;  
   userName: string;
 };
 
