@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { useGetStockQuery } from "@/lib/api/baseApi";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { stockActions } from "@/features/stock/stockSlice";
@@ -10,97 +10,71 @@ import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Badge from "@/components/ui/Badge";
 import Button from "../ui/Button";
+import { useGetPurchaseRequestsQuery } from "@/lib/api/baseApi";
 
+
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
+}
 export default function PurchaseList() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const query = useAppSelector((s) => s.stock.query);
+   // filtres
+  const [filters, setFilters] = useState({
+    PSHNUM_0: "",
+    CREUSR_0: "",
+    YTYPE_0: "",
+    YCMPASS_0: "",
+    YMATRICULE_0: "",
+    PSHFCY_0: "",
+    dateFrom: "",
+    dateTo: "",
+  });
+  const debouncedFilters = useDebouncedValue(filters, 350);
 const [filterMode, setFilterMode] = useState<"single" | "range">("single");
 
-  const { data, isFetching, isError } = useGetStockQuery(
-    { q: query.q || undefined, site: query.site || undefined },
-    {
-      // Pendant le dev, on peut laisser refetch; en prod, adapter.
-      refetchOnFocus: false,
-      refetchOnReconnect: true,
-    }
-  );
 
-  const rows = useMemo(() => data ?? [], [data]);
-  const [pageSize, setPageSize] = useState(5);
+   // pagination
   const [page, setPage] = useState(1);
- const filteredRows = useMemo(() => {
-  // rows est toujours un tableau (data ?? [])
-  return rows.filter((item: any) => {
-    // adapte le champ date (ex: item.date / item.createdAt / item.INDT ...)
-    if (!item?.date) return true;
-
-    const itemDate = new Date(item.date);
-    if (Number.isNaN(itemDate.getTime())) return true;
-
-    // 1) Date précise
-    if (filterMode === "single" && query.date) {
-      const selectedDate = new Date(query.date);
-      if (Number.isNaN(selectedDate.getTime())) return true;
-
-      return itemDate.toDateString() === selectedDate.toDateString();
-    }
-
-    // 2) Intervalle
-    if (filterMode === "range" && (query.dateFrom || query.dateTo)) {
-      const from = query.dateFrom ? new Date(query.dateFrom) : null;
-      const to = query.dateTo ? new Date(query.dateTo) : null;
-
-      if (from && !Number.isNaN(from.getTime()) && itemDate < from) return false;
-      if (to && !Number.isNaN(to.getTime())) {
-        // inclure toute la journée de "to"
-        const endOfDay = new Date(to);
-        endOfDay.setHours(23, 59, 59, 999);
-        if (itemDate > endOfDay) return false;
-      }
-
-      return true;
-    }
-
-    return true;
-  });
-}, [rows, query.date, query.dateFrom, query.dateTo, filterMode]); 
-  useEffect(() => {
-    // reset page quand on change la recherche/site ou quand la data change
+  const [pageSize, setPageSize] = useState(10);
+    useEffect(() => {
     setPage(1);
-  }, [query.q, query.site, rows.length]);
-  
-const total = filteredRows.length;
-const totalPages = Math.max(1, Math.ceil(total / pageSize));
-const safePage = Math.min(page, totalPages);
+  }, [debouncedFilters, pageSize]);
+    const { data, isFetching, isError } = useGetPurchaseRequestsQuery(
+    { ...debouncedFilters, page, pageSize },
+    { refetchOnFocus: false, refetchOnReconnect: true }
+  );
+  //
 
-const startIndex = (safePage - 1) * pageSize;
-const endIndex = Math.min(startIndex + pageSize, total);
 
-const pagedRows = useMemo(
-  () => filteredRows.slice(startIndex, endIndex),
-  [filteredRows, startIndex, endIndex]
-);
+  const rows = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const goTo = (p: number) => setPage(Math.min(Math.max(1, p), totalPages));
 
   
-  function goTo(p: number) {
-    setPage(Math.min(Math.max(1, p), totalPages));
-  }
-  
-  const pageNumbers = useMemo(() => {
-    // pagination compacte: 1 ... (p-1) p (p+1) ... last
+
+
+ const pageNumbers = useMemo(() => {
     const set = new Set<number>();
     set.add(1);
     set.add(totalPages);
-    set.add(safePage);
-    set.add(safePage - 1);
-    set.add(safePage + 1);
+    set.add(page);
+    set.add(page - 1);
+    set.add(page + 1);
+    return Array.from(set).filter(n => n >= 1 && n <= totalPages).sort((a,b)=>a-b);
+  }, [page, totalPages]);
   
-    const arr = Array.from(set)
-      .filter((n) => n >= 1 && n <= totalPages)
-      .sort((a, b) => a - b);
+
   
-    return arr;
-  }, [safePage, totalPages]);
+ 
 
 
 
@@ -120,44 +94,41 @@ const pagedRows = useMemo(
       <CardContent className="">
         {/*start search and filter section  */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-
+</div>
 {/* ====== LEFT SIDE (filtres) ====== */}
 <div className="grid flex-1 gap-3 md:grid-cols-4">
-    <Input
-    label=""
-    placeholder="N de demande…"
-    value={query.q}
-    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-  />
-  <Input
-    label=""
-    placeholder="Demandeur…"
-    value={query.q}
-    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-  />
-  <Input
-    label=""
-    placeholder="Type de demande…"
-    value={query.q}
-    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-  />
-  <Input
-    label=""
-    placeholder="Compagnie d'assurance…"
-    value={query.q}
-    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-  />
-  <Input
-    label=""
-    placeholder="Matricule…"
-    value={query.q}
-    onChange={(e) => dispatch(stockActions.setQuery({ q: e.target.value }))}
-  />
+      <Input
+              placeholder="N demande (PSHNUM_0)…"
+              value={filters.PSHNUM_0}
+              onChange={(e) => setFilters((p) => ({ ...p, PSHNUM_0: e.target.value }))}
+            />
+            <Input
+              placeholder="Demandeur (CREUSR_0)…"
+              value={filters.CREUSR_0}
+              onChange={(e) => setFilters((p) => ({ ...p, CREUSR_0: e.target.value }))}
+            />
+            <Input
+              placeholder="Type (YTYPE_0)…"
+              value={filters.YTYPE_0}
+              onChange={(e) => setFilters((p) => ({ ...p, YTYPE_0: e.target.value }))}
+            />
+            <Input
+              placeholder="Compagnie (YCMPASS_0)…"
+              value={filters.YCMPASS_0}
+              onChange={(e) => setFilters((p) => ({ ...p, YCMPASS_0: e.target.value }))}
+            />
+            <Input
+              placeholder="Matricule (YMATRICULE_0)…"
+              value={filters.YMATRICULE_0}
+              onChange={(e) => setFilters((p) => ({ ...p, YMATRICULE_0: e.target.value }))}
+            />
+            <Input
+              placeholder="Site (PSHFCY_0)…"
+              value={filters.PSHFCY_0}
+              onChange={(e) => setFilters((p) => ({ ...p, PSHFCY_0: e.target.value }))}
+            />
 
-
-
-
-
+            <div className="flex gap-2 md:col-span-2">          
 <Select value={filterMode} onChange={(e) => setFilterMode(e.target.value as any)}>
   <option value="single">Date précise</option>
   <option value="range">Intervalle</option>
@@ -200,12 +171,6 @@ const pagedRows = useMemo(
   </div>
 )}
 
-
-
-</div>
-
-{/* ====== RIGHT SIDE (BOUTON) ======
-*/}
 <div className="flex justify-end ">
   <Button
     type="button"
@@ -230,6 +195,12 @@ const pagedRows = useMemo(
   </Button>
 </div> 
 
+</div>
+
+{/* ====== RIGHT SIDE (BOUTON) ======
+*/}
+
+
 
 </div>
 
@@ -239,23 +210,11 @@ const pagedRows = useMemo(
     </Card>
 
 
-    <Card className="!mt-8">
-     {/* <CardHeader
-        title=""
-        subtitle=""
-        right={
-          <div className="flex items-center gap-2">
-          </div>
-        }
-      /> */}       
-      <CardContent className="pt-8">
+         {/* Table */}
+      <Card className="!mt-8">
+        <CardContent className="pt-8">
+          <div className="overflow-x-auto">
 
-
-          {/* CARD (style Loopple/Riva) */}
-
-            <div className="w-full max-w-full px-3 mb-6 mx-auto">
-            
-    
                   {/* HEADER like Riva */}
                   <div className="px-9 pt-3 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent mb-2">
                     <h3 className="flex flex-col items-start justify-center m-2 ml-0">
@@ -273,7 +232,7 @@ const pagedRows = useMemo(
                                 <Badge tone={isError ? "red" : isFetching ? "amber" : "green"}>
                                 {isError ? "Erreur" : isFetching ? "Chargement" : "OK"}
                                 </Badge>
-                               <Badge tone="slate">{filteredRows.length} ligne(s)</Badge>
+                                 <Badge tone="slate">{rows.length} ligne(s)</Badge>
                                  <Select label="" value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
                                     <option value={5}>Afficher 5 lignes</option>
                                     <option value={10}>Afficher 10 lignes</option>
@@ -284,175 +243,117 @@ const pagedRows = useMemo(
                           </div>
                   
                   </div>
-    
-                  {/* BODY */}
-                  <div className="flex-auto block py-8 pt-8 mt-2 px-9 border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-slate-50/30">
-                    <div className="overflow-x-auto">
-                      <table className="w-full my-0 align-middle text-slate-900 !border !border-dashed !bg-clip-border !rounded-4xl">
-                        <thead className="align-bottom !bg-black !text-white  ">
-                          <tr className="font-bold !text-xl !pt-2 ">
-                            <th className="pb-1 text-center min-w-[50px]">N demande</th>
-                            <th className="pb-1 text-center min-w-[50px]">Demandeur</th>
-                            <th className="pb-1 text-center min-w-[50px]">Type</th>
-                            <th className="pb-1 text-center min-w-[50px]">Date</th>
-                            <th className="pb-1 text-center min-w-[50px]">Compagnie</th>
-                            <th className="pb-1 text-center min-w-[50px]">Matricule</th>
-                            <th className="pb-1 text-center min-w-[50px]">Qt</th>
-                            <th className="pb-1 text-center min-w-[50px]">Détails</th>
-                          </tr>
-                        </thead>
-    
-                        <tbody>
-                          {pagedRows.map((r: any, idx: number) => (
-                            <tr
-                              key={r.id ?? idx}
-                              className="border-b border-dashed !text-xl last:border-b-0 hover:bg-white/60"
-                            >
-                              {/* Code */}
-                              <td className="p-3 pl-0">
-                                <span className="font-semibold text-slate-900">
-                                  {r.code ?? "—"}
-                                </span>
-                              </td>
-    
-                              {/* Désignation (titre + sous-texte) */}
-       
-                              <td className="p-3  text-center">
-                                <span className="font-semibold text-slate-700">
-                                  {r.label ?? r.designation ?? "—"}
-                                </span>
-                              </td>
+            <table className="w-full my-0 align-middle text-slate-900 !border !border-dashed !rounded-4xl">
+              <thead className="align-bottom !bg-black !text-white">
+                <tr className="font-bold !text-xl">
+                  <th className="p-3 text-center">N demande</th>
+                  <th className="p-3 text-center">Demandeur</th>
+                  <th className="p-3 text-center">Type</th>
+                  <th className="p-3 text-center">Date</th>
+                  <th className="p-3 text-center">Compagnie</th>
+                  <th className="p-3 text-center">Matricule</th>
+                  <th className="p-3 text-center">Qt</th>
+                  <th className="p-3 text-center">Site</th>
+                  <th className="p-3 text-center">Détails</th>
+                </tr>
+              </thead>
 
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.PSHNUM_0} className="border-b border-dashed !text-xl hover:bg-white/60">
+                    <td className="p-3 text-center font-semibold">{r.PSHNUM_0}</td>
+                    <td className="p-3 text-center">{r.CREUSR_0 ?? "—"}</td>
+                    <td className="p-3 text-center">{r.YTYPE_0 ?? "—"}</td>
+                    <td className="p-3 text-center">
+                      {r.EXTORDDAT_0 ? new Date(r.EXTORDDAT_0).toLocaleDateString() : "—"}
+                    </td>
+                    <td className="p-3 text-center">{r.YCMPASS_0 ?? "—"}</td>
+                    <td className="p-3 text-center">{r.YMATRICULE_0 ?? "—"}</td>
+                    <td className="p-3 text-center">{r.QTYPUU_0 ?? 0}</td>
+                    <td className="p-3 text-center">{r.PSHFCY_0 ?? "—"}</td>
+                    <td className="p-3 text-center">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => router.push(`/purchase-requests/${r.PSHNUM_0}`)}
+                        className="h-9 rounded-xl border border-border px-3"
+                        title="Voir détails"
+                      >
+                        👁
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
 
-                              <td className="p-3 text-center">
-                                <span className="font-semibold text-slate-700">
-                                  {r.site ?? query.site ?? "—"}
-                                </span>
-                              </td>
-                              <td className="p-3  text-center">
-                                <span className="font-semibold text-slate-700">
-                                  {r.qtyAvailable ?? r.qte ?? 0}
-                                </span>
-                              </td>
-    
-                              <td className="p-3 pr-12 text-center">
-                                <span className="font-semibold text-slate-700">
-                                  {r.uv ?? "UN"}
-                                </span>
-                              </td>
-    
-                              {/* Action -> bouton carré “details” */}
-                              <td className="p-3 pr-0 text-center">
-                                <button
-                                  type="button"
-                                  className="ml-auto inline-flex h-[28px] w-[28px] items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
-                                  aria-label="Details"
-                                  title="Details"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.8"
-                                    stroke="currentColor"
-                                    className="h-4 w-4"
-                                  >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                  </svg>
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-    
-                          {!isFetching && total === 0 ? (
-                            <tr className="border-b border-dashed last:border-b-0">
-                              <td className="py-10 text-center text-slate-500" colSpan={6}>
-                                Aucune donnée. Branche ton backend sur GET /api/stock.
-                              </td>
-                            </tr>
-                          ) : null}
-                        </tbody>
-                      </table>
-                    </div>
-    
-                    {/* Pagination (style proche Loopple) */}
-                    <div className="mt-6 flex flex-col gap-3 border-t border-dashed border-stone-200 pt-5 md:flex-row md:items-center md:justify-between">
-                      <div className="!text-lg text-slate-500">
-                        Showing{" "}
-                        <span className="font-semibold text-slate-900">
-                          {total ? startIndex + 1 : 0}
-                        </span>{" "}
-                        to{" "}
-                        <span className="font-semibold text-slate-900">
-                          {endIndex}
-                        </span>{" "}
-                        of{" "}
-                        <span className="font-semibold text-slate-900">
-                          {total}
-                        </span>{" "}
-                        Results
-                      </div>
-    
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          type="button"
-                          onClick={() => goTo(safePage - 1)}
-                          disabled={safePage === 1}
-                          className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black bold text-slate-700 transition hover:bg-slate-200 disabled:opacity-40"
-                          aria-label="Previous"
-                        >
-                          ‹
-                        </Button>
-    
-                        <div className="flex items-center gap-1">
-                          {pageNumbers.map((n, i) => {
-                            const prev = pageNumbers[i - 1];
-                            const showDots = i > 0 && n - prev > 1;
-    
-                            return (
-                              <div key={n} className="flex items-center gap-1">
-                                {showDots ? (
-                                  <span className="px-1 text-sm text-slate-400">…</span>
-                                ) : null}
-    
-                                <Button
-                                  type="button"
-                                  onClick={() => goTo(n)}
-                                  className={
-                                    n === safePage
-                                      ? "grid h-9 w-9 place-items-center rounded-2xl bg-slate-900 text-white !text-xl shadow-sm"
-                                      : "grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black text-slate-700 transition hover:bg-slate-200"
-                                  }
-                                >
-                                  {n}
-                                </Button>
-                              </div>
-                            );
-                          })}
-                        </div>
-    
-                        <Button
-                          type="button"
-                          onClick={() => goTo(safePage + 1)}
-                          disabled={safePage === totalPages}
-                          className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black bold text-slate-700 transition hover:bg-slate-200 disabled:opacity-40"
-                          aria-label="Next"
-                        >
-                          ›
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-    
-           
-             
+                {!isFetching && rows.length === 0 ? (
+                  <tr>
+                    <td className="py-10 text-center text-slate-500" colSpan={9}>
+                      Aucune demande trouvée.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="mt-6 flex flex-col gap-3 border-t border-dashed border-stone-200 pt-5 md:flex-row md:items-center md:justify-between">
+            <div className="!text-lg text-slate-500">
+              Page <span className="font-semibold text-slate-900">{page}</span> /{" "}
+              <span className="font-semibold text-slate-900">{totalPages}</span>
             </div>
-       
-      </CardContent>
-    </Card>
+
+            <div className="flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() => goTo(page - 1)}
+                disabled={page === 1 || isFetching}
+                className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black"
+              >
+                ‹
+              </Button>
+
+              <div className="flex items-center gap-1">
+                {pageNumbers.map((n, i) => {
+                  const prev = pageNumbers[i - 1];
+                  const showDots = i > 0 && n - prev > 1;
+
+                  return (
+                    <div key={n} className="flex items-center gap-1">
+                      {showDots ? <span className="px-1 text-sm text-slate-400">…</span> : null}
+                      <Button
+                        type="button"
+                        onClick={() => goTo(n)}
+                        className={
+                          n === page
+                            ? "grid h-9 w-9 place-items-center rounded-2xl bg-slate-900 text-white !text-xl"
+                            : "grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black"
+                        }
+                        disabled={isFetching}
+                      >
+                        {n}
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Button
+                type="button"
+                onClick={() => goTo(page + 1)}
+                disabled={page === totalPages || isFetching}
+                className="grid h-9 w-9 place-items-center rounded-2xl bg-slate-100 !text-xl !text-black"
+              >
+                ›
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 
  
+

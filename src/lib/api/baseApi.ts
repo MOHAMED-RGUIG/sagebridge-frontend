@@ -106,7 +106,58 @@ export type ArticleRow = {
   TSICOD_4: string | null;
   PUU_0: string | null;
 };
+// types
+export type PurchaseRequestListRow = {
+  PSHNUM_0: string;
+  CREUSR_0: string;
+  YTYPE_0: string | null;
+  EXTORDDAT_0: string | null;
+  YCMPASS_0: string | null;
+  YMATRICULE_0: string | null;
+  QTYPUU_0: number | null;
+  PSHFCY_0: string | null;
+};
 
+export type PurchaseRequestsListResponse = {
+  items: PurchaseRequestListRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
+export type PurchaseRequestsListParams = Partial<{
+  page: number;
+  pageSize: number;
+
+  PSHNUM_0: string;
+  CREUSR_0: string;
+  YTYPE_0: string;
+  YCMPASS_0: string;
+  YMATRICULE_0: string;
+  PSHFCY_0: string;
+
+  dateFrom: string; // YYYY-MM-DD
+  dateTo: string;   // YYYY-MM-DD
+}>;
+
+export type PurchaseRequestDetailsLine = {
+  PSHNUM_0: string;
+  PSHFCY_0: string | null;
+  QTYPUU_0: number | null;
+  EXTORDDAT_0: string | null;
+};
+
+export type PurchaseRequestDetailsResponse = {
+  header: {
+    PSHNUM_0: string;
+    CREUSR_0: string;
+    YTYPE_0: string | null;
+    EXTORDDAT_0: string | null;
+    YCMPASS_0: string | null;
+    YMATRICULE_0: string | null;
+  };
+  lines: PurchaseRequestDetailsLine[];
+};
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -128,6 +179,21 @@ export const baseApi = createApi({
       invalidatesTags: ["PurchaseRequests"],
     }),
 
+    // endpoints
+getPurchaseRequests: builder.query<PurchaseRequestsListResponse, PurchaseRequestsListParams>({
+  query: (params) => ({
+    url: "/api/purchase-requests",
+    method: "GET",
+    params,
+  }),
+}),
+
+getPurchaseRequestByNum: builder.query<PurchaseRequestDetailsResponse, string>({
+  query: (pshnum) => ({
+    url: `/api/purchase-requests/${encodeURIComponent(pshnum)}`,
+    method: "GET",
+  }),
+}),
     // ✅ DEVIS
     createDevisRequest: builder.mutation<{ id: string }, DevisCreatePayload>({
       query: (body) => ({
@@ -165,12 +231,15 @@ export const baseApi = createApi({
   }),
 });
 
+
 export const {
   useCreatePurchaseRequestMutation,
   useCreateDevisRequestMutation, // ✅
   useCreateClaimMutation,
   useGetStockQuery,
   useGetArticlesQuery,
+   useGetPurchaseRequestsQuery,
+  useGetPurchaseRequestByNumQuery,
 } = baseApi;
  
 
