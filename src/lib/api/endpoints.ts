@@ -1,6 +1,7 @@
 export const ENDPOINTS = {
   purchaseRequest: {
-    create: "/api/purchase-requests",
+    create: "/api/purchase-request",
+    list: "/api/purchase-request",
   },
   claims: {
     create: "/api/claims",
