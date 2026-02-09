@@ -7,15 +7,25 @@ import { COMPANIES , TypeDemande } from "@/features/purchaseRequest/purchaseCons
 import { purchaseRequestActions } from "@/features/purchaseRequest/purchaseRequestSlice";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
-import { useGetArticlesQuery } from "@/lib/api/baseApi";
+import { useGetArticlesQuery,useGetPurchaseRequestByNumQuery, useUpdatePurchaseRequestMutation } from "@/lib/api/baseApi";
 
 import Badge from "@/components/ui/Badge";
 type MatriculeType = "NORMAL" | "AUTRE";
 export default function PurchaseRequestView() {
-  
+  const searchParams = useSearchParams();
+const pshnumToEdit = searchParams.get("pshnum_0"); // ex: ?pshnum=PR000123
+const isEdit = Boolean(pshnumToEdit);
+
+const { data: editData, isFetching: isFetchingEdit } =
+  useGetPurchaseRequestByNumQuery(pshnumToEdit as string, { skip: !isEdit });
+
+const [updatePurchaseRequest, { isLoading: isUpdating }] = useUpdatePurchaseRequestMutation();
+
+
 const [filters, setFilters] = useState({
   ITMREF_0: "",
   ITMDES1_0: "",
@@ -190,9 +200,9 @@ const applySelectedArticles = () => {
   const isValid = useMemo(() => {
     if (!form.REQUSR.trim()) return false;
     if (!form.PSHFCY.trim()) return false;
-    if (!form.YTYPE.trim()) return false;
+
     if (!form.YCMPASS.trim()) return false;
-    if (form.items.some((it) => !it.ITMREF_0.trim() || it.QTYPUU <= 0)) return false;
+    if (form.items.some((it) => !it.ITMREF_0 || it.QTYPUU <= 0)) return false;
     return true;
   }, [form]);
 
@@ -223,35 +233,37 @@ const applySelectedArticles = () => {
       return;
     }
 
-    try {
-      // Payload prêt backend
-      const payload = {
-        REQUSR: form.REQUSR,
-        PSHFCY: form.PSHFCY,
-        YTYPE: form.YTYPE,
-        YCMPASS: form.YCMPASS,
-        PSHNUM: form.PSHNUM,
-        PRQDAT: form.PRQDAT || null,
-        YMATRICULE: form.YMATRICULE,
-        items: form.items.map((it) => ({
-          ITMREF_0: it.ITMREF_0,
-          ITMDES1_0: it.ITMDES1_0,
-          QTYPUU: Number(it.QTYPUU),
-          EXTRCPDAT: form.EXTRCPDAT || null,
-          PUU_0: it.PUU_0,
-          TSICOD_4: it.TSICOD_4,
-        })),
-      };
+try {
+  const payload = {
+    REQUSR: form.REQUSR,
+    PSHFCY: form.PSHFCY,
+    YTYPE_0: form.YTYPE_0,
+    YCMPASS: form.YCMPASS,
+    PRQDAT: form.PRQDAT || null,
+    YMATRICULE: form.YMATRICULE,
+    EXTRCPDAT: form.EXTRCPDAT || null,
+    items: form.items.map((it) => ({
+      ITMREF_0: it.ITMREF_0,
+      ITMDES1_0: it.ITMDES1_0,
+      QTYPUU: Number(it.QTYPUU),
+      EXTRCPDAT: form.EXTRCPDAT || null,
+      PUU_0: it.PUU_0,
+      TSICOD_4: it.TSICOD_4,
+    })),
+  };
 
-      // Appelle l’API (placeholder)
-      await createPurchaseRequest(payload).unwrap();
-      dispatch(purchaseRequestActions.reset());
-      setToast("Demande envoyée (API placeholder). Tu pourras brancher le backend ensuite.");
-    } catch {
-      setToast(
-        "Impossible d’envoyer pour le moment (backend non branché ou API indisponible)."
-      );
-    }
+  if (isEdit && pshnumToEdit) {
+    await updatePurchaseRequest({ pshnum_0: pshnumToEdit, body: payload }).unwrap();
+    setToast("Demande mise à jour ✅");
+  } else {
+    await createPurchaseRequest(payload).unwrap();
+    dispatch(purchaseRequestActions.reset());
+    setToast("Demande envoyée ✅");
+  }
+} catch {
+  setToast("Impossible d’envoyer / mettre à jour (API indisponible).");
+}
+
   }
  // Génération automatique quand NORMAL
  useEffect(() => {
@@ -281,6 +293,60 @@ useEffect(() => {
     dispatch(purchaseRequestActions.setField({ key: "YMATRICULE", value: "" }));
   }
 }, [matType, dispatch]);
+useEffect(() => {
+  if (!isEdit || !editData?.header) return;
+
+  const h = editData.header;
+  const lines = editData.lines ?? [];
+
+  dispatch(
+    purchaseRequestActions.hydrateForm({
+      // tes champs du form
+      YTYPE_0: h.YTYPE_0 ?? "",
+      YCMPASS: h.YCMPASS_0 ?? "",
+      REQUSR: h.CREUSR_0 ?? "",
+      PSHFCY: h.PSHFCY_0 ?? "",
+      PSHNUM_0: h.PSHNUM_0 ?? "",
+      PRQDAT: (h.PRQDAT_0 ?? "").slice(0, 10), // si ISO
+      YMATRICULE: h.YMATRICULE_0 ?? "",
+
+      // date souhaitée globale si tu veux
+      EXTRCPDAT: (h.EXTORDDAT_0 ?? "").slice(0, 10),
+      QTYPUU: 1 as any,
+
+      // items: convertir les lignes DB -> items du form
+      items: lines.length
+        ? lines.map((l) => ({
+            id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+            ITMREF_0: l.ITMREF_0 ?? "",
+            ITMDES1_0: l.ITMDES1_0 ?? "",
+            QTYPUU: Number(l.QTYPUU_0 ?? 1),
+            EXTRCPDAT: (l.EXTORDDAT_0 ?? "").slice(0, 10),
+            PUU_0: "UN",
+            TSICOD_0: "",
+            TSICOD_1: "",
+            TSICOD_2: "",
+            TSICOD_3: "",
+            TSICOD_4: "",
+          }))
+        : [
+            {
+              id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+              ITMREF_0: "",
+              ITMDES1_0: "",
+              QTYPUU: 1,
+              EXTRCPDAT: "",
+              PUU_0: "UN",
+              TSICOD_0: "",
+              TSICOD_1: "",
+              TSICOD_2: "",
+              TSICOD_3: "",
+              TSICOD_4: "",
+            },
+          ],
+    })
+  );
+}, [isEdit, editData, dispatch]);
 
 const matriculeDisabled = matType === "NORMAL";
   return (
@@ -348,9 +414,9 @@ const matriculeDisabled = matType === "NORMAL";
           />
 <Input
             label="N demande"
-            
+            value={form.PSHNUM_0}
             onChange={(e) =>
-              dispatch(purchaseRequestActions.setField({ key: "PSHNUM", value: e.target.value }))}
+              dispatch(purchaseRequestActions.setField({ key: "PSHNUM_0", value: e.target.value }))}
            
             className="
                     w-full rounded-4xl border px-3 py-2
@@ -374,9 +440,9 @@ const matriculeDisabled = matType === "NORMAL";
 
           <Select
               label= "Type demande *"
-              value={form.YTYPE}
+              value={form.YTYPE_0}
               onChange={(e) =>
-                dispatch(purchaseRequestActions.setField({ key: "YTYPE", value: e.target.value }))}>
+                dispatch(purchaseRequestActions.setField({ key: "YTYPE_0", value: e.target.value }))}>
             <option value=""> -- Choisir un type de demande --</option>
 
           {TypeDemande.map((demande) => (
@@ -650,9 +716,10 @@ className="h-12 w-full rounded-[14px] border border-border  bg-gray-100
             >
               Réinitialiser
             </Button>
-            <Button type="button" variant="primary" onClick={onSubmit} disabled={isLoading}>
-              {isLoading ? "Envoi..." : "Créer"}
-            </Button>
+           <Button type="button" variant="primary" onClick={onSubmit} disabled={isLoading || isUpdating}>
+  {(isLoading || isUpdating) ? "Envoi..." : (isEdit ? "Mettre à jour" : "Créer")}
+</Button>
+
           </div>
         </CardContent>
       </Card>

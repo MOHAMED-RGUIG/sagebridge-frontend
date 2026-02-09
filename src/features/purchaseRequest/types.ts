@@ -15,13 +15,13 @@ export type PurchaseRequestItem = {
 
 export type PurchaseRequestForm = {
   EXTRCPDAT: string;
-  YTYPE: string;
+  YTYPE_0: string;
   YCMPASS: string;
   REQUSR: string;
   PSHFCY: string;
   QTYPUU: 1,
 
-  PSHNUM: string;
+  PSHNUM_0: string;
   PRQDAT: string;
   YMATRICULE: string;
   items: PurchaseRequestItem[];

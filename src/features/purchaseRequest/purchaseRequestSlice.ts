@@ -21,11 +21,11 @@ type State = {
 
 const initialState: State = {
   form: {
-    YTYPE: "",
+    YTYPE_0: "",
     YCMPASS: "",
     REQUSR: "",
     PSHFCY: "",
-    PSHNUM: "",
+    PSHNUM_0: "",
     PRQDAT: "",
     YMATRICULE: "",
 
@@ -102,6 +102,9 @@ const slice = createSlice({
       const it = state.form.items.find((x) => x.id === action.payload.id);
       if (!it) return;
       (it as any)[action.payload.key] = action.payload.value;
+    },
+    hydrateForm(state, action: PayloadAction<PurchaseRequestForm>) {
+  state.form = action.payload;
     },
 
     reset(state) {

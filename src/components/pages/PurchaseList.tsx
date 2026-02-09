@@ -288,15 +288,26 @@ export default function PurchaseList() {
                     <td className="p-3 text-center">{r.QTYPUU_0 ?? 0}</td>
                     <td className="p-3 text-center">{r.PSHFCY_0 ?? "—"}</td>
                     <td className="p-3 text-center">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={() => router.push(`/purchase-requests/${r.PSHNUM_0}`)}
-                        className="h-9 rounded-xl border border-border px-3"
-                        title="Voir détails"
-                      >
-                        👁
-                      </Button>
+                     <button
+  type="button"
+ onClick={() => {
+  const p = new URLSearchParams(window.location.search);
+  p.set("pshnum_0", r.PSHNUM_0);
+
+  // 1) met ?pshnum=...
+  const nextUrl = `${window.location.pathname}?${p.toString()}#purchaseRequestView`;
+
+  window.history.pushState({}, "", nextUrl);
+
+  // 2) active la vue
+  window.dispatchEvent(new Event("hashchange"));
+}}
+  className="ml-auto inline-flex h-[28px] w-[28px] items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+  title="Détails"
+>
+  👁
+</button>
+
                     </td>
                   </tr>
                 ))}
