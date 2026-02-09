@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 import Badge from "@/components/ui/Badge";
 import Button from "../ui/Button";
 import { useGetPurchaseRequestsQuery } from "@/lib/api/baseApi";
@@ -41,6 +43,8 @@ function toYMD(value: any): string {
 
 export default function PurchaseList() {
   const router = useRouter();
+const authUser = useAppSelector((s) => s.auth.user);
+const userSite = authUser?.site; // ✅ site
 
   const [filters, setFilters] = useState({
     PSHNUM_0: "",
@@ -68,6 +72,12 @@ export default function PurchaseList() {
 
   // adapte حسب شكل response ديالك
   const allRows = data?.items ?? [];
+ 
+
+const siteRows = useMemo(() => {
+  if (!userSite) return allRows; // ou [] si tu veux bloquer
+  return allRows.filter((r: any) => String(r.PSHFCY_0 ?? "").trim() === String(userSite).trim());
+}, [allRows, userSite]);
 
   // ✅ Filtrage FRONT
   const filteredRows = useMemo(() => {
@@ -82,7 +92,7 @@ export default function PurchaseList() {
         ? new Date(to.getFullYear(), to.getMonth(), to.getDate(), 23, 59, 59, 999)
         : null;
 
-    return allRows.filter((r: any) => {
+    return siteRows.filter((r: any) => {
       if (!includesCI(r.PSHNUM_0, f.PSHNUM_0)) return false;
       if (!includesCI(r.CREUSR_0, f.CREUSR_0)) return false;
       if (!includesCI(r.YTYPE_0, f.YTYPE_0)) return false;

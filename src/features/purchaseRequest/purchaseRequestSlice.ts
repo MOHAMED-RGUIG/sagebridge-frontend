@@ -26,7 +26,7 @@ const initialState: State = {
     REQUSR: "",
     PSHFCY: "",
     PSHNUM_0: "",
-    PRQDAT: "",
+    PRQDAT_0: "",
     YMATRICULE: "",
 
     items: [

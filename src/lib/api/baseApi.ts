@@ -99,7 +99,7 @@ export type UpdatePurchaseRequestBody = {
   PSHFCY: string;
   YTYPE_0: string;
   YCMPASS: string;
-  PRQDAT?: string | null;
+  PRQDAT_0?: string | null;
   YMATRICULE?: string | null;
   EXTRCPDAT?: string | null;
 

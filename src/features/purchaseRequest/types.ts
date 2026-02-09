@@ -22,7 +22,7 @@ export type PurchaseRequestForm = {
   QTYPUU: 1,
 
   PSHNUM_0: string;
-  PRQDAT: string;
+  PRQDAT_0: string;
   YMATRICULE: string;
   items: PurchaseRequestItem[];
 };

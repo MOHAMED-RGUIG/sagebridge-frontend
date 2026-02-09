@@ -214,7 +214,7 @@ const applySelectedArticles = () => {
     const datePlusOne = todayPlusOne.toISOString().split("T")[0];
     dispatch(
       purchaseRequestActions.setField({
-        key: "PRQDAT",
+        key: "PRQDAT_0",
         value: today,
        
       })
@@ -239,7 +239,7 @@ try {
     PSHFCY: form.PSHFCY,
     YTYPE_0: form.YTYPE_0,
     YCMPASS: form.YCMPASS,
-    PRQDAT: form.PRQDAT || null,
+    PRQDAT_0: form.PRQDAT_0 || null,
     YMATRICULE: form.YMATRICULE,
     EXTRCPDAT: form.EXTRCPDAT || null,
     items: form.items.map((it) => ({
@@ -307,7 +307,7 @@ useEffect(() => {
       REQUSR: h.CREUSR_0 ?? "",
       PSHFCY: h.PSHFCY_0 ?? "",
       PSHNUM_0: h.PSHNUM_0 ?? "",
-      PRQDAT: (h.PRQDAT_0 ?? "").slice(0, 10), // si ISO
+      PRQDAT_0: (h.PRQDAT_0 ?? "").slice(0, 10), // si ISO
       YMATRICULE: h.YMATRICULE_0 ?? "",
 
       // date souhaitée globale si tu veux
@@ -426,13 +426,13 @@ const matriculeDisabled = matType === "NORMAL";
           <Input
               label="Date demande"
               type="date"
-              value={form.PRQDAT}
+              value={form.PRQDAT_0}
               className="w-full rounded-4xl border px-3 py-2
               "
                 onChange={(e) =>
     dispatch(
       purchaseRequestActions.setField({
-        key: "PRQDAT",
+        key: "PRQDAT_0",
         value: e.target.value,
       })
     )
